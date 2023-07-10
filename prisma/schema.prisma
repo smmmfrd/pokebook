@@ -1,20 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// generator client {
-//     provider = "prisma-client-js"
-//     previewFeatures = ["jsonProtocol"]
-// }
-
-// datasource db {
-//     provider = "sqlite"
-//     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-//     // Further reading:
-//     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-//     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-//     url      = env("DATABASE_URL")
-// }
-
 generator client {
     provider        = "prisma-client-js"
     previewFeatures = ["jsonProtocol"]
@@ -26,13 +9,25 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Pokemon {
+    id           Int    @id
+    name         String
+    profileImage String @db.Text
+    flavorTexts  String @db.Text
 }
 
-// Necessary for Next auth
+// Extend this, from Next Auth
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+}
+
+// Necessary for Next Auth...
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -49,6 +44,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index(userId)
 }
 
 model Session {
@@ -57,16 +53,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+    @@index(userId)
 }
 
 model VerificationToken {
