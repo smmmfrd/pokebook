@@ -4,7 +4,20 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 
 export default function HomeFeed() {
-  return <div>feed</div>;
+  return (
+    <>
+      <nav className="w-full px-2">
+        <h2 className="mb-2 text-center text-xl">Select Feed</h2>
+        <ul className="tabs w-full justify-around">
+          <li className="tab-bordered tab tab-active">Timeline</li>
+          <li className="tab-bordered tab">Following</li>
+          <li className="tab-bordered tab">Friends</li>
+          <li className="tab-bordered tab">Your Groups</li>
+        </ul>
+      </nav>
+      <div>[feed]</div>
+    </>
+  );
 }
 
 // export default function Home() {
