@@ -1,4 +1,25 @@
+import { type GetServerSideProps } from "next";
+import { getServerAuthSession } from "~/server/auth";
+
 import { signIn } from "next-auth/react";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  console.log("Query: ", ctx.query);
+  const session = await getServerAuthSession(ctx);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: ctx.query.returnURL ? `${ctx.query.returnURL}` : "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};
 
 export default function LoginPage() {
   return (
