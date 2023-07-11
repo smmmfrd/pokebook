@@ -1,4 +1,6 @@
 import React from "react";
+import { useSession } from "next-auth/react";
+
 import Navbar from "./Navbar";
 
 type LayoutProps = {
@@ -6,6 +8,10 @@ type LayoutProps = {
 };
 
 export default function Layout({ children }: LayoutProps) {
+  const { data: sessionData } = useSession();
+
+  if (!sessionData) return children;
+
   return (
     <div className="flex min-w-full">
       <Navbar />
