@@ -1,19 +1,29 @@
 import React from "react";
+import NavbarIcon from "./NavbarIcon";
 
 export default function Navbar() {
   return (
     <nav className="min-h-screen p-8">
       <ul className="flex h-full flex-col gap-8 last:mt-auto">
         <NavbarLink>
-          <NavbarIcon />
+          <NavbarIcon icon="company" />
+          Pokébook
+        </NavbarLink>
+        <NavbarLink>
+          <NavbarIcon icon="home" />
           Home
         </NavbarLink>
         <NavbarLink>
-          <NavbarIcon />
+          <NavbarIcon icon="profile" />
           Profile
         </NavbarLink>
         <NavbarLink>
-          <NavbarIcon /> Footer
+          <NavbarIcon icon="inbox" />
+          Requests
+        </NavbarLink>
+        <NavbarLink>
+          <NavbarIcon icon="about" />
+          About
         </NavbarLink>
       </ul>
     </nav>
@@ -26,10 +36,4 @@ type NavbarLinkProps = {
 
 function NavbarLink({ children }: NavbarLinkProps) {
   return <li className="flex items-center gap-4 text-xl">{children}</li>;
-}
-
-function NavbarIcon() {
-  return (
-    <span className="block h-8 w-8 rounded-md border-2 border-black"></span>
-  );
 }
