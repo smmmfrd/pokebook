@@ -3,37 +3,41 @@ import NavbarIcon from "./NavbarIcon";
 
 export default function Navbar() {
   return (
-    <nav className="min-h-screen p-8">
-      <ul className="flex h-full flex-col gap-8 last:mt-auto">
+    <nav className="relative min-h-screen p-8">
+      <ul className="sticky top-8 flex flex-col gap-8">
         <NavbarLink>
           <NavbarIcon icon="company" />
-          Pokébook
+          <NavLinkText>Pokébook</NavLinkText>
         </NavbarLink>
         <NavbarLink>
           <NavbarIcon icon="home" />
-          Home
+          <NavLinkText>Home</NavLinkText>
         </NavbarLink>
         <NavbarLink>
           <NavbarIcon icon="profile" />
-          Profile
+          <NavLinkText>Profile</NavLinkText>
         </NavbarLink>
         <NavbarLink>
           <NavbarIcon icon="inbox" />
-          Requests
+          <NavLinkText>Requests</NavLinkText>
         </NavbarLink>
         <NavbarLink>
           <NavbarIcon icon="about" />
-          About
+          <NavLinkText>About</NavLinkText>
         </NavbarLink>
       </ul>
     </nav>
   );
 }
 
-type NavbarLinkProps = {
+type ParentProps = {
   children: React.ReactNode;
 };
 
-function NavbarLink({ children }: NavbarLinkProps) {
+function NavbarLink({ children }: ParentProps) {
   return <li className="flex items-center gap-4 text-xl">{children}</li>;
+}
+
+function NavLinkText({ children }: ParentProps) {
+  return <span className="hidden sm:inline">{children}</span>;
 }
