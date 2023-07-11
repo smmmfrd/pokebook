@@ -1,6 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import Post from "~/components/Post";
 import { api } from "~/utils/api";
 
 export default function HomeFeed() {
@@ -15,7 +16,14 @@ export default function HomeFeed() {
           <li className="tab-bordered tab">Your Groups</li>
         </ul>
       </nav>
-      <div>[feed]</div>
+      <Post />
+      <Post />
+      <Post />
+      <Post />
+      <Post />
+      <Post />
+      <Post />
+      <Post />
     </>
   );
 }
