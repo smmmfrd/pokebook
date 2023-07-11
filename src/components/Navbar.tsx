@@ -1,3 +1,4 @@
+import { signOut } from "next-auth/react";
 import React from "react";
 import NavbarIcon from "./NavbarIcon";
 
@@ -25,6 +26,13 @@ export default function Navbar() {
           <NavbarIcon icon="about" />
           <NavLinkText>About</NavLinkText>
         </NavbarLink>
+        <button
+          className="flex items-center gap-4 text-xl"
+          onClick={() => void signOut()}
+        >
+          <NavbarIcon icon="signOut" />
+          <NavLinkText>Sign Out</NavLinkText>
+        </button>
       </ul>
     </nav>
   );
