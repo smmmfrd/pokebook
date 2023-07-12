@@ -21,13 +21,11 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
+      pokemonId: number;
+      profileImage: string;
+      // put these properties into the user model
     } & DefaultSession["user"];
   }
-
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
 }
 
 /**

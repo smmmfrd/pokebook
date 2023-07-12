@@ -14,6 +14,8 @@ model Pokemon {
     name         String
     profileImage String @db.Text
     flavorTexts  String @db.Text
+
+    user User?
 }
 
 // Extend this, from Next Auth
@@ -25,6 +27,10 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+
+    pokemon      Pokemon? @relation(fields: [pokemonId], references: [id])
+    pokemonId    Int?     @unique
+    profileImage String?
 }
 
 // Necessary for Next Auth...
