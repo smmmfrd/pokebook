@@ -23,4 +23,35 @@ export const pokemonRouter = createTRPCRouter({
 
     return { simplePokemon };
   }),
+  giveUserRandomPokemon: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ input: { userId }, ctx }) => {
+      // Find a random pokemon
+      const availPokemon = await ctx.prisma.pokemon.findMany({
+        where: {
+          OR: [{ user: null }, { user: undefined }],
+        },
+        select: {
+          id: true,
+          profileImage: true,
+        },
+      });
+
+      const randPokemon =
+        availPokemon[Math.floor(Math.random() * availPokemon.length)];
+      console.log(randPokemon);
+
+      // Assign it to the user and the user to it.
+      const res = await ctx.prisma.user.update({
+        where: { id: userId },
+        data: {
+          pokemonId: randPokemon?.id,
+          profileImage: randPokemon?.profileImage,
+        },
+      });
+
+      console.log(res.profileImage);
+
+      return;
+    }),
 });
