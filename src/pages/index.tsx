@@ -19,8 +19,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  console.log("ID:", session.user.pokemonId);
-
   return {
     props: { session },
   };

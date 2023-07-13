@@ -23,7 +23,6 @@ declare module "next-auth" {
       // role: UserRole;
       pokemonId: number;
       profileImage: string;
-      // put these properties into the user model
     } & DefaultSession["user"];
   }
 }
@@ -35,13 +34,32 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: async ({ session, user }) => {
+      const userData = await prisma.user.findFirst({
+        where: { id: user.id },
+      });
+
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          profileImage: userData?.profileImage,
+          pokemonId: userData?.pokemonId,
+        },
+      };
+    },
+  },
+  events: {
+    async signIn({ user }) {
+      const userData = await prisma.user.findFirst({
+        where: { id: user.id },
+      });
+
+      console.log("Our data on the guy (event):", userData);
+
+      return;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
