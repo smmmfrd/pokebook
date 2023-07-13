@@ -1,5 +1,6 @@
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
@@ -22,15 +23,15 @@ export default function Navbar({ profileImage }: NavbarProps) {
   return (
     <nav className="relative min-h-screen p-8">
       <ul className="sticky top-8 flex flex-col gap-8">
-        <NavbarLink>
+        <NavbarLink href="/">
           <NavbarIcon icon="company" />
           <NavLinkText>Pokébook</NavLinkText>
         </NavbarLink>
-        <NavbarLink>
+        <NavbarLink href="/">
           <NavbarIcon icon="home" />
           <NavLinkText>Home</NavLinkText>
         </NavbarLink>
-        <NavbarLink>
+        <NavbarLink href="/profile">
           {profileImage ? (
             <div
               style={
@@ -45,13 +46,17 @@ export default function Navbar({ profileImage }: NavbarProps) {
           )}
           <NavLinkText>Profile</NavLinkText>
         </NavbarLink>
-        <NavbarLink>
+        <NavbarLink href="/inbox">
           <NavbarIcon icon="inbox" />
           <NavLinkText>Requests</NavLinkText>
         </NavbarLink>
-        <NavbarLink>
+        <NavbarLink href="/about">
           <NavbarIcon icon="about" />
           <NavLinkText>About</NavLinkText>
+        </NavbarLink>
+        <NavbarLink href="/pokedex">
+          <NavbarIcon icon="pokedex" />
+          <NavLinkText>Pokedex</NavLinkText>
         </NavbarLink>
         <button
           className="flex items-center gap-4 text-xl"
@@ -69,8 +74,16 @@ type ParentProps = {
   children: React.ReactNode;
 };
 
-function NavbarLink({ children }: ParentProps) {
-  return <li className="flex items-center gap-4 text-xl">{children}</li>;
+interface NavbarLinkProps extends ParentProps {
+  href: string;
+}
+
+function NavbarLink({ children, href }: NavbarLinkProps) {
+  return (
+    <Link className="flex items-center gap-4 text-xl" href={href}>
+      {children}
+    </Link>
+  );
 }
 
 function NavLinkText({ children }: ParentProps) {
