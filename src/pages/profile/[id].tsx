@@ -19,8 +19,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const id = ctx.query.id as string;
+
   const pokeRes = await caller.pokemon.getPokemon({
-    userId: session.user.id,
+    userId: id,
   });
   if (pokeRes?.pokemon === undefined) {
     return { props: { session } };

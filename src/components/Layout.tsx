@@ -14,7 +14,10 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex min-w-full">
-      <Navbar profileImage={sessionData.user.profileImage} />
+      <Navbar
+        profileImage={sessionData.user.profileImage}
+        userId={sessionData.user.id}
+      />
       <main className="min-h-screen w-full border-l-[1px]">{children}</main>
     </div>
   );

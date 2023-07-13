@@ -7,9 +7,11 @@ import NavbarIcon from "./NavbarIcon";
 
 type NavbarProps = {
   profileImage: string;
+  userId: string;
 };
 
-export default function Navbar({ profileImage }: NavbarProps) {
+export default function Navbar({ profileImage, userId }: NavbarProps) {
+  // TODO: Remove this.
   const session = useSession();
   const useDeleteThis = api.example.deleteUser.useMutation();
 
@@ -31,7 +33,7 @@ export default function Navbar({ profileImage }: NavbarProps) {
           <NavbarIcon icon="home" />
           <NavLinkText>Home</NavLinkText>
         </NavbarLink>
-        <NavbarLink href="/profile">
+        <NavbarLink href={`/profile/${userId}`}>
           {profileImage ? (
             <div
               style={
