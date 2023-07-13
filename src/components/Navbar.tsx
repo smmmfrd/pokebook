@@ -1,6 +1,7 @@
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import React from "react";
+import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
 
 type NavbarProps = {
@@ -8,6 +9,16 @@ type NavbarProps = {
 };
 
 export default function Navbar({ profileImage }: NavbarProps) {
+  const session = useSession();
+  const useDeleteThis = api.example.deleteUser.useMutation();
+
+  function handleSignout() {
+    if (session.data) {
+      useDeleteThis.mutate({ userId: session.data.user.id });
+    }
+    void signOut();
+  }
+
   return (
     <nav className="relative min-h-screen p-8">
       <ul className="sticky top-8 flex flex-col gap-8">
@@ -44,7 +55,7 @@ export default function Navbar({ profileImage }: NavbarProps) {
         </NavbarLink>
         <button
           className="flex items-center gap-4 text-xl"
-          onClick={() => void signOut()}
+          onClick={handleSignout}
         >
           <NavbarIcon icon="signOut" />
           <NavLinkText>Sign Out</NavLinkText>

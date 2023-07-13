@@ -23,7 +23,7 @@ export const pokemonRouter = createTRPCRouter({
 
     return { simplePokemon };
   }),
-  giveUserRandomPokemon: protectedProcedure
+  giveUserRandomPokemon: publicProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(async ({ input: { userId }, ctx }) => {
       // Find a random pokemon

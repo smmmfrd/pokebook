@@ -8,6 +8,7 @@ import {
 import DiscordProvider from "next-auth/providers/discord";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
+import { caller } from "./api/root";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -51,12 +52,11 @@ export const authOptions: NextAuthOptions = {
     },
   },
   events: {
-    async signIn({ user }) {
-      const userData = await prisma.user.findFirst({
-        where: { id: user.id },
-      });
-
-      console.log("Our data on the guy (event):", userData);
+    async signIn({ user, isNewUser }) {
+      if (isNewUser) {
+        await caller.pokemon.giveUserRandomPokemon({ userId: user.id });
+        console.log("ALERT, gave a new guy a pokemon.");
+      }
 
       return;
     },
