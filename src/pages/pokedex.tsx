@@ -1,5 +1,8 @@
 import { GetStaticProps } from "next";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { caller } from "~/server/api/root";
 
 type SimplePokemon = {
@@ -19,6 +22,23 @@ export const getStaticProps: GetStaticProps<PokedoxProps> = async () => {
 };
 
 export default function Pokedex({ pokemon }: PokedoxProps) {
+  const auth = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (auth.status === "loading") return;
+
+    if (auth.data === null || !auth.data.user) {
+      router.replace(
+        {
+          pathname: "/login",
+          query: { from: encodeURIComponent(router.asPath) },
+        },
+        "/login"
+      );
+    }
+  }, [auth.data, router]);
+
   return (
     <>
       <h2 className="p-2 text-4xl font-bold">Pokemon</h2>
