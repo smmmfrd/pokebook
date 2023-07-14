@@ -5,6 +5,8 @@ type TextInputProps = {
 };
 
 export default function TextInput({ pokemonName }: TextInputProps) {
+  const [open, setOpen] = useState(false);
+
   const [hoverIndex, setHoverIndex] = useState(-1);
   function handleMouseOver(index: number) {
     setHoverIndex(index);
@@ -20,10 +22,16 @@ export default function TextInput({ pokemonName }: TextInputProps) {
   }
 
   return (
-    <form className="mx-auto max-w-sm p-4">
+    <form
+      className={`mx-auto max-w-sm p-4 ${!open && "cursor-pointer"}`}
+      onMouseDown={() => setOpen(true)}
+      onSubmit={() => {}}
+    >
       <div
         onMouseLeave={handleMouseLeave}
-        className={`mb-2 flex select-none justify-between border-2 border-base-content font-mono text-2xl lowercase `}
+        className={`mb-2 flex scale-y-100 select-none justify-between overflow-hidden border-base-content font-mono text-2xl lowercase transition-all duration-100 ${
+          open ? "max-h-36 border-2" : "max-h-0 border-0"
+        }`}
       >
         {pokemonName.split("").map((char, index) => (
           <div
@@ -38,12 +46,41 @@ export default function TextInput({ pokemonName }: TextInputProps) {
           </div>
         ))}
       </div>
-      <div className="textarea-bordered textarea w-full cursor-default overflow-hidden text-xl">
+      <div
+        className={`textarea-bordered textarea w-full cursor-default overflow-hidden text-xl ${
+          !open && "cursor-pointer"
+        }`}
+      >
         {inputValue.length > 0 ? (
           inputValue
         ) : (
-          <span className="text-base-300">+ new post</span>
+          <span className="text-neutral-content">
+            {open ? "use above to enter text..." : "+ new post..."}
+          </span>
         )}
+      </div>
+      <div className="flex justify-between">
+        <button
+          type="reset"
+          className={`btn-outline btn ${!open && "hidden"}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(false);
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          type="reset"
+          disabled={inputValue.length === 0}
+          className={`btn-primary btn ${!open && "hidden"}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(false);
+          }}
+        >
+          Post
+        </button>
       </div>
     </form>
   );
