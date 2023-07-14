@@ -1,11 +1,14 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import Post from "~/components/Post";
 import { api } from "~/utils/api";
 
-import { type GetServerSideProps } from "next";
+import { InferGetServerSidePropsType, type GetServerSideProps } from "next";
 import { getServerAuthSession } from "~/server/auth";
+import { caller } from "~/server/api/root";
+
+import Post from "~/components/Post";
+import TextInput from "~/components/TextInput";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -19,19 +22,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const mon = await caller.pokemon.getPokemon({ userId: session.user.id });
+
   return {
-    props: { session },
+    props: { session, pokemonName: mon?.pokemon?.name },
   };
 };
 
-export default function HomeFeed() {
+export default function HomeFeed({
+  session,
+  pokemonName,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <nav className="w-full px-2">
         <h2 className="mb-2 text-xl">New Post</h2>
-        <Link href="/post" className="btn-info btn rounded-full">
-          New Post
-        </Link>
+        <TextInput
+          pokemonName={pokemonName}
+          handleSubmit={(text: string) => console.log(text)}
+        />
         <ul className="tabs w-full justify-around">
           <li className="tab-bordered tab tab-active">Timeline</li>
           <li className="tab-bordered tab">Following</li>
