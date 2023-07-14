@@ -4,7 +4,10 @@ export default function PostPage({ pokemonName = "charmander" }) {
   return (
     <div>
       posting
-      <TextInput pokemonName={pokemonName} />
+      <TextInput
+        pokemonName={pokemonName}
+        handleSubmit={(text: string) => console.log(text.split(""))}
+      />
     </div>
   );
 }

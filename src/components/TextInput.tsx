@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IconMap } from "~/utils/IconsMap";
 
 type TextInputProps = {
   pokemonName: string;
+  handleSubmit: (text: string) => void;
 };
 
-export default function TextInput({ pokemonName }: TextInputProps) {
+export default function TextInput({
+  pokemonName,
+  handleSubmit,
+}: TextInputProps) {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) {
+      setInputValue("");
+    }
+  }, [open]);
 
   const [hoverIndex, setHoverIndex] = useState(-1);
   function handleMouseOver(index: number) {
@@ -19,7 +28,9 @@ export default function TextInput({ pokemonName }: TextInputProps) {
 
   const [inputValue, setInputValue] = useState("");
   function handleMouseUp(index: number) {
-    setInputValue((prev) => `${prev} ${pokemonName.slice(0, index + 1)}`);
+    setInputValue((prev) =>
+      `${prev} ${pokemonName.slice(0, index + 1)}`.trim()
+    );
   }
 
   function handleDelete() {
@@ -30,7 +41,9 @@ export default function TextInput({ pokemonName }: TextInputProps) {
     <form
       className={`mx-auto max-w-sm p-4 ${!open && "cursor-pointer"}`}
       onMouseDown={() => setOpen(true)}
-      onSubmit={() => {}}
+      onSubmit={(e) => {
+        e.preventDefault();
+      }}
     >
       {/* INPUT */}
       <div
@@ -97,6 +110,7 @@ export default function TextInput({ pokemonName }: TextInputProps) {
           onClick={(e) => {
             e.stopPropagation();
             setOpen(false);
+            handleSubmit(inputValue);
           }}
         >
           Post
