@@ -18,7 +18,7 @@ export default function TextInput({ pokemonName }: TextInputProps) {
   }
 
   const [inputValue, setInputValue] = useState("");
-  function handleMouseDown(index: number) {
+  function handleMouseUp(index: number) {
     setInputValue((prev) => `${prev} ${pokemonName.slice(0, index + 1)}`);
   }
 
@@ -45,7 +45,7 @@ export default function TextInput({ pokemonName }: TextInputProps) {
               hoverIndex >= index ? "bg-info" : "bg-none"
             }`}
             key={index}
-            onMouseDown={() => handleMouseDown(index)}
+            onMouseUp={() => handleMouseUp(index)}
             onMouseOver={() => handleMouseOver(index)}
           >
             {char}
