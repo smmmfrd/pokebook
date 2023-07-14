@@ -28,7 +28,10 @@ export default function HomeFeed() {
   return (
     <>
       <nav className="w-full px-2">
-        <h2 className="mb-2 text-center text-xl">Select Feed</h2>
+        <h2 className="mb-2 text-xl">New Post</h2>
+        <Link href="/post" className="btn-info btn rounded-full">
+          New Post
+        </Link>
         <ul className="tabs w-full justify-around">
           <li className="tab-bordered tab tab-active">Timeline</li>
           <li className="tab-bordered tab">Following</li>
