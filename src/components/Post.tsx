@@ -2,7 +2,7 @@ import ProfileImage from "./ProfileImage";
 
 export default function Post() {
   return (
-    <section className="flex w-full flex-col gap-6 border-b-[1px] px-8 py-4">
+    <section className="flex w-full flex-col gap-6 border-b px-8 py-4">
       <header className="flex items-center gap-2">
         <ProfileImage
           styleExtensions="relative"
@@ -26,7 +26,7 @@ export default function Post() {
 // More twitter looking post style, doesn't work in this project though...
 function AltStylePost() {
   return (
-    <section className="relative flex w-full flex-col gap-2 border-b-[1px] py-4 pl-20 pr-8">
+    <section className="relative flex w-full flex-col gap-2 border-b py-4 pl-20 pr-8">
       <ProfileImage
         styleExtensions="absolute top-6 left-4"
         src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png"

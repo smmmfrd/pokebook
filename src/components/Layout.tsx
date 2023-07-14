@@ -18,7 +18,7 @@ export default function Layout({ children }: LayoutProps) {
         profileImage={sessionData.user.profileImage}
         userId={sessionData.user.id}
       />
-      <main className="min-h-screen w-full border-l-[1px]">{children}</main>
+      <main className="min-h-screen w-full border-l">{children}</main>
     </div>
   );
 }
