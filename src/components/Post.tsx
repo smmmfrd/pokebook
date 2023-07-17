@@ -1,24 +1,29 @@
 import ProfileImage from "./ProfileImage";
 
-export default function Post() {
+type PostProps = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  user: {
+    id: string;
+    profileImage: string | null;
+    pokemon: {
+      name: string;
+    } | null;
+  };
+};
+
+export default function Post({ id, content, createdAt, user }: PostProps) {
   return (
-    <section className="flex w-full flex-col gap-6 border-b px-8 py-4">
+    <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
       <header className="flex items-center gap-2">
-        <ProfileImage
-          styleExtensions="relative"
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/493.png"
-        />
+        <ProfileImage styleExtensions="relative" src={user.profileImage} />
         <div className="flex flex-col gap-1">
-          <p className="text-xl font-bold">Username</p>
-          <p className="text-sm font-thin">time posted</p>
+          <p className="text-xl font-bold">{user?.pokemon?.name}</p>
+          <p className="text-xs font-thin">{createdAt.toDateString()}</p>
         </div>
       </header>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem sed iusto
-        nisi sint illum nesciunt perspiciatis eos commodi voluptatibus nulla
-        voluptatum labore, dignissimos porro doloremque harum, blanditiis
-        tenetur? Non, saepe!
-      </p>
+      <p>{content}</p>
     </section>
   );
 }

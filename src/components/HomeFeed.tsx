@@ -7,7 +7,7 @@ export default function HomeFeed() {
   return (
     <>
       {posts.data?.map((post) => (
-        <section key={post.id}>{post.content}</section>
+        <Post {...post} />
       ))}
     </>
   );

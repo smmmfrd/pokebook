@@ -7,7 +7,24 @@ import {
 
 export const postRouter = createTRPCRouter({
   getHomeFeed: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.post.findMany({});
+    return await ctx.prisma.post.findMany({
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        user: {
+          select: {
+            id: true,
+            profileImage: true,
+            pokemon: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }),
   createPost: protectedProcedure
     .input(z.object({ content: z.string() }))
