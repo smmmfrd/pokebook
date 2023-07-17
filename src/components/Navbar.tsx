@@ -23,8 +23,8 @@ export default function Navbar({ profileImage, userId }: NavbarProps) {
   }
 
   return (
-    <nav className="relative min-h-screen p-8">
-      <ul className="sticky top-8 flex flex-col gap-8">
+    <nav className="relative min-h-screen px-2 sm:p-8">
+      <ul className="sticky top-6 flex flex-col gap-8">
         <NavbarLink href="/">
           <NavbarIcon icon="company" />
           <NavLinkText>Pokébook</NavLinkText>

@@ -33,14 +33,14 @@ export default function HomeFeed({
   session,
   pokemonName,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const handleSubmit = (text: string) => {
+    console.log(text);
+  };
+
   return (
     <>
       <nav className="w-full px-2">
-        <h2 className="mb-2 text-xl">New Post</h2>
-        <TextInput
-          pokemonName={pokemonName}
-          handleSubmit={(text: string) => console.log(text)}
-        />
+        <TextInput pokemonName={pokemonName} handleSubmit={handleSubmit} />
         <ul className="tabs w-full justify-around">
           <li className="tab-bordered tab tab-active">Timeline</li>
           <li className="tab-bordered tab">Following</li>

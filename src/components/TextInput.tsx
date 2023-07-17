@@ -76,7 +76,7 @@ export default function TextInput({
           inputValue
         ) : (
           <span className="text-neutral-content">
-            {open ? "use above to enter text..." : "+ new post..."}
+            {open ? "Use above to enter text..." : "+ New post..."}
           </span>
         )}
       </div>
