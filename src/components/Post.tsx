@@ -1,3 +1,4 @@
+import moment from "moment";
 import ProfileImage from "./ProfileImage";
 
 type PostProps = {
@@ -13,14 +14,16 @@ type PostProps = {
   };
 };
 
+const dateTimeFormatter = (createdAt: Date) => moment(createdAt).fromNow();
+
 export default function Post({ id, content, createdAt, user }: PostProps) {
   return (
     <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
-      <header className="flex items-center gap-2">
+      <header className="flex items-start gap-2">
         <ProfileImage styleExtensions="relative" src={user.profileImage} />
-        <div className="flex flex-col gap-1">
-          <p className="text-xl font-bold">{user?.pokemon?.name}</p>
-          <p className="text-xs font-thin">{createdAt.toDateString()}</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-xl font-bold capitalize">{user?.pokemon?.name}</p>
+          <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>
         </div>
       </header>
       <p>{content}</p>
