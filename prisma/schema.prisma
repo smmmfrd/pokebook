@@ -1,6 +1,5 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
@@ -18,8 +17,20 @@ model Pokemon {
     user User?
 }
 
-// Extend this, from Next Auth
+model Post {
+    id        String   @id @default(uuid())
+    content   String   @db.Text
+    createdAt DateTime @default(now())
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    @@unique([createdAt, id])
+    @@index([userId])
+}
+
 model User {
+    // Next Auth reqs
     id            String    @id @default(cuid())
     name          String?
     email         String?   @unique
@@ -28,9 +39,12 @@ model User {
     accounts      Account[]
     sessions      Session[]
 
+    // Extensions
     pokemon      Pokemon? @relation(fields: [pokemonId], references: [id])
     pokemonId    Int?     @unique
     profileImage String?
+
+    posts Post[]
 }
 
 // Necessary for Next Auth...

@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { createTRPCRouter } from "~/server/api/trpc";
 import { exampleRouter } from "./routers/example";
 import { pokemonRouter } from "./routers/pokemon";
+import { postRouter } from "./routers/post";
 
 /**
  * This is the primary router for your server.
@@ -11,6 +12,7 @@ import { pokemonRouter } from "./routers/pokemon";
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
   pokemon: pokemonRouter,
+  post: postRouter,
 });
 
 // server side tRPC

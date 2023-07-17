@@ -1,14 +1,11 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Link from "next/link";
 import { api } from "~/utils/api";
 
 import { InferGetServerSidePropsType, type GetServerSideProps } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import { caller } from "~/server/api/root";
 
-import Post from "~/components/Post";
 import TextInput from "~/components/TextInput";
+import HomeFeed from "~/components/HomeFeed";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -29,12 +26,18 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default function HomeFeed({
+export default function Home({
   session,
   pokemonName,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const newPost = api.post.createPost.useMutation({
+    onSuccess: (newPost) => {
+      console.log(newPost);
+    },
+  });
+
   const handleSubmit = (text: string) => {
-    console.log(text);
+    const post = newPost.mutate({ content: text });
   };
 
   return (
@@ -48,14 +51,7 @@ export default function HomeFeed({
           <li className="tab-bordered tab">Your Groups</li>
         </ul>
       </nav>
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
+      <HomeFeed />
     </>
   );
 }
