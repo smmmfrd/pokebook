@@ -5,7 +5,8 @@ import { getServerAuthSession } from "~/server/auth";
 import { caller } from "~/server/api/root";
 
 import TextInput from "~/components/TextInput";
-import HomeFeed from "~/components/HomeFeed";
+import InfiniteFeed from "~/components/InfiniteFeed";
+import { useSession } from "next-auth/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -26,24 +27,58 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default function Home({
-  session,
-  pokemonName,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({ pokemonName }: { pokemonName: string }) {
+  const session = useSession();
+  const trpcUtils = api.useContext();
+
   const newPost = api.post.createPost.useMutation({
     onSuccess: (newPost) => {
-      console.log(newPost);
+      // Here we need to add this new post to our infinite feed, so that the user has a fluid experience.
+
+      if (session.status !== "authenticated") return;
+
+      trpcUtils.post.infiniteHomeFeed.setInfiniteData({}, (oldData) => {
+        if (oldData == null || oldData.pages[0] == null) return;
+
+        const newCachePost = {
+          ...newPost,
+          // TODO - likes & the rest go here.
+          // User data is in the post queries so we need to throw that in here.
+          user: {
+            id: session.data.user.id,
+            profileImage: session.data.user.profileImage,
+            pokemon: {
+              name: pokemonName,
+            },
+          },
+        };
+
+        return {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              posts: [newCachePost, ...oldData.pages[0].posts],
+            },
+            ...oldData.pages.slice(1),
+          ],
+        };
+      });
     },
   });
 
-  const handleSubmit = (text: string) => {
-    const post = newPost.mutate({ content: text });
-  };
+  const infiniteQuery = api.post.infiniteHomeFeed.useInfiniteQuery(
+    {},
+    { getNextPageParam: (lastPage) => lastPage.nextCursor } // Here we pass the next cursor from the last time it was queried.
+  );
 
   return (
     <>
       <nav className="w-full px-2">
-        <TextInput pokemonName={pokemonName} handleSubmit={handleSubmit} />
+        <TextInput
+          pokemonName={pokemonName}
+          handleSubmit={(text: string) => newPost.mutate({ content: text })}
+        />
         <ul className="tabs w-full justify-around">
           <li className="tab-bordered tab tab-active">Timeline</li>
           <li className="tab-bordered tab">Following</li>
@@ -51,7 +86,13 @@ export default function Home({
           <li className="tab-bordered tab">Your Groups</li>
         </ul>
       </nav>
-      <HomeFeed />
+      <InfiniteFeed
+        posts={infiniteQuery.data?.pages.flatMap((page) => page.posts)}
+        isError={infiniteQuery.isError}
+        isLoading={infiniteQuery.isLoading}
+        hasMore={infiniteQuery.hasNextPage}
+        fetchNewPosts={infiniteQuery.fetchNextPage}
+      />
     </>
   );
 }
