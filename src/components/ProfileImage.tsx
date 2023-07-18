@@ -5,7 +5,7 @@ import { IconMap } from "~/utils/IconsMap";
 type ProfileImageProps = {
   styleExtensions?: string;
   src: string | null;
-  href: string;
+  href?: string;
 };
 
 export default function ProfileImage({
@@ -13,11 +13,10 @@ export default function ProfileImage({
   styleExtensions = "",
   href,
 }: ProfileImageProps) {
-  return (
-    <Link
-      className={`${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full border-4 border-base-content`}
-      href={href}
-    >
+  const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full border-4 border-base-content`;
+
+  const ImageComponent = () => (
+    <>
       {src == null ? (
         IconMap.profile
       ) : (
@@ -29,6 +28,20 @@ export default function ProfileImage({
           className="absolute -left-1 -top-1 h-24 w-24 max-w-none"
         />
       )}
-    </Link>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link className={mainStyles} href={href}>
+        <ImageComponent />
+      </Link>
+    );
+  }
+
+  return (
+    <div className={mainStyles}>
+      <ImageComponent />
+    </div>
   );
 }
