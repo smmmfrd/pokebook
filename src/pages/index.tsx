@@ -74,16 +74,15 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
 
   return (
     <>
-      <nav className="w-full px-2">
+      <nav className="w-full">
         <TextInput
           pokemonName={pokemonName}
           handleSubmit={(text: string) => newPost.mutate({ content: text })}
         />
-        <ul className="tabs w-full justify-around">
-          <li className="tab-bordered tab tab-active">Timeline</li>
-          <li className="tab-bordered tab">Following</li>
-          <li className="tab-bordered tab">Friends</li>
-          <li className="tab-bordered tab">Your Groups</li>
+        <ul className="tabs w-full justify-between">
+          <li className="tab-bordered tab tab-active flex-grow">Timeline</li>
+          <li className="tab-bordered tab flex-grow">Following</li>
+          <li className="tab-bordered tab flex-grow">Friends</li>
         </ul>
       </nav>
       <InfiniteFeed
