@@ -1,6 +1,6 @@
 import { api } from "~/utils/api";
 import InfiniteFeed from "./InfiniteFeed";
-import PostCard from "./Post";
+import PostCard from "./PostCard";
 
 export default function HomeFeed() {
   // const posts = api.post.getHomeFeed.useQuery();

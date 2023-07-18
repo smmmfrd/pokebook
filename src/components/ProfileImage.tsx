@@ -1,18 +1,22 @@
 import Image from "next/image";
+import Link from "next/link";
 import { IconMap } from "~/utils/IconsMap";
 
 type ProfileImageProps = {
   styleExtensions?: string;
   src: string | null;
+  href: string;
 };
 
 export default function ProfileImage({
   src,
   styleExtensions = "",
+  href,
 }: ProfileImageProps) {
   return (
-    <div
+    <Link
       className={`${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full border-4 border-base-content`}
+      href={href}
     >
       {src == null ? (
         IconMap.profile
@@ -25,6 +29,6 @@ export default function ProfileImage({
           className="absolute -left-1 -top-1 h-24 w-24 max-w-none"
         />
       )}
-    </div>
+    </Link>
   );
 }

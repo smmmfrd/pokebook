@@ -1,5 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
-import PostCard from "./Post";
+import PostCard from "./PostCard";
 
 type Post = {
   id: string;
