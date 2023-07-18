@@ -81,15 +81,44 @@ export default function TextInput({
         )}
       </div>
 
-      {/* DELETE BUTTON */}
-      <button
-        type="button"
-        className={`btn-outline btn ${!open && "hidden"}`}
-        onClick={handleDelete}
+      {/* INPUT BUTTONS */}
+      <div
+        className={`mb-4 flex justify-between p-4 pt-1 ${!open && "hidden"}`}
       >
-        <span className="h-4 w-4">{IconMap.undo}</span>
-        DELETE
-      </button>
+        {/* PUNCTUATION BUTTONS */}
+        <div className="join items-center">
+          <button
+            className="btn-square join-item btn"
+            disabled={inputValue.length === 0}
+            onClick={() => setInputValue((prev) => `${prev}.`)}
+          >
+            .
+          </button>
+          <button
+            className="btn-square join-item btn"
+            disabled={inputValue.length === 0}
+            onClick={() => setInputValue((prev) => `${prev}!`)}
+          >
+            !
+          </button>
+          <button
+            className="btn-square join-item btn"
+            disabled={inputValue.length === 0}
+            onClick={() => setInputValue((prev) => `${prev}?`)}
+          >
+            ?
+          </button>
+        </div>
+        {/* DELETE BUTTON */}
+        <button
+          type="button"
+          className="btn-ghost btn-active btn"
+          onClick={handleDelete}
+        >
+          <span className="h-4 w-4">{IconMap.undo}</span>
+          DELETE
+        </button>
+      </div>
 
       {/* CANCEL AND CLOSE BUTTONS */}
       <div className="flex justify-between">
