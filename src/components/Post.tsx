@@ -1,7 +1,7 @@
 import moment from "moment";
 import ProfileImage from "./ProfileImage";
 
-type PostProps = {
+type PostCardProps = {
   id: string;
   content: string;
   createdAt: Date;
@@ -16,7 +16,12 @@ type PostProps = {
 
 const dateTimeFormatter = (createdAt: Date) => moment(createdAt).fromNow();
 
-export default function Post({ id, content, createdAt, user }: PostProps) {
+export default function PostCard({
+  id,
+  content,
+  createdAt,
+  user,
+}: PostCardProps) {
   return (
     <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
       <header className="flex items-start gap-2">
@@ -32,7 +37,7 @@ export default function Post({ id, content, createdAt, user }: PostProps) {
 }
 
 // More twitter looking post style, doesn't work in this project though...
-function AltStylePost() {
+function AltStylePostCard() {
   return (
     <section className="relative flex w-full flex-col gap-2 border-b py-4 pl-20 pr-8">
       <ProfileImage
