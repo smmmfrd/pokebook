@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 
 const RELATIONAL_STATES_MAP = {
@@ -27,7 +28,13 @@ export default function ProfileButtons({
 
   if (session.status !== "authenticated") return <></>;
 
-  const useFollow = api.profile.toggleFollow.useMutation();
+  const [cacheFollow, setCacheFollow] = useState(isFollowing);
+
+  const useFollow = api.profile.toggleFollow.useMutation({
+    onSuccess: ({ addedFollow }) => {
+      setCacheFollow(addedFollow);
+    },
+  });
 
   function handleFollowClick() {
     void useFollow.mutate({ profileId });
@@ -46,7 +53,7 @@ export default function ProfileButtons({
       </div>
     );
   } else {
-    if (isFollowing) {
+    if (cacheFollow) {
       return (
         <>
           <button
