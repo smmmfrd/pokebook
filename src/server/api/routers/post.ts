@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { inferAsyncReturnType } from "@trpc/server";
 import { z } from "zod";
 import {
@@ -20,28 +21,25 @@ export const postRouter = createTRPCRouter({
         limit,
         ctx,
         cursor,
+        whereClause: undefined,
       });
     }),
-  getHomeFeed: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.post.findMany({
-      select: {
-        id: true,
-        content: true,
-        createdAt: true,
-        user: {
-          select: {
-            id: true,
-            profileImage: true,
-            pokemon: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }),
+  infiniteProfileFeed: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        limit: z.number().optional(),
+        cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
+      })
+    )
+    .query(async ({ input: { userId, limit = 10, cursor }, ctx }) => {
+      return await getInfinitePosts({
+        limit,
+        ctx,
+        cursor,
+        whereClause: { userId },
+      });
+    }),
   createPost: protectedProcedure
     .input(z.object({ content: z.string() }))
     .mutation(async ({ input: { content }, ctx }) => {
@@ -57,10 +55,12 @@ async function getInfinitePosts({
   ctx,
   limit,
   cursor,
+  whereClause,
 }: {
   ctx: inferAsyncReturnType<typeof createTRPCContext>;
   limit: number;
   cursor: { id: string; createdAt: Date } | undefined;
+  whereClause?: Prisma.PostWhereInput;
 }) {
   const currentUserId = ctx.session?.user.id;
 
@@ -68,6 +68,7 @@ async function getInfinitePosts({
     take: limit + 1,
     cursor: cursor ? { createdAt_id: cursor } : undefined,
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    where: whereClause,
     select: {
       id: true,
       content: true,

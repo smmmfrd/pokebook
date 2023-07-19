@@ -1,14 +1,17 @@
 import { type Pokemon } from "@prisma/client";
 import { type GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import InfiniteFeed from "~/components/InfiniteFeed";
 import NavbarIcon from "~/components/NavbarIcon";
 import ProfileImage from "~/components/ProfileImage";
 import { caller } from "~/server/api/root";
 import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/utils/api";
 
 type ProfilePageProps = {
   pokemon: Pokemon;
   flavorText: string;
+  userId: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -23,10 +26,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const id = ctx.query.id as string;
+  const userId = ctx.query.userId as string;
 
   const pokeRes = await caller.pokemon.getPokemon({
-    userId: id,
+    userId,
   });
 
   if (pokeRes == null || pokeRes.pokemon == null) {
@@ -40,11 +43,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return texts[Math.floor(Math.random() * texts.length)];
   };
 
-  return { props: { session, pokemon, flavorText: randomFlavorText() } };
+  return {
+    props: { session, pokemon, flavorText: randomFlavorText(), userId },
+  };
 };
 
-export default function ProfilePage({ pokemon, flavorText }: ProfilePageProps) {
+export default function ProfilePage({
+  pokemon,
+  flavorText,
+  userId,
+}: ProfilePageProps) {
   const router = useRouter();
+
+  const infiniteQuery = api.post.infiniteProfileFeed.useInfiniteQuery(
+    { userId },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
 
   return (
     <>
@@ -72,6 +86,13 @@ export default function ProfilePage({ pokemon, flavorText }: ProfilePageProps) {
           </ul>
         </nav>
       </header>
+      <InfiniteFeed
+        posts={infiniteQuery.data?.pages.flatMap((page) => page.posts)}
+        isError={infiniteQuery.isError}
+        isLoading={infiniteQuery.isLoading}
+        hasMore={infiniteQuery.hasNextPage}
+        fetchNewPosts={infiniteQuery.fetchNextPage}
+      />
     </>
   );
 }
