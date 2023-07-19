@@ -11,12 +11,6 @@ import NavbarIcon from "~/components/NavbarIcon";
 import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
 
-type ProfilePageProps = {
-  pokemon: Pokemon;
-  flavorText: string;
-  profileId: string;
-};
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
@@ -31,15 +25,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const profileId = ctx.query.profileId as string;
 
-  const pokeRes = await caller.pokemon.getPokemon({
-    userId: profileId,
+  const profileData = await caller.profile.getById({
+    profileId,
   });
 
-  if (pokeRes == null || pokeRes.pokemon == null) {
+  if (profileData == null || profileData.pokemon == null) {
     return { props: { session } };
   }
 
-  const { pokemon } = pokeRes;
+  const { pokemon, isFollowing } = profileData;
 
   const randomFlavorText = () => {
     const texts = JSON.parse(pokemon.flavorTexts);
@@ -47,14 +41,28 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 
   return {
-    props: { session, pokemon, flavorText: randomFlavorText(), profileId },
+    props: {
+      session,
+      pokemon,
+      flavorText: randomFlavorText(),
+      profileId,
+      isFollowing,
+    },
   };
+};
+
+type ProfilePageProps = {
+  pokemon: Pokemon;
+  flavorText: string;
+  profileId: string;
+  isFollowing: boolean;
 };
 
 export default function ProfilePage({
   pokemon,
   flavorText,
   profileId,
+  isFollowing,
 }: ProfilePageProps) {
   const router = useRouter();
 
@@ -71,7 +79,7 @@ export default function ProfilePage({
             <NavbarIcon icon="arrowLeft" styleExtensions="w-5 h-5" />
           </button>
           <h1 className="grow text-2xl font-bold capitalize">{pokemon.name}</h1>
-          <ProfileButtons profileId={profileId} />
+          <ProfileButtons profileId={profileId} isFollowing={isFollowing} />
         </nav>
         <div className="flex gap-8 p-4">
           <ProfileImage src={pokemon.profileImage} styleExtensions="shrink-0" />

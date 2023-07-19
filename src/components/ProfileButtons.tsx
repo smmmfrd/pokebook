@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import { api } from "~/utils/api";
 
 const RELATIONAL_STATES_MAP = {
   self: {},
@@ -15,10 +16,22 @@ const RELATIONAL_STATES_MAP = {
   },
 };
 
-export default function ProfileButtons({ profileId }: { profileId: string }) {
+export default function ProfileButtons({
+  profileId,
+  isFollowing,
+}: {
+  profileId: string;
+  isFollowing: boolean;
+}) {
   const session = useSession();
 
   if (session.status !== "authenticated") return <></>;
+
+  const useFollow = api.profile.toggleFollow.useMutation();
+
+  function handleFollowClick() {
+    void useFollow.mutate({ profileId });
+  }
 
   // Viewing your profile
   if (session.data?.user.id === profileId) {
@@ -33,12 +46,25 @@ export default function ProfileButtons({ profileId }: { profileId: string }) {
       </div>
     );
   } else {
-    return (
-      <>
-        <button className="btn-info btn-xs btn">Follow</button>
-        <button className="btn-success btn-xs btn">Friend Req.</button>
-      </>
-    );
+    if (isFollowing) {
+      return (
+        <>
+          <button
+            className="btn-secondary btn-xs btn"
+            onClick={handleFollowClick}
+          >
+            Following
+          </button>
+          <button className="btn-success btn-xs btn">Friend Req.</button>
+        </>
+      );
+    } else {
+      return (
+        <button className="btn-info btn-xs btn" onClick={handleFollowClick}>
+          Follow
+        </button>
+      );
+    }
   }
 
   return <></>;
