@@ -59,16 +59,26 @@ export default function ProfileButtons({
           <button
             className="btn-secondary btn-xs btn"
             onClick={handleFollowClick}
+            disabled={useFollow.isLoading}
           >
-            Following
+            {useFollow.isLoading ? "..." : "Following"}
           </button>
-          <button className="btn-success btn-xs btn">Friend Req.</button>
+          <button
+            className="btn-success btn-xs btn"
+            disabled={useFollow.isLoading}
+          >
+            Friend Req.
+          </button>
         </>
       );
     } else {
       return (
-        <button className="btn-info btn-xs btn" onClick={handleFollowClick}>
-          Follow
+        <button
+          disabled={useFollow.isLoading}
+          onClick={handleFollowClick}
+          className="btn-info btn-xs btn"
+        >
+          {useFollow.isLoading ? "..." : "Follow"}
         </button>
       );
     }
