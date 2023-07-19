@@ -16,17 +16,6 @@ export default function Navbar({
   userId,
   toggleTheme,
 }: NavbarProps) {
-  // TODO: Remove this.
-  const session = useSession();
-  const useDeleteThis = api.example.deleteUser.useMutation();
-
-  function handleSignout() {
-    if (session.data) {
-      useDeleteThis.mutate({ userId: session.data.user.id });
-    }
-    void signOut();
-  }
-
   return (
     <nav className="relative min-h-screen px-2 sm:p-8">
       <ul className="sticky top-6 flex flex-col gap-8">
@@ -67,7 +56,7 @@ export default function Navbar({
         </NavbarLink>
         <button
           className="flex items-center gap-4 text-xl"
-          onClick={handleSignout}
+          onClick={() => void signOut()}
         >
           <NavbarIcon icon="signOut" />
           <NavLinkText>Sign Out</NavLinkText>
