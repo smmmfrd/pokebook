@@ -1,17 +1,20 @@
 import { type Pokemon } from "@prisma/client";
 import { type GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { getServerAuthSession } from "~/server/auth";
+import { caller } from "~/server/api/root";
+
+import { api } from "~/utils/api";
+
 import InfiniteFeed from "~/components/InfiniteFeed";
 import NavbarIcon from "~/components/NavbarIcon";
+import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
-import { caller } from "~/server/api/root";
-import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/utils/api";
 
 type ProfilePageProps = {
   pokemon: Pokemon;
   flavorText: string;
-  userId: string;
+  profileId: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -26,10 +29,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const userId = ctx.query.userId as string;
+  const profileId = ctx.query.profileId as string;
 
   const pokeRes = await caller.pokemon.getPokemon({
-    userId,
+    userId: profileId,
   });
 
   if (pokeRes == null || pokeRes.pokemon == null) {
@@ -44,19 +47,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 
   return {
-    props: { session, pokemon, flavorText: randomFlavorText(), userId },
+    props: { session, pokemon, flavorText: randomFlavorText(), profileId },
   };
 };
 
 export default function ProfilePage({
   pokemon,
   flavorText,
-  userId,
+  profileId,
 }: ProfilePageProps) {
   const router = useRouter();
 
   const infiniteQuery = api.post.infiniteProfileFeed.useInfiniteQuery(
-    { userId },
+    { profileId },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
@@ -68,12 +71,7 @@ export default function ProfilePage({
             <NavbarIcon icon="arrowLeft" styleExtensions="w-5 h-5" />
           </button>
           <h1 className="text-2xl font-bold capitalize">{pokemon.name}</h1>
-          <div className="flex gap-2">
-            <button className="btn-info btn-xs btn">Follow</button>
-            {/* <button className="btn-error btn-xs btn">Un-Follow</button> */}
-            <button className="btn-success btn-xs btn">Friend Req.</button>
-            {/* <button className="btn-error btn-xs btn">Un-Friend</button> */}
-          </div>
+          <ProfileButtons profileId={profileId} />
         </nav>
         <div className="flex gap-8 p-4">
           <ProfileImage src={pokemon.profileImage} styleExtensions="shrink-0" />

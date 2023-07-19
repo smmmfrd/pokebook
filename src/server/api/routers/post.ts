@@ -27,17 +27,17 @@ export const postRouter = createTRPCRouter({
   infiniteProfileFeed: publicProcedure
     .input(
       z.object({
-        userId: z.string(),
+        profileId: z.string(),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
     )
-    .query(async ({ input: { userId, limit = 10, cursor }, ctx }) => {
+    .query(async ({ input: { profileId, limit = 10, cursor }, ctx }) => {
       return await getInfinitePosts({
         limit,
         ctx,
         cursor,
-        whereClause: { userId },
+        whereClause: { userId: profileId },
       });
     }),
   createPost: protectedProcedure
