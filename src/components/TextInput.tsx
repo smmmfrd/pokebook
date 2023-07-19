@@ -39,7 +39,7 @@ export default function TextInput({
 
   return (
     <form
-      className={`mx-auto max-w-sm p-4 ${!open && "cursor-pointer"}`}
+      className={`mx-auto max-w-sm p-4 pb-2 ${!open && "cursor-pointer"}`}
       onMouseDown={() => setOpen(true)}
       onSubmit={(e) => {
         e.preventDefault();
@@ -48,8 +48,8 @@ export default function TextInput({
       {/* INPUT */}
       <div
         onMouseLeave={handleMouseLeave}
-        className={`mb-2 flex scale-y-100 select-none justify-between overflow-hidden border-base-content font-mono text-2xl lowercase transition-all duration-100 ${
-          open ? "max-h-36 border-2" : "max-h-0 border-0"
+        className={`flex scale-y-100 select-none justify-between overflow-hidden border-base-content font-mono text-2xl lowercase transition-all duration-100 ${
+          open ? "mb-2 max-h-36 border-2" : "mb-0 max-h-0 border-0"
         }`}
       >
         {pokemonName.split("").map((char, index) => (

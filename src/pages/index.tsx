@@ -74,7 +74,7 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
 
   return (
     <>
-      <nav className="w-full">
+      <nav className="sticky top-0 z-20 w-full border-b bg-base-100">
         <TextInput
           pokemonName={pokemonName}
           handleSubmit={(text: string) => newPost.mutate({ content: text })}
