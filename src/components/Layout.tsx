@@ -12,10 +12,10 @@ export default function Layout({ children }: LayoutProps) {
 
   if (!sessionData) return children;
 
-  const [theme, setTheme] = useState("winter");
+  const [theme, setTheme] = useState("cmyk");
 
   const toggleTheme = () => {
-    setTheme(theme === "winter" ? "night" : "winter");
+    setTheme(theme === "cmyk" ? "night" : "cmyk");
   };
 
   useEffect(() => {
