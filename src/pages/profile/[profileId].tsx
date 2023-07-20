@@ -10,6 +10,7 @@ import InfiniteFeed from "~/components/InfiniteFeed";
 import NavbarIcon from "~/components/NavbarIcon";
 import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
+import Head from "next/head";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -68,15 +69,25 @@ export default function ProfilePage({
 
   const infiniteQuery = api.post.infiniteProfileFeed.useInfiniteQuery(
     { profileId },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
   );
 
   return (
     <>
+      <Head>
+        <title>
+          {`${pokemon.name[0]?.toUpperCase()}${pokemon.name.slice(1)}`}'s
+          Profile | Pokebook
+        </title>
+      </Head>
       <header className="sticky top-0 z-20 bg-base-100">
-        <nav className="flex items-center justify-between gap-2 border-b p-4">
+        <nav className="flex items-center justify-between gap-3 border-b p-4">
           <button onClick={() => router.back()} title="Go Back">
-            <NavbarIcon icon="arrowLeft" styleExtensions={"w-6 h-6"} />
+            <NavbarIcon icon="arrowLeft" styleExtensions={"w-5 h-5"} />
           </button>
           <h1 className="grow text-2xl font-bold capitalize">{pokemon.name}</h1>
           <ProfileButtons profileId={profileId} isFollowing={isFollowing} />

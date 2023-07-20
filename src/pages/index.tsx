@@ -8,6 +8,7 @@ import TextInput from "~/components/TextInput";
 import InfiniteFeed from "~/components/InfiniteFeed";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import Head from "next/head";
 
 type FeedEnum = "none" | "following";
 
@@ -76,11 +77,18 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
 
   const infiniteQuery = api.post.infiniteHomeFeed.useInfiniteQuery(
     { where: feed },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor } // Here we pass the next cursor from the last time it was queried.
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor, // Here we pass the next cursor from the last time it was queried.
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
   );
 
   return (
     <>
+      <Head>
+        <title>Home | Pokebook</title>
+      </Head>
       <nav className="sticky top-0 z-20 w-full border-b bg-base-100">
         <TextInput
           pokemonName={pokemonName}
