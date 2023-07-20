@@ -44,10 +44,10 @@ export default function ProfileButtons({
   if (session.data?.user.id === profileId) {
     return (
       <div
-        className="tooltip-info tooltip tooltip-left"
+        className="tooltip-info tooltip tooltip-right"
         data-tip="You can't follow or friend yourself!"
       >
-        <button disabled className="btn-info btn-xs btn">
+        <button disabled className="btn-info btn-sm btn">
           Follow
         </button>
       </div>
@@ -57,17 +57,17 @@ export default function ProfileButtons({
       return (
         <>
           <button
-            className="btn-secondary btn-xs btn"
+            className="btn-secondary btn-sm btn"
             onClick={handleFollowClick}
             disabled={useFollow.isLoading}
           >
             {useFollow.isLoading ? "..." : "Following"}
           </button>
           <button
-            className="btn-success btn-xs btn"
+            className="btn-success btn-sm btn"
             disabled={useFollow.isLoading}
           >
-            Friend Req.
+            Send Friend Req.
           </button>
         </>
       );
@@ -76,7 +76,7 @@ export default function ProfileButtons({
         <button
           disabled={useFollow.isLoading}
           onClick={handleFollowClick}
-          className="btn-info btn-xs btn"
+          className="btn-info btn-sm btn"
         >
           {useFollow.isLoading ? "..." : "Follow"}
         </button>
@@ -88,10 +88,10 @@ export default function ProfileButtons({
 
   return (
     <div className="flex gap-2">
-      {/* <button className="btn-info btn-xs btn">Follow</button> */}
-      {/* <button className="btn-error btn-xs btn">Un-Follow</button> */}
-      {/* <button className="btn-success btn-xs btn">Friend Req.</button> */}
-      {/* <button className="btn-error btn-xs btn">Un-Friend</button> */}
+      {/* <button className="btn-info btn-sm btn">Follow</button> */}
+      {/* <button className="btn-error btn-sm btn">Un-Follow</button> */}
+      {/* <button className="btn-success btn-sm btn">Friend Req.</button> */}
+      {/* <button className="btn-error btn-sm btn">Un-Friend</button> */}
     </div>
   );
 }

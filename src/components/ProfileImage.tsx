@@ -14,7 +14,7 @@ export default function ProfileImage({
   href,
 }: ProfileImageProps) {
   // const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full border-4 border-base-content`;
-  const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full bg-base-300`;
+  const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full ring ring-primary bg-base-300/[0.1]`;
 
   const ImageComponent = () => (
     <>

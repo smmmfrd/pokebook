@@ -90,10 +90,15 @@ export default function ProfilePage({
             <NavbarIcon icon="arrowLeft" styleExtensions={"w-5 h-5"} />
           </button>
           <h1 className="grow text-2xl font-bold capitalize">{pokemon.name}</h1>
-          <ProfileButtons profileId={profileId} isFollowing={isFollowing} />
         </nav>
-        <div className="flex gap-8 p-4">
-          <ProfileImage src={pokemon.profileImage} styleExtensions="shrink-0" />
+        <div className="flex flex-wrap justify-between gap-8 p-8 pb-6">
+          <div className="flex flex-col justify-between">
+            <ProfileButtons profileId={profileId} isFollowing={isFollowing} />
+          </div>
+          <ProfileImage
+            src={pokemon.profileImage}
+            styleExtensions="shrink-0 shadow-md"
+          />
           <p className="shrink">
             <span className="font-bold">INFO: </span>
             {flavorText}
