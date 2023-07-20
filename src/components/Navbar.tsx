@@ -20,11 +20,11 @@ export default function Navbar({
     <nav className="relative min-h-screen px-2 sm:p-8">
       <ul className="sticky top-6 flex flex-col gap-8">
         <NavbarLink href="/">
-          <NavbarIcon icon="company" />
+          <NavbarIcon styleExtensions={"w-8 h-8"} icon="company" />
           <NavLinkText>Pokébook</NavLinkText>
         </NavbarLink>
         <NavbarLink href="/">
-          <NavbarIcon icon="home" />
+          <NavbarIcon styleExtensions={"w-8 h-8"} icon="home" />
           <NavLinkText>Home</NavLinkText>
         </NavbarLink>
         <NavbarLink href={`/profile/${userId}`}>
@@ -38,27 +38,27 @@ export default function Navbar({
               className="h-8 w-8 overflow-hidden rounded-full border-2 border-base-content bg-[image:var(--image-url)] bg-center"
             ></div>
           ) : (
-            <NavbarIcon icon="profile" />
+            <NavbarIcon styleExtensions={"w-8 h-8"} icon="profile" />
           )}
           <NavLinkText>Profile</NavLinkText>
         </NavbarLink>
         <NavbarLink href="/inbox">
-          <NavbarIcon icon="inbox" />
+          <NavbarIcon styleExtensions={"w-8 h-8"} icon="inbox" />
           <NavLinkText>Requests</NavLinkText>
         </NavbarLink>
         <NavbarLink href="/about">
-          <NavbarIcon icon="about" />
+          <NavbarIcon styleExtensions={"w-8 h-8"} icon="about" />
           <NavLinkText>About</NavLinkText>
         </NavbarLink>
         <NavbarLink href="/pokedex">
-          <NavbarIcon icon="pokedex" />
+          <NavbarIcon styleExtensions={"w-8 h-8"} icon="pokedex" />
           <NavLinkText>Pokedex</NavLinkText>
         </NavbarLink>
         <button
           className="flex items-center gap-4 text-xl"
           onClick={() => void signOut()}
         >
-          <NavbarIcon icon="signOut" />
+          <NavbarIcon styleExtensions={"w-8 h-8"} icon="signOut" />
           <NavLinkText>Sign Out</NavLinkText>
         </button>
 
@@ -68,10 +68,10 @@ export default function Navbar({
           <input type="checkbox" onClick={toggleTheme} />
 
           {/* sun icon */}
-          <NavbarIcon icon="sun" styleExtensions="swap-on" />
+          <NavbarIcon styleExtensions={"w-8 h-8 swap-on"} icon="sun" />
 
           {/* moon icon */}
-          <NavbarIcon icon="moon" styleExtensions="swap-off" />
+          <NavbarIcon styleExtensions={"w-8 h-8 swap-off"} icon="moon" />
         </label>
       </ul>
     </nav>

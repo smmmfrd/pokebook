@@ -76,7 +76,7 @@ export default function ProfilePage({
       <header className="sticky top-0 z-20 bg-base-100">
         <nav className="flex items-center justify-between gap-2 border-b p-4">
           <button onClick={() => router.back()} title="Go Back">
-            <NavbarIcon icon="arrowLeft" styleExtensions="w-5 h-5" />
+            <NavbarIcon icon="arrowLeft" styleExtensions={"w-6 h-6"} />
           </button>
           <h1 className="grow text-2xl font-bold capitalize">{pokemon.name}</h1>
           <ProfileButtons profileId={profileId} isFollowing={isFollowing} />

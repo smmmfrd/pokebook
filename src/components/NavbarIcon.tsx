@@ -10,8 +10,6 @@ export default function NavbarIcon({
   styleExtensions = "",
 }: NavbarIconProps) {
   return (
-    <div className={`${styleExtensions} h-8 w-8 fill-current`}>
-      {IconMap[icon]}
-    </div>
+    <div className={`fill-current ${styleExtensions}`}>{IconMap[icon]}</div>
   );
 }
