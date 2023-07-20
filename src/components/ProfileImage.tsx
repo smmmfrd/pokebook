@@ -14,7 +14,7 @@ export default function ProfileImage({
   href,
 }: ProfileImageProps) {
   // const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full border-4 border-base-content`;
-  const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full bg-base-300`;
+  const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full bg-base-300/[0.2] border`;
 
   const ImageComponent = () => (
     <>
@@ -27,7 +27,7 @@ export default function ProfileImage({
           height={96}
           width={96}
           // className="absolute -left-1 -top-1 h-24 w-24 max-w-none"
-          className="absolute h-24 w-24 max-w-none"
+          className="absolute -left-0.5 -top-0.5 h-24 w-24 max-w-none"
         />
       )}
     </>
