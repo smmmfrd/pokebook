@@ -9,19 +9,31 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  infiniteHomeFeed: publicProcedure
+  infiniteHomeFeed: protectedProcedure
     .input(
       z.object({
+        where: z.enum(["none", "following"]),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
     )
-    .query(async ({ input: { limit = 10, cursor }, ctx }) => {
+    .query(async ({ input: { where, limit = 10, cursor }, ctx }) => {
       return await getInfinitePosts({
         limit,
         ctx,
         cursor,
-        whereClause: undefined,
+        whereClause:
+          where === "none"
+            ? undefined
+            : where === "following"
+            ? {
+                user: {
+                  followers: {
+                    some: { id: ctx.session?.user.id },
+                  },
+                },
+              }
+            : undefined,
       });
     }),
   infiniteProfileFeed: publicProcedure

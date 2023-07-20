@@ -7,6 +7,9 @@ import { caller } from "~/server/api/root";
 import TextInput from "~/components/TextInput";
 import InfiniteFeed from "~/components/InfiniteFeed";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+
+type FeedEnum = "none" | "following";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -30,6 +33,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 export default function Home({ pokemonName }: { pokemonName: string }) {
   const session = useSession();
   const trpcUtils = api.useContext();
+  const [feed, setFeed] = useState<FeedEnum>("none");
 
   const newPost = api.post.createPost.useMutation({
     onSuccess: (newPost) => {
@@ -37,38 +41,41 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
 
       if (session.status !== "authenticated") return;
 
-      trpcUtils.post.infiniteHomeFeed.setInfiniteData({}, (oldData) => {
-        if (oldData == null || oldData.pages[0] == null) return;
+      trpcUtils.post.infiniteHomeFeed.setInfiniteData(
+        { where: feed },
+        (oldData) => {
+          if (oldData == null || oldData.pages[0] == null) return;
 
-        const newCachePost = {
-          ...newPost,
-          // TODO - likes & the rest go here.
-          // User data is in the post queries so we need to throw that in here.
-          user: {
-            id: session.data.user.id,
-            profileImage: session.data.user.profileImage,
-            pokemon: {
-              name: pokemonName,
+          const newCachePost = {
+            ...newPost,
+            // TODO - likes & the rest go here.
+            // User data is in the post queries so we need to throw that in here.
+            user: {
+              id: session.data.user.id,
+              profileImage: session.data.user.profileImage,
+              pokemon: {
+                name: pokemonName,
+              },
             },
-          },
-        };
+          };
 
-        return {
-          ...oldData,
-          pages: [
-            {
-              ...oldData.pages[0],
-              posts: [newCachePost, ...oldData.pages[0].posts],
-            },
-            ...oldData.pages.slice(1),
-          ],
-        };
-      });
+          return {
+            ...oldData,
+            pages: [
+              {
+                ...oldData.pages[0],
+                posts: [newCachePost, ...oldData.pages[0].posts],
+              },
+              ...oldData.pages.slice(1),
+            ],
+          };
+        }
+      );
     },
   });
 
   const infiniteQuery = api.post.infiniteHomeFeed.useInfiniteQuery(
-    {},
+    { where: feed },
     { getNextPageParam: (lastPage) => lastPage.nextCursor } // Here we pass the next cursor from the last time it was queried.
   );
 
@@ -80,9 +87,25 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
           handleSubmit={(text: string) => newPost.mutate({ content: text })}
         />
         <ul className="tabs w-full justify-between">
-          <li className="tab-bordered tab tab-active flex-grow">Timeline</li>
-          <li className="tab-bordered tab flex-grow">Following</li>
-          <li className="tab-bordered tab flex-grow">Friends</li>
+          <li
+            className={`tab-bordered tab ${
+              feed === "none" && "tab-active"
+            } flex-grow`}
+            onClick={() => setFeed("none")}
+          >
+            Timeline
+          </li>
+          <li
+            className={`tab-bordered tab ${
+              feed === "following" && "tab-active"
+            } flex-grow`}
+            onClick={() => setFeed("following")}
+          >
+            Following
+          </li>
+          <li className={`tab-bordered tab ${false && "tab-active"} flex-grow`}>
+            Friends
+          </li>
         </ul>
       </nav>
       <InfiniteFeed
