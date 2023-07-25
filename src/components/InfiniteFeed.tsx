@@ -12,6 +12,8 @@ type Post = {
       name: string;
     } | null;
   };
+  likeCount: number;
+  likedByMe: boolean;
 };
 
 type InfiniteFeedProps = {

@@ -14,6 +14,8 @@ type PostCardProps = {
       name: string;
     } | null;
   };
+  likeCount: number;
+  likedByMe: boolean;
 };
 
 const dateTimeFormatter = (createdAt: Date) => moment(createdAt).fromNow();
@@ -23,6 +25,8 @@ export default function PostCard({
   content,
   createdAt,
   user,
+  likeCount,
+  likedByMe,
 }: PostCardProps) {
   return (
     <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
@@ -49,7 +53,7 @@ export default function PostCard({
         </button>
         <button className="btn-ghost btn-sm btn">
           <NavbarIcon icon="heart" styleExtensions="w-6 h-6" />
-          1000
+          {likeCount}
         </button>
       </footer>
     </section>

@@ -61,6 +61,23 @@ export const postRouter = createTRPCRouter({
 
       return post;
     }),
+  toggleLike: protectedProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ input: { postId }, ctx }) => {
+      const data = { postId, userId: ctx.session.user.id };
+
+      const existingLike = await ctx.prisma.like.findUnique({
+        where: { userId_postId: data },
+      });
+
+      if (existingLike == null) {
+        await ctx.prisma.like.create({ data });
+        return { addedLike: true };
+      } else {
+        await ctx.prisma.like.delete({ where: { userId_postId: data } });
+        return { addedLike: false };
+      }
+    }),
 });
 
 async function getInfinitePosts({
@@ -85,6 +102,9 @@ async function getInfinitePosts({
       id: true,
       content: true,
       createdAt: true,
+      _count: { select: { likes: true } },
+      likes:
+        currentUserId == null ? false : { where: { userId: currentUserId } },
       user: {
         select: {
           id: true,
@@ -110,7 +130,14 @@ async function getInfinitePosts({
   }
 
   return {
-    posts: data,
+    posts: data.map((post) => ({
+      id: post.id,
+      content: post.content,
+      createdAt: post.createdAt,
+      user: post.user,
+      likeCount: post._count.likes,
+      likedByMe: post.likes.length > 0,
+    })),
     nextCursor,
   };
 }
