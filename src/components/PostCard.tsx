@@ -52,7 +52,15 @@ export default function PostCard({
           <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />0
         </button>
         <button className="btn-ghost btn-sm btn">
-          <NavbarIcon icon="heart" styleExtensions="w-6 h-6" />
+          {!likedByMe ? (
+            <NavbarIcon
+              icon="heartFilled"
+              styleExtensions="w-6 h-6 fill-secondary"
+            />
+          ) : (
+            <NavbarIcon icon="heart" styleExtensions="w-6 h-6" />
+          )}
+
           {likeCount}
         </button>
       </footer>

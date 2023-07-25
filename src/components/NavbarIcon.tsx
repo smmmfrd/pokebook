@@ -9,7 +9,5 @@ export default function NavbarIcon({
   icon,
   styleExtensions = "",
 }: NavbarIconProps) {
-  return (
-    <div className={`fill-current ${styleExtensions}`}>{IconMap[icon]}</div>
-  );
+  return <div className={`${styleExtensions}`}>{IconMap[icon]}</div>;
 }
