@@ -1,5 +1,6 @@
 import moment from "moment";
 import Link from "next/link";
+import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
 
@@ -28,6 +29,58 @@ export default function PostCard({
   likeCount,
   likedByMe,
 }: PostCardProps) {
+  const trpcUtils = api.useContext();
+
+  const toggleLike = api.post.toggleLike.useMutation({
+    onSuccess: ({ addedLike }) => {
+      const updateData: Parameters<
+        typeof trpcUtils.post.infiniteHomeFeed.setInfiniteData
+      >[1] = (oldData) => {
+        if (oldData == null) return;
+
+        const countModifier = addedLike ? 1 : -1;
+
+        // Copy all the stuff except for the one post the user liked, increase or decrease it's like count if it was liked or not, and toggle the likedByMe param
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) => {
+            return {
+              ...page,
+              posts: page.posts.map((post) => {
+                if (post.id === id) {
+                  return {
+                    ...post,
+                    likeCount: post.likeCount + countModifier,
+                    likedByMe: addedLike,
+                  };
+                }
+
+                return post;
+              }),
+            };
+          }),
+        };
+      };
+
+      trpcUtils.post.infiniteHomeFeed.setInfiniteData(
+        { where: "none" },
+        updateData
+      );
+      trpcUtils.post.infiniteHomeFeed.setInfiniteData(
+        { where: "following" },
+        updateData
+      );
+      trpcUtils.post.infiniteProfileFeed.setInfiniteData(
+        { profileId: user.id },
+        updateData
+      );
+    },
+  });
+
+  function handleLike() {
+    toggleLike.mutate({ postId: id });
+  }
+
   return (
     <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
       <header className="flex items-start gap-6">
@@ -51,8 +104,9 @@ export default function PostCard({
         <button className="btn-ghost btn-sm btn">
           <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />0
         </button>
-        <button className="btn-ghost btn-sm btn">
-          {!likedByMe ? (
+        {/* LIKE BUTTON */}
+        <button className="btn-ghost btn-sm btn" onClick={handleLike}>
+          {likedByMe ? (
             <NavbarIcon
               icon="heartFilled"
               styleExtensions="w-6 h-6 fill-secondary"
