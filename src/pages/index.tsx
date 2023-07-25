@@ -49,7 +49,9 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
 
           const newCachePost = {
             ...newPost,
-            // TODO - likes & the rest go here.
+            // TODO - the rest goes here.
+            likeCount: 0,
+            likedByMe: false,
             // User data is in the post queries so we need to throw that in here.
             user: {
               id: session.data.user.id,
