@@ -31,7 +31,7 @@ export default function InfiniteFeed({
   hasMore,
   fetchNewPosts,
 }: InfiniteFeedProps) {
-  if (isLoading) return <p>loading...</p>;
+  if (isLoading) return <Loading />;
   if (isError) return <p>error</p>;
 
   if (posts == null || posts.length === 0) {
@@ -43,11 +43,19 @@ export default function InfiniteFeed({
       next={fetchNewPosts}
       hasMore={hasMore || false}
       dataLength={posts.length}
-      loader={<p>loading...</p>}
+      loader={<Loading />}
     >
       {posts.map((post) => (
         <PostCard {...post} />
       ))}
     </InfiniteScroll>
+  );
+}
+
+function Loading() {
+  return (
+    <div className="w-full text-center">
+      <div className="loading loading-infinity loading-lg"></div>
+    </div>
   );
 }

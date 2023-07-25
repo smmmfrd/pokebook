@@ -78,6 +78,7 @@ export default function PostCard({
   });
 
   function handleLike() {
+    if (toggleLike.isLoading) return;
     toggleLike.mutate({ postId: id });
   }
 
@@ -106,7 +107,13 @@ export default function PostCard({
         </button>
         {/* LIKE BUTTON */}
         <button className="btn-ghost btn-sm btn" onClick={handleLike}>
-          {likedByMe ? (
+          {toggleLike.isLoading ? (
+            <div
+              className={`loading loading-spinner ${
+                !likedByMe && "text-secondary"
+              }`}
+            ></div>
+          ) : likedByMe ? (
             <NavbarIcon
               icon="heartFilled"
               styleExtensions="w-6 h-6 fill-secondary"
