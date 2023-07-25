@@ -27,7 +27,7 @@ export default function ProfileImage({
           height={96}
           width={96}
           // className="absolute -left-1 -top-1 h-24 w-24 max-w-none"
-          className="absolute -left-0.5 -top-0.5 h-24 w-24 max-w-none"
+          className="absolute h-24 w-24 max-w-none"
         />
       )}
     </>
