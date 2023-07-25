@@ -25,8 +25,21 @@ model Post {
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String
 
+    likes Like[]
+
     @@unique([createdAt, id])
     @@index([userId])
+}
+
+model Like {
+    userId String
+    postId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@id([userId, postId])
+    @@index([userId])
+    @@index([postId])
 }
 
 model User {
@@ -45,6 +58,8 @@ model User {
     profileImage String?
 
     posts Post[]
+
+    likes Like[]
 
     followers User[] @relation("Followers")
     follows   User[] @relation("Followers")
