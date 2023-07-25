@@ -1,5 +1,6 @@
 import moment from "moment";
 import Link from "next/link";
+import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
 
 type PostCardProps = {
@@ -25,7 +26,7 @@ export default function PostCard({
 }: PostCardProps) {
   return (
     <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
-      <header className="flex items-start gap-2">
+      <header className="flex items-start gap-6">
         <ProfileImage
           styleExtensions="relative"
           src={user.profileImage}
@@ -42,6 +43,15 @@ export default function PostCard({
         </div>
       </header>
       <p>{content}</p>
+      <footer className="flex gap-2">
+        <button className="btn-ghost btn-sm btn">
+          <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />0
+        </button>
+        <button className="btn-ghost btn-sm btn">
+          <NavbarIcon icon="heart" styleExtensions="w-6 h-6" />
+          1000
+        </button>
+      </footer>
     </section>
   );
 }
