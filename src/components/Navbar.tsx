@@ -17,8 +17,8 @@ export default function Navbar({
   toggleTheme,
 }: NavbarProps) {
   return (
-    <nav className="relative min-h-screen px-2 sm:p-8">
-      <ul className="sticky top-6 flex flex-col gap-8">
+    <nav className="relative min-h-screen">
+      <ul className="sticky top-0 flex h-full max-h-screen flex-col gap-8 p-2 sm:p-8">
         <NavbarLink href="/">
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="company" />
           <NavLinkText>Pokébook</NavLinkText>
@@ -63,7 +63,7 @@ export default function Navbar({
         </button>
 
         {/* THEME TOGGLE */}
-        <label className="swap-rotate swap">
+        <label className="swap swap-rotate mt-auto">
           {/* this hidden checkbox controls the state */}
           <input type="checkbox" onClick={toggleTheme} />
 
