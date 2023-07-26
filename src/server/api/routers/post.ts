@@ -9,6 +9,47 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
+  getById: publicProcedure
+    .input(z.object({ postId: z.string() }))
+    .query(async ({ input: { postId }, ctx }) => {
+      const currentUserId = ctx.session?.user.id;
+
+      const post = await ctx.prisma.post.findFirst({
+        where: { id: postId },
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          _count: { select: { likes: true } },
+          likes:
+            currentUserId == null
+              ? false
+              : { where: { userId: currentUserId } },
+          user: {
+            select: {
+              id: true,
+              profileImage: true,
+              pokemon: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (post == null) return {};
+
+      return {
+        id: post.id,
+        content: post.content,
+        createdAt: post.createdAt.toISOString(),
+        user: post.user,
+        likeCount: post._count.likes,
+        likedByMe: post.likes == null ? false : post.likes.length > 0,
+      };
+    }),
   infiniteHomeFeed: protectedProcedure
     .input(
       z.object({

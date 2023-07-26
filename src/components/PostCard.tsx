@@ -4,10 +4,10 @@ import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
 
-type PostCardProps = {
+export type PostCardProps = {
   id: string;
   content: string;
-  createdAt: Date;
+  createdAt: Date | string;
   user: {
     id: string;
     profileImage: string | null;
@@ -19,7 +19,8 @@ type PostCardProps = {
   likedByMe: boolean;
 };
 
-const dateTimeFormatter = (createdAt: Date) => moment(createdAt).fromNow();
+const dateTimeFormatter = (createdAt: Date | string) =>
+  moment(createdAt).fromNow();
 
 export default function PostCard({
   id,
@@ -97,14 +98,16 @@ export default function PostCard({
           >
             {user?.pokemon?.name}
           </Link>
+          {/* DATE */}
           <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>
         </div>
       </header>
       <p>{content}</p>
       <footer className="flex gap-2">
-        <button className="btn-ghost btn-sm btn">
+        {/* Comment Button */}
+        <Link className="btn-ghost btn-sm btn" href={`/post/${id}`}>
           <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />0
-        </button>
+        </Link>
         {/* LIKE BUTTON */}
         <button className="btn-ghost btn-sm btn" onClick={handleLike}>
           {toggleLike.isLoading ? (
