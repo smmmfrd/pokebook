@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
-import PostCard, { PostCardProps } from "~/components/PostCard";
+import Head from "next/head";
+import PostCard from "~/components/PostCard";
 import { caller } from "~/server/api/root";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
@@ -18,22 +19,33 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const postId = ctx.query.postId as string;
 
+  const data = await caller.post.getPokemonByPost({ postId });
+
   return {
     props: {
       session,
       postId,
+      pokemonName: data?.user.pokemon?.name ?? "",
     },
   };
 };
 
 type PostPageProps = {
   postId: string;
+  pokemonName: string;
 };
 
-export default function PostPage({ postId }: PostPageProps) {
+export default function PostPage({ postId, pokemonName }: PostPageProps) {
   const post = api.post.getById.useQuery({ postId });
 
   return (
-    <>{post.data && post.data.content != null && <PostCard {...post.data} />}</>
+    <>
+      <Head>
+        <title>
+          {`${pokemonName[0]?.toUpperCase()}${pokemonName.slice(1)}`}'s Post
+        </title>
+      </Head>
+      {post.data && post.data.content != null && <PostCard {...post.data} />}
+    </>
   );
 }

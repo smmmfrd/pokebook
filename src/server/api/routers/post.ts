@@ -12,7 +12,7 @@ export const postRouter = createTRPCRouter({
   getById: protectedProcedure
     .input(z.object({ postId: z.string() }))
     .query(async ({ input: { postId }, ctx }) => {
-      const currentUserId = ctx.session?.user.id;
+      const currentUserId = ctx.session.user.id;
 
       const post = await ctx.prisma.post.findFirst({
         where: { id: postId },
@@ -46,6 +46,24 @@ export const postRouter = createTRPCRouter({
         likeCount: post._count.likes,
         likedByMe: post.likes.length > 0,
       };
+    }),
+  getPokemonByPost: publicProcedure
+    .input(z.object({ postId: z.string() }))
+    .query(async ({ input: { postId }, ctx }) => {
+      return await ctx.prisma.post.findFirst({
+        where: { id: postId },
+        select: {
+          user: {
+            select: {
+              pokemon: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
     }),
   infiniteHomeFeed: protectedProcedure
     .input(
