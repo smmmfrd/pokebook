@@ -9,7 +9,7 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(z.object({ postId: z.string() }))
     .query(async ({ input: { postId }, ctx }) => {
       const currentUserId = ctx.session?.user.id;
@@ -21,10 +21,7 @@ export const postRouter = createTRPCRouter({
           content: true,
           createdAt: true,
           _count: { select: { likes: true } },
-          likes:
-            currentUserId == null
-              ? false
-              : { where: { userId: currentUserId } },
+          likes: { where: { userId: currentUserId } },
           user: {
             select: {
               id: true,
@@ -47,7 +44,7 @@ export const postRouter = createTRPCRouter({
         createdAt: post.createdAt.toISOString(),
         user: post.user,
         likeCount: post._count.likes,
-        likedByMe: post.likes == null ? false : post.likes.length > 0,
+        likedByMe: post.likes.length > 0,
       };
     }),
   infiniteHomeFeed: protectedProcedure

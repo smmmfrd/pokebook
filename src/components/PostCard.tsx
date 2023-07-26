@@ -1,4 +1,5 @@
 import moment from "moment";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
@@ -34,12 +35,12 @@ export default function PostCard({
 
   const toggleLike = api.post.toggleLike.useMutation({
     onSuccess: ({ addedLike }) => {
+      const countModifier = addedLike ? 1 : -1;
+
       const updateData: Parameters<
         typeof trpcUtils.post.infiniteHomeFeed.setInfiniteData
       >[1] = (oldData) => {
         if (oldData == null) return;
-
-        const countModifier = addedLike ? 1 : -1;
 
         // Copy all the stuff except for the one post the user liked, increase or decrease it's like count if it was liked or not, and toggle the likedByMe param
         return {
@@ -75,6 +76,15 @@ export default function PostCard({
         { profileId: user.id },
         updateData
       );
+
+      trpcUtils.post.getById.setData({ postId: id }, (oldData) => {
+        if (oldData?.content == null) return {};
+        return {
+          ...oldData,
+          likeCount: oldData.likeCount + countModifier,
+          likedByMe: addedLike,
+        };
+      });
     },
   });
 

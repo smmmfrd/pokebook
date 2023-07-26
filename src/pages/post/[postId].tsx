@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import PostCard, { PostCardProps } from "~/components/PostCard";
 import { caller } from "~/server/api/root";
 import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/utils/api";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -17,20 +18,22 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const postId = ctx.query.postId as string;
 
-  const post = await caller.post.getById({ postId });
-
   return {
     props: {
       session,
-      post,
+      postId,
     },
   };
 };
 
 type PostPageProps = {
-  post: PostCardProps;
+  postId: string;
 };
 
-export default function PostPage({ post }: PostPageProps) {
-  return <PostCard {...post} />;
+export default function PostPage({ postId }: PostPageProps) {
+  const post = api.post.getById.useQuery({ postId });
+
+  return (
+    <>{post.data && post.data.content != null && <PostCard {...post.data} />}</>
+  );
 }
