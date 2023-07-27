@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session) {
     return {
       redirect: {
-        destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
+        destination: `/login?returnURL=${encodeURIComponent("")}`,
         permanent: false,
       },
     };

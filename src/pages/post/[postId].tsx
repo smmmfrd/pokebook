@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session || data == null || data.user.pokemon == null) {
     return {
       redirect: {
-        destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
+        destination: `/login?returnURL=${encodeURIComponent("")}`,
         permanent: false,
       },
     };
