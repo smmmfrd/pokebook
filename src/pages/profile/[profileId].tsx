@@ -67,7 +67,7 @@ export default function ProfilePage({
 }: ProfilePageProps) {
   const router = useRouter();
 
-  const infiniteQuery = api.post.infiniteProfileFeed.useInfiniteQuery(
+  const infiniteQuery = api.infinite.infiniteProfileFeed.useInfiniteQuery(
     { profileId },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

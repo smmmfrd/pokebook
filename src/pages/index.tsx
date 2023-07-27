@@ -40,7 +40,7 @@ export default function Home() {
 
       if (session.status !== "authenticated") return;
 
-      trpcUtils.post.infiniteHomeFeed.setInfiniteData(
+      trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
         { where: feed },
         (oldData) => {
           if (oldData == null || oldData.pages[0] == null) return;
@@ -75,7 +75,7 @@ export default function Home() {
     },
   });
 
-  const infiniteQuery = api.post.infiniteHomeFeed.useInfiniteQuery(
+  const infiniteQuery = api.infinite.infiniteHomeFeed.useInfiniteQuery(
     { where: feed },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor, // Here we pass the next cursor from the last time it was queried.
