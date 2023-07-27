@@ -51,14 +51,32 @@ export const authOptions: NextAuthOptions = {
         },
       });
 
+      if (userData == null) return { ...session };
+
+      if (userData.pokemon == null) {
+        const { randPokemon: newPokemon } =
+          await caller.pokemon.giveUserRandomPokemon({ userId: user.id });
+
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: user.id,
+            profileImage: newPokemon?.profileImage,
+            pokemonId: newPokemon?.id,
+            pokemonName: newPokemon?.name,
+          },
+        };
+      }
+
       return {
         ...session,
         user: {
           ...session.user,
           id: user.id,
-          profileImage: userData?.profileImage,
-          pokemonId: userData?.pokemonId,
-          pokemonName: userData?.pokemon?.name,
+          profileImage: userData.profileImage,
+          pokemonId: userData.pokemonId,
+          pokemonName: userData.pokemon?.name,
         },
       };
     },
