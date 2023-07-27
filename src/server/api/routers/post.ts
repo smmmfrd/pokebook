@@ -26,6 +26,7 @@ export const postRouter = createTRPCRouter({
               createdAt: true,
               user: {
                 select: {
+                  id: true,
                   profileImage: true,
                   pokemon: {
                     select: {

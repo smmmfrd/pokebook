@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import PostCard, { dateTimeFormatter } from "~/components/PostCard";
 import TextInput from "~/components/TextInput";
 import ProfileImage from "~/components/ProfileImage";
+import Link from "next/link";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -106,6 +107,7 @@ type CommentProps = {
     content: string;
     createdAt: Date;
     user: {
+      id: string;
       profileImage: string | null;
       pokemon: {
         name: string;
@@ -125,13 +127,19 @@ function Comment({ comment }: CommentProps) {
         src={comment.user?.profileImage ?? ""}
         small
         styleExtensions="mt-2"
+        href={`/profile/${comment.user?.id}`}
       />
       <div className="flex flex-col items-start gap-1.5">
         <p>
-          {pokemonName}{" "}
+          <Link
+            className="capitalize hover:underline"
+            href={`/profile/${comment.user?.id}`}
+          >
+            {pokemonName}{" "}
+          </Link>
           <span className="text-xs opacity-50">
             {dateTimeFormatter(comment.createdAt)}
-          </span>{" "}
+          </span>
         </p>
         <p className="rounded-xl bg-base-content px-2 py-1 text-base-100">
           {comment.content}
