@@ -7,6 +7,7 @@ import { api } from "~/utils/api";
 import PostCard from "~/components/PostCard";
 import TextInput from "~/components/TextInput";
 import { useSession } from "next-auth/react";
+import { Comment } from "@prisma/client";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -39,8 +40,20 @@ type PostPageProps = {
 };
 
 export default function PostPage({ postId, pokemonName }: PostPageProps) {
-  const post = api.post.getById.useQuery({ postId });
+  const post = api.post.getById.useQuery(
+    { postId },
+    {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+    }
+  );
   const { data } = useSession();
+
+  const useCreateComment = api.comment.createNew.useMutation({});
+
+  function handleSubmit(text: string) {
+    useCreateComment.mutate({ postId, content: text });
+  }
 
   return (
     <>
@@ -53,8 +66,15 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
       <TextInput
         pokemonName={data?.user.pokemonName ?? ""}
         placeholderText="Leave a Comment..."
-        handleSubmit={(text: string) => console.log(text)}
+        handleSubmit={handleSubmit}
       />
+      {post.data?.comments?.map((comment) => (
+        <Comment comment={comment} />
+      ))}
     </>
   );
+}
+
+function Comment({ comment }: { comment: Comment }) {
+  return <section>Comment</section>;
 }

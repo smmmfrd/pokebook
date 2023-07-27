@@ -20,7 +20,8 @@ export const postRouter = createTRPCRouter({
           id: true,
           content: true,
           createdAt: true,
-          _count: { select: { likes: true } },
+          comments: true,
+          _count: { select: { likes: true, comments: true } },
           likes: { where: { userId: currentUserId } },
           user: {
             select: {
@@ -43,6 +44,7 @@ export const postRouter = createTRPCRouter({
         content: post.content,
         createdAt: post.createdAt.toISOString(),
         user: post.user,
+        comments: post.comments,
         likeCount: post._count.likes,
         likedByMe: post.likes.length > 0,
       };
