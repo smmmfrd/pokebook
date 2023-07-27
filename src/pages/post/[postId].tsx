@@ -95,6 +95,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
         placeholderText="Leave a Comment..."
         handleSubmit={handleSubmit}
       />
+      <div className="mt-2 border-b"></div>
       {post.data?.comments?.map((comment) => (
         <Comment comment={comment} />
       ))}
@@ -122,14 +123,17 @@ function Comment({ comment }: CommentProps) {
     .toUpperCase()}${comment.user?.pokemon?.name.slice(1)}`;
 
   return (
-    <section className="flex gap-4 border-b px-6 py-4">
+    <section
+      key={`${comment.createdAt.getTime()}`}
+      className="flex gap-4 border-b px-6 py-4"
+    >
       <ProfileImage
         src={comment.user?.profileImage ?? ""}
         small
         styleExtensions="mt-2"
         href={`/profile/${comment.user?.id}`}
       />
-      <div className="flex flex-col items-start gap-1.5">
+      <div className="flex flex-col items-start gap-0.5">
         <p>
           <Link
             className="capitalize hover:underline"

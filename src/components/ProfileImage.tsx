@@ -17,7 +17,9 @@ export default function ProfileImage({
 }: ProfileImageProps) {
   const mainStyles = `${styleExtensions} relative ${
     small ? "h-12 w-12" : "h-24 w-24"
-  } overflow-hidden rounded-full ring ring-primary bg-base-300/[0.1]`;
+  } overflow-hidden rounded-full ${
+    small ? "ring-1" : "ring"
+  } ring-primary bg-base-300/[0.1]`;
 
   const ImageComponent = () => (
     <>
