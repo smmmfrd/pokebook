@@ -38,7 +38,7 @@ export default function PostCard({
       const countModifier = addedLike ? 1 : -1;
 
       const updateData: Parameters<
-        typeof trpcUtils.post.infiniteHomeFeed.setInfiniteData
+        typeof trpcUtils.infinite.infiniteHomeFeed.setInfiniteData
       >[1] = (oldData) => {
         if (oldData == null) return;
 
@@ -64,15 +64,15 @@ export default function PostCard({
         };
       };
 
-      trpcUtils.post.infiniteHomeFeed.setInfiniteData(
+      trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
         { where: "none" },
         updateData
       );
-      trpcUtils.post.infiniteHomeFeed.setInfiniteData(
+      trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
         { where: "following" },
         updateData
       );
-      trpcUtils.post.infiniteProfileFeed.setInfiniteData(
+      trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
         { profileId: user.id },
         updateData
       );
