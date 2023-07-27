@@ -64,6 +64,7 @@ export const postRouter = createTRPCRouter({
         createdAt: post.createdAt.toISOString(),
         user: post.user,
         comments: post.comments,
+        commentCount: post._count.comments,
         likeCount: post._count.likes,
         likedByMe: post.likes.length > 0,
       };

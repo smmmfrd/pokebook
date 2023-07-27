@@ -16,6 +16,7 @@ export type PostCardProps = {
       name: string;
     } | null;
   };
+  commentCount: number;
   likeCount: number;
   likedByMe: boolean;
 };
@@ -28,6 +29,7 @@ export default function PostCard({
   content,
   createdAt,
   user,
+  commentCount,
   likeCount,
   likedByMe,
 }: PostCardProps) {
@@ -116,7 +118,8 @@ export default function PostCard({
       <footer className="flex gap-2">
         {/* Comment Button */}
         <Link className="btn-ghost btn-sm btn" href={`/post/${id}`}>
-          <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />0
+          <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />
+          {commentCount}
         </Link>
         {/* LIKE BUTTON */}
         <button className="btn-ghost btn-sm btn" onClick={handleLike}>
