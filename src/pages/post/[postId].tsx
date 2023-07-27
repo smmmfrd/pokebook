@@ -1,9 +1,11 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import PostCard from "~/components/PostCard";
 import { caller } from "~/server/api/root";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
+
+import PostCard from "~/components/PostCard";
+import TextInput from "~/components/TextInput";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -46,6 +48,11 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
         </title>
       </Head>
       {post.data && post.data.content != null && <PostCard {...post.data} />}
+      <TextInput
+        pokemonName={pokemonName}
+        placeholderText="Leave a Comment..."
+        handleSubmit={(text: string) => console.log(text)}
+      />
     </>
   );
 }

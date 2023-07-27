@@ -94,6 +94,7 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
       <nav className="sticky top-0 z-20 w-full border-b bg-base-100">
         <TextInput
           pokemonName={pokemonName}
+          placeholderText="+ New Post..."
           handleSubmit={(text: string) => newPost.mutate({ content: text })}
         />
         <ul className="tabs w-full justify-between">

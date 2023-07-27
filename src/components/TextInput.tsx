@@ -3,11 +3,13 @@ import { IconMap } from "~/utils/IconsMap";
 
 type TextInputProps = {
   pokemonName: string;
+  placeholderText: string;
   handleSubmit: (text: string) => void;
 };
 
 export default function TextInput({
   pokemonName,
+  placeholderText,
   handleSubmit,
 }: TextInputProps) {
   const [open, setOpen] = useState(false);
@@ -76,7 +78,7 @@ export default function TextInput({
           inputValue
         ) : (
           <span className="text-neutral-content">
-            {open ? "Use above to enter text..." : "+ New post..."}
+            {open ? "Use above to enter text..." : placeholderText}
           </span>
         )}
       </div>
