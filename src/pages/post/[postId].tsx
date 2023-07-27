@@ -3,16 +3,20 @@ import Head from "next/head";
 import { caller } from "~/server/api/root";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
-
-import PostCard from "~/components/PostCard";
-import TextInput from "~/components/TextInput";
 import { useSession } from "next-auth/react";
-import { Comment } from "@prisma/client";
+
+import PostCard, { dateTimeFormatter } from "~/components/PostCard";
+import TextInput from "~/components/TextInput";
+import ProfileImage from "~/components/ProfileImage";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  if (!session) {
+  const postId = ctx.query.postId as string;
+
+  const data = await caller.post.getPokemonByPost({ postId });
+
+  if (!session || data == null || data.user.pokemon == null) {
     return {
       redirect: {
         destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
@@ -21,15 +25,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const postId = ctx.query.postId as string;
-
-  const data = await caller.post.getPokemonByPost({ postId });
-
   return {
     props: {
       session,
       postId,
-      pokemonName: data?.user.pokemon?.name ?? "",
+      pokemonName: `${data.user.pokemon.name
+        .slice(0, 1)
+        .toUpperCase()}${data.user.pokemon.name.slice(1)}`,
     },
   };
 };
@@ -55,12 +57,36 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
     useCreateComment.mutate({ postId, content: text });
   }
 
+  if (post.isLoading) {
+    return (
+      <>
+        <Head>
+          <title>
+            {`${pokemonName.slice(0, 1).toUpperCase()}${pokemonName.slice(1)}`}
+            's Post
+          </title>
+        </Head>
+
+        <div className="w-full text-center">
+          <div className="loading loading-infinity loading-lg"></div>
+        </div>
+        <TextInput
+          pokemonName={data?.user.pokemonName ?? ""}
+          placeholderText="Leave a Comment..."
+          handleSubmit={handleSubmit}
+        />
+
+        <div className="w-full text-center">
+          <div className="loading loading-infinity loading-lg"></div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <Head>
-        <title>
-          {`${pokemonName[0]?.toUpperCase()}${pokemonName.slice(1)}`}'s Post
-        </title>
+        <title>{pokemonName}'s Post</title>
       </Head>
       {post.data && post.data.content != null && <PostCard {...post.data} />}
       <TextInput
@@ -75,6 +101,42 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
   );
 }
 
-function Comment({ comment }: { comment: Comment }) {
-  return <section>Comment</section>;
+type CommentProps = {
+  comment: {
+    content: string;
+    createdAt: Date;
+    user: {
+      profileImage: string | null;
+      pokemon: {
+        name: string;
+      } | null;
+    } | null;
+  };
+};
+
+function Comment({ comment }: CommentProps) {
+  const pokemonName: string = `${comment.user?.pokemon?.name
+    .slice(0, 1)
+    .toUpperCase()}${comment.user?.pokemon?.name.slice(1)}`;
+
+  return (
+    <section className="flex gap-4 border-b px-6 py-4">
+      <ProfileImage
+        src={comment.user?.profileImage ?? ""}
+        small
+        styleExtensions="mt-2"
+      />
+      <div className="flex flex-col items-start gap-1.5">
+        <p>
+          {pokemonName}{" "}
+          <span className="text-xs opacity-50">
+            {dateTimeFormatter(comment.createdAt)}
+          </span>{" "}
+        </p>
+        <p className="rounded-xl bg-base-content px-2 py-1 text-base-100">
+          {comment.content}
+        </p>
+      </div>
+    </section>
+  );
 }

@@ -20,7 +20,25 @@ export const postRouter = createTRPCRouter({
           id: true,
           content: true,
           createdAt: true,
-          comments: true,
+          comments: {
+            select: {
+              content: true,
+              createdAt: true,
+              user: {
+                select: {
+                  profileImage: true,
+                  pokemon: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
           _count: { select: { likes: true, comments: true } },
           likes: { where: { userId: currentUserId } },
           user: {

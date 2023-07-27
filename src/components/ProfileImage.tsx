@@ -6,15 +6,18 @@ type ProfileImageProps = {
   styleExtensions?: string;
   src: string | null;
   href?: string;
+  small?: boolean;
 };
 
 export default function ProfileImage({
   src,
   styleExtensions = "",
   href,
+  small = false,
 }: ProfileImageProps) {
-  // const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full border-4 border-base-content`;
-  const mainStyles = `${styleExtensions} relative h-24 w-24 overflow-hidden rounded-full ring ring-primary bg-base-300/[0.1]`;
+  const mainStyles = `${styleExtensions} relative ${
+    small ? "h-12 w-12" : "h-24 w-24"
+  } overflow-hidden rounded-full ring ring-primary bg-base-300/[0.1]`;
 
   const ImageComponent = () => (
     <>
@@ -24,10 +27,9 @@ export default function ProfileImage({
         <Image
           src={src}
           alt={`Username's profile image`}
-          height={96}
-          width={96}
-          // className="absolute -left-1 -top-1 h-24 w-24 max-w-none"
-          className="absolute h-24 w-24 max-w-none"
+          height={small ? 48 : 96}
+          width={small ? 48 : 96}
+          className={`absolute ${small ? "h-12 w-12" : "h-24 w-24"} max-w-none`}
         />
       )}
     </>

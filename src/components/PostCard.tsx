@@ -20,7 +20,7 @@ export type PostCardProps = {
   likedByMe: boolean;
 };
 
-const dateTimeFormatter = (createdAt: Date | string) =>
+export const dateTimeFormatter = (createdAt: Date | string) =>
   moment(createdAt).fromNow();
 
 export default function PostCard({
