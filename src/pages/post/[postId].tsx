@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 
 import PostCard from "~/components/PostCard";
 import TextInput from "~/components/TextInput";
+import { useSession } from "next-auth/react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -39,6 +40,7 @@ type PostPageProps = {
 
 export default function PostPage({ postId, pokemonName }: PostPageProps) {
   const post = api.post.getById.useQuery({ postId });
+  const { data } = useSession();
 
   return (
     <>
@@ -49,7 +51,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
       </Head>
       {post.data && post.data.content != null && <PostCard {...post.data} />}
       <TextInput
-        pokemonName={pokemonName}
+        pokemonName={data?.user.pokemonName ?? ""}
         placeholderText="Leave a Comment..."
         handleSubmit={(text: string) => console.log(text)}
       />

@@ -24,6 +24,7 @@ declare module "next-auth" {
       // role: UserRole;
       pokemonId: number;
       profileImage: string;
+      pokemonName: string;
     } & DefaultSession["user"];
   }
 }
@@ -38,6 +39,16 @@ export const authOptions: NextAuthOptions = {
     session: async ({ session, user }) => {
       const userData = await prisma.user.findFirst({
         where: { id: user.id },
+        select: {
+          id: true,
+          profileImage: true,
+          pokemonId: true,
+          pokemon: {
+            select: {
+              name: true,
+            },
+          },
+        },
       });
 
       return {
@@ -47,6 +58,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           profileImage: userData?.profileImage,
           pokemonId: userData?.pokemonId,
+          pokemonName: userData?.pokemon?.name,
         },
       };
     },

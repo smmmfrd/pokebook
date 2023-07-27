@@ -24,14 +24,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const mon = await caller.pokemon.getPokemon({ userId: session.user.id });
-
   return {
-    props: { session, pokemonName: mon?.pokemon?.name },
+    props: { session },
   };
 };
 
-export default function Home({ pokemonName }: { pokemonName: string }) {
+export default function Home() {
   const session = useSession();
   const trpcUtils = api.useContext();
   const [feed, setFeed] = useState<FeedEnum>("none");
@@ -57,7 +55,7 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
               id: session.data.user.id,
               profileImage: session.data.user.profileImage,
               pokemon: {
-                name: pokemonName,
+                name: session.data.user.pokemonName,
               },
             },
           };
@@ -93,7 +91,7 @@ export default function Home({ pokemonName }: { pokemonName: string }) {
       </Head>
       <nav className="sticky top-0 z-20 w-full border-b bg-base-100">
         <TextInput
-          pokemonName={pokemonName}
+          pokemonName={session.data?.user.pokemonName ?? ""}
           placeholderText="+ New Post..."
           handleSubmit={(text: string) => newPost.mutate({ content: text })}
         />
