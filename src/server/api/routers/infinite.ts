@@ -76,7 +76,7 @@ async function getInfinitePosts({
       id: true,
       content: true,
       createdAt: true,
-      _count: { select: { likes: true } },
+      _count: { select: { likes: true, comments: true } },
       likes:
         currentUserId == null ? false : { where: { userId: currentUserId } },
       user: {
@@ -110,6 +110,7 @@ async function getInfinitePosts({
       createdAt: post.createdAt,
       user: post.user,
       likeCount: post._count.likes,
+      commentCount: post._count.comments,
       likedByMe: post.likes.length > 0,
     })),
     nextCursor,

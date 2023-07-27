@@ -49,6 +49,7 @@ export default function Home() {
             ...newPost,
             // TODO - the rest goes here.
             likeCount: 0,
+            commentCount: 0,
             likedByMe: false,
             // User data is in the post queries so we need to throw that in here.
             user: {
