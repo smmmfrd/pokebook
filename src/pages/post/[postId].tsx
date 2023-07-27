@@ -52,8 +52,36 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
     }
   );
   const { data } = useSession();
+  const trpcUtils = api.useContext();
 
-  const useCreateComment = api.comment.createNew.useMutation({});
+  const useCreateComment = api.comment.createNew.useMutation({
+    onSuccess: ({ newComment }) => {
+      trpcUtils.post.getById.setData({ postId }, (oldData) => {
+        if (oldData?.content == null || data == null) return {};
+
+        console.log(newComment);
+
+        return {
+          ...oldData,
+          commentCount: oldData.commentCount + 1,
+          comments: [
+            {
+              content: newComment.content,
+              createdAt: newComment.createdAt,
+              user: {
+                id: data?.user.id,
+                profileImage: data?.user.profileImage,
+                pokemon: {
+                  name: data?.user.pokemonName,
+                },
+              },
+            },
+            ...oldData.comments,
+          ],
+        };
+      });
+    },
+  });
 
   function handleSubmit(text: string) {
     useCreateComment.mutate({ postId, content: text });
@@ -126,7 +154,7 @@ function Comment({ comment }: CommentProps) {
 
   return (
     <section
-      key={`${comment.createdAt.getTime()}`}
+      key={`${comment.createdAt.getTime()}${comment.user?.id}`}
       className="flex gap-4 border-b px-6 py-4"
     >
       <ProfileImage

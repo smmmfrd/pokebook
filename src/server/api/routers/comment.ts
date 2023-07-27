@@ -12,7 +12,7 @@ export const commentRouter = createTRPCRouter({
   createNew: protectedProcedure
     .input(z.object({ content: z.string(), postId: z.string() }))
     .mutation(async ({ input: { content, postId }, ctx }) => {
-      const comment = await ctx.prisma.comment.create({
+      const newComment = await ctx.prisma.comment.create({
         data: {
           content,
           postId,
@@ -20,6 +20,6 @@ export const commentRouter = createTRPCRouter({
         },
       });
 
-      return comment;
+      return { newComment };
     }),
 });
