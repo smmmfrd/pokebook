@@ -25,16 +25,34 @@ model Post {
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String
 
+    comments Comment[]
+
     likes Like[]
 
     @@unique([createdAt, id])
     @@index([userId])
 }
 
+model Comment {
+    content   String   @db.Text
+    createdAt DateTime @default(now())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    postId String
+    post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@id([userId, postId])
+    @@index([userId])
+    @@index([postId])
+}
+
 model Like {
     userId String
-    postId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    postId String
     post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
     @@id([userId, postId])
@@ -58,6 +76,8 @@ model User {
     profileImage String?
 
     posts Post[]
+
+    comments Comment[]
 
     likes Like[]
 
