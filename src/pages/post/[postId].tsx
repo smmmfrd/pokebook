@@ -9,6 +9,7 @@ import PostCard, { dateTimeFormatter } from "~/components/PostCard";
 import TextInput from "~/components/TextInput";
 import ProfileImage from "~/components/ProfileImage";
 import Link from "next/link";
+import BackHeader from "~/components/BackHeader";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -89,6 +90,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
       <Head>
         <title>{pokemonName}'s Post</title>
       </Head>
+      <BackHeader title={`${pokemonName}'s Post`}></BackHeader>
       {post.data && post.data.content != null && <PostCard {...post.data} />}
       <TextInput
         pokemonName={data?.user.pokemonName ?? ""}

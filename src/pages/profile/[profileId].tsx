@@ -11,6 +11,7 @@ import NavbarIcon from "~/components/NavbarIcon";
 import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
 import Head from "next/head";
+import BackHeader from "~/components/BackHeader";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -84,7 +85,26 @@ export default function ProfilePage({
           Profile | Pokebook
         </title>
       </Head>
-      <header className="sticky top-0 z-20 bg-base-100">
+      <BackHeader title={pokemon.name}>
+        <div className="flex flex-wrap justify-between gap-8 p-8 pb-6">
+          <div className="flex flex-col justify-between">
+            <ProfileButtons profileId={profileId} isFollowing={isFollowing} />
+          </div>
+          <ProfileImage
+            src={pokemon.profileImage}
+            styleExtensions="shrink-0 shadow-md"
+          />
+          <p className="shrink">
+            <span className="font-bold">INFO: </span>
+            {flavorText}
+          </p>
+        </div>
+        <ul className="tabs w-full justify-between">
+          <li className="tab-bordered tab tab-active flex-grow">Posts</li>
+          <li className="tab-bordered tab flex-grow">Likes</li>
+        </ul>
+      </BackHeader>
+      {/* <header className="sticky top-0 z-20 bg-base-100">
         <nav className="flex items-center justify-between gap-3 border-b p-4">
           <button onClick={() => router.back()} title="Go Back">
             <NavbarIcon icon="arrowLeft" styleExtensions={"w-5 h-5"} />
@@ -108,7 +128,7 @@ export default function ProfilePage({
           <li className="tab-bordered tab tab-active flex-grow">Posts</li>
           <li className="tab-bordered tab flex-grow">Likes</li>
         </ul>
-      </header>
+      </header> */}
       <InfiniteFeed
         posts={infiniteQuery.data?.pages.flatMap((page) => page.posts)}
         isError={infiniteQuery.isError}
