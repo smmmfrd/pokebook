@@ -18,7 +18,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const data = await caller.post.getPokemonByPost({ postId });
 
-  if (!session || data == null || data.user.pokemon == null) {
+  const staticPostData = await caller.post.getStaticData({ postId });
+
+  if (
+    !session ||
+    data == null ||
+    data.user.pokemon == null ||
+    staticPostData.id == null
+  ) {
     return {
       redirect: {
         destination: `/login?returnURL=${encodeURIComponent("")}`,
@@ -36,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       session,
       postId,
       pokemonName,
+      staticPostData,
     },
   };
 };
@@ -43,10 +51,26 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 type PostPageProps = {
   postId: string;
   pokemonName: string;
+  staticPostData: {
+    id: string;
+    content: string;
+    createdAt: string;
+    user: {
+      id: string;
+      profileImage: string | null;
+      pokemon: {
+        name: string;
+      } | null;
+    };
+  };
 };
 
-export default function PostPage({ postId, pokemonName }: PostPageProps) {
-  const post = api.post.getById.useQuery(
+export default function PostPage({
+  postId,
+  pokemonName,
+  staticPostData,
+}: PostPageProps) {
+  const dynamicPost = api.post.getDynamicData.useQuery(
     { postId },
     {
       refetchOnWindowFocus: false,
@@ -58,8 +82,8 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
 
   const useCreateComment = api.comment.createNew.useMutation({
     onSuccess: ({ newComment }) => {
-      trpcUtils.post.getById.setData({ postId }, (oldData) => {
-        if (oldData?.content == null || data == null) return {};
+      trpcUtils.post.getDynamicData.setData({ postId }, (oldData) => {
+        if (oldData?.likedByMe == null || data == null) return {};
 
         return {
           ...oldData,
@@ -88,28 +112,28 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
     useCreateComment.mutate({ postId, content: text });
   }
 
-  if (post.isLoading) {
-    return (
-      <>
-        <Head>
-          <title>{`${pokemonName}'s Post`}</title>
-        </Head>
+  // if (dynamicPost.isLoading) {
+  //   return (
+  //     <>
+  //       <Head>
+  //         <title>{`${pokemonName}'s Post`}</title>
+  //       </Head>
 
-        <div className="w-full text-center">
-          <div className="loading loading-infinity loading-lg"></div>
-        </div>
-        <TextInput
-          pokemonName={data?.user.pokemonName ?? ""}
-          placeholderText="Leave a Comment..."
-          handleSubmit={handleSubmit}
-        />
+  //       <div className="w-full text-center">
+  //         <div className="loading loading-infinity loading-lg"></div>
+  //       </div>
+  //       <TextInput
+  //         pokemonName={data?.user.pokemonName ?? ""}
+  //         placeholderText="Leave a Comment..."
+  //         handleSubmit={handleSubmit}
+  //       />
 
-        <div className="w-full text-center">
-          <div className="loading loading-infinity loading-lg"></div>
-        </div>
-      </>
-    );
-  }
+  //       <div className="w-full text-center">
+  //         <div className="loading loading-infinity loading-lg"></div>
+  //       </div>
+  //     </>
+  //   );
+  // }
 
   return (
     <>
@@ -117,7 +141,15 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
         <title>{`${pokemonName}'s Post`}</title>
       </Head>
       <BackHeader title={`${pokemonName}'s Post`}></BackHeader>
-      {post.data && post.data.content != null && <PostCard {...post.data} />}
+      <PostCard
+        id={staticPostData.id}
+        content={staticPostData.content}
+        createdAt={staticPostData.createdAt}
+        user={staticPostData.user}
+        commentCount={dynamicPost.data?.commentCount}
+        likeCount={dynamicPost.data?.likeCount}
+        likedByMe={dynamicPost.data?.likedByMe}
+      />
       <TextInput
         pokemonName={data?.user.pokemonName ?? ""}
         placeholderText="Leave a Comment..."
@@ -129,7 +161,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
           <div className="loading loading-dots h-20"></div>
         </div>
       )}
-      {post.data?.comments?.map((comment) => (
+      {dynamicPost.data?.comments?.map((comment) => (
         <Comment comment={comment} key={comment.id} />
       ))}
     </>

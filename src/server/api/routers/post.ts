@@ -9,7 +9,39 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  getById: protectedProcedure
+  getStaticData: publicProcedure
+    .input(z.object({ postId: z.string() }))
+    .query(async ({ input: { postId }, ctx }) => {
+      const post = await ctx.prisma.post.findFirst({
+        where: { id: postId },
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              profileImage: true,
+              pokemon: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (post == null) return {};
+
+      return {
+        id: post.id,
+        content: post.content,
+        createdAt: post.createdAt.toISOString(),
+        user: post.user,
+      };
+    }),
+  getDynamicData: protectedProcedure
     .input(z.object({ postId: z.string() }))
     .query(async ({ input: { postId }, ctx }) => {
       const currentUserId = ctx.session.user.id;
@@ -17,9 +49,6 @@ export const postRouter = createTRPCRouter({
       const post = await ctx.prisma.post.findFirst({
         where: { id: postId },
         select: {
-          id: true,
-          content: true,
-          createdAt: true,
           comments: {
             select: {
               id: true,
@@ -43,27 +72,12 @@ export const postRouter = createTRPCRouter({
           },
           _count: { select: { likes: true, comments: true } },
           likes: { where: { userId: currentUserId } },
-          user: {
-            select: {
-              id: true,
-              profileImage: true,
-              pokemon: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
         },
       });
 
       if (post == null) return {};
 
       return {
-        id: post.id,
-        content: post.content,
-        createdAt: post.createdAt.toISOString(),
-        user: post.user,
         comments: post.comments,
         commentCount: post._count.comments,
         likeCount: post._count.likes,

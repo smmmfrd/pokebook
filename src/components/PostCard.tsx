@@ -16,9 +16,9 @@ export type PostCardProps = {
       name: string;
     } | null;
   };
-  commentCount: number;
-  likeCount: number;
-  likedByMe: boolean;
+  commentCount: number | undefined;
+  likeCount: number | undefined;
+  likedByMe: boolean | undefined;
 };
 
 export const dateTimeFormatter = (createdAt: Date | string) =>
@@ -79,8 +79,8 @@ export default function PostCard({
         updateData
       );
 
-      trpcUtils.post.getById.setData({ postId: id }, (oldData) => {
-        if (oldData?.content == null) return {};
+      trpcUtils.post.getDynamicData.setData({ postId: id }, (oldData) => {
+        if (oldData?.likedByMe == null) return {};
         return {
           ...oldData,
           likeCount: oldData.likeCount + countModifier,
@@ -120,13 +120,17 @@ export default function PostCard({
         {/* Comment Button */}
         <Link className="btn-ghost btn-sm btn" href={`/post/${id}`}>
           <NavbarIcon icon="comment" styleExtensions="w-6 h-6" />
-          {commentCount}
+          {commentCount == null ? (
+            <div className="loading loading-spinner loading-sm"></div>
+          ) : (
+            commentCount
+          )}
         </Link>
         {/* LIKE BUTTON */}
         <button className="btn-ghost btn-sm btn" onClick={handleLike}>
           {toggleLike.isLoading ? (
             <div
-              className={`loading loading-spinner ${
+              className={`loading loading-spinner loading-sm ${
                 !likedByMe && "text-secondary"
               }`}
             ></div>
@@ -139,7 +143,11 @@ export default function PostCard({
             <NavbarIcon icon="heart" styleExtensions="w-6 h-6" />
           )}
 
-          {likeCount}
+          {likeCount == null || likedByMe == null ? (
+            <div className="loading loading-spinner loading-sm"></div>
+          ) : (
+            likeCount
+          )}
         </button>
       </footer>
     </section>
