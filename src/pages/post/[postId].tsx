@@ -61,13 +61,12 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
       trpcUtils.post.getById.setData({ postId }, (oldData) => {
         if (oldData?.content == null || data == null) return {};
 
-        console.log(newComment);
-
         return {
           ...oldData,
           commentCount: oldData.commentCount + 1,
           comments: [
             {
+              id: newComment.id,
               content: newComment.content,
               createdAt: newComment.createdAt,
               user: {
@@ -126,7 +125,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
       />
       <div className="mt-2 border-b"></div>
       {post.data?.comments?.map((comment) => (
-        <Comment comment={comment} />
+        <Comment comment={comment} key={comment.id} />
       ))}
     </>
   );

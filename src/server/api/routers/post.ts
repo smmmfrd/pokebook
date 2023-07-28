@@ -22,6 +22,7 @@ export const postRouter = createTRPCRouter({
           createdAt: true,
           comments: {
             select: {
+              id: true,
               content: true,
               createdAt: true,
               user: {
