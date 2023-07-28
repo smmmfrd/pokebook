@@ -27,13 +27,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
+  const pokemonName = `${data.user.pokemon.name
+    .slice(0, 1)
+    .toUpperCase()}${data.user.pokemon.name.slice(1)}`;
+
   return {
     props: {
       session,
       postId,
-      pokemonName: `${data.user.pokemon.name
-        .slice(0, 1)
-        .toUpperCase()}${data.user.pokemon.name.slice(1)}`,
+      pokemonName,
     },
   };
 };
@@ -91,10 +93,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
     return (
       <>
         <Head>
-          <title>
-            {`${pokemonName.slice(0, 1).toUpperCase()}${pokemonName.slice(1)}`}
-            's Post
-          </title>
+          <title>{`${pokemonName}'s Post`}</title>
         </Head>
 
         <div className="w-full text-center">
@@ -116,7 +115,7 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
   return (
     <>
       <Head>
-        <title>{pokemonName}'s Post</title>
+        <title>{`${pokemonName}'s Post`}</title>
       </Head>
       <BackHeader title={`${pokemonName}'s Post`}></BackHeader>
       {post.data && post.data.content != null && <PostCard {...post.data} />}
@@ -155,7 +154,7 @@ function Comment({ comment }: CommentProps) {
   return (
     <section
       key={`${comment.createdAt.getTime()}${comment.user?.id}`}
-      className="flex gap-4 border-b px-6 py-4"
+      className="flex gap-4 border-b px-6 pb-3.5 pt-2.5"
     >
       <ProfileImage
         src={comment.user?.profileImage ?? ""}
