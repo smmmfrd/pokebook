@@ -102,6 +102,7 @@ export default function PostCard({
           styleExtensions="relative"
           src={user.profileImage}
           href={`/profile/${user.id}`}
+          size="large"
         />
         <div className="flex flex-col gap-2">
           <Link

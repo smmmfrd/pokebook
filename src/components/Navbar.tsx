@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
+import ProfileImage from "./ProfileImage";
 
 type NavbarProps = {
   profileImage: string;
@@ -29,14 +30,11 @@ export default function Navbar({
         </NavbarLink>
         <NavbarLink href={`/profile/${userId}`}>
           {profileImage ? (
-            <div
-              style={
-                {
-                  "--image-url": `url(${profileImage})`,
-                } as React.CSSProperties
-              }
-              className="h-8 w-8 overflow-hidden rounded-full border-2 border-base-content bg-[image:var(--image-url)] bg-center"
-            ></div>
+            <ProfileImage
+              src={profileImage}
+              size="small"
+              styleExtensions="ring-base-content"
+            />
           ) : (
             <NavbarIcon styleExtensions={"w-8 h-8"} icon="profile" />
           )}

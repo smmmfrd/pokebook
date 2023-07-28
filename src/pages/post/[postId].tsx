@@ -162,9 +162,9 @@ function Comment({ comment }: CommentProps) {
     >
       <ProfileImage
         src={comment.user?.profileImage ?? ""}
-        small
         styleExtensions="mt-2"
         href={`/profile/${comment.user?.id}`}
+        size="medium"
       />
       <div className="flex flex-col items-start gap-0.5">
         <p>
