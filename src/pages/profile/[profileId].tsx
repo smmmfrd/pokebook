@@ -81,8 +81,8 @@ export default function ProfilePage({
     <>
       <Head>
         <title>
-          {`${pokemon.name[0]?.toUpperCase()}${pokemon.name.slice(1)}`}'s
-          Profile | Pokebook
+          {`${pokemon.name[0]?.toUpperCase()}${pokemon.name.slice(1)}'s
+          Profile | Pokebook`}
         </title>
       </Head>
       <BackHeader title={pokemon.name}>
