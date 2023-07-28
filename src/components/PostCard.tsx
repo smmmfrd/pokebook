@@ -96,7 +96,7 @@ export default function PostCard({
   }
 
   return (
-    <section key={id} className="flex w-full flex-col gap-2 border-b px-8 py-4">
+    <section className="flex w-full flex-col gap-2 border-b px-8 py-4">
       <header className="flex items-start gap-6">
         <ProfileImage
           styleExtensions="relative"

@@ -12,6 +12,7 @@ type Post = {
       name: string;
     } | null;
   };
+  commentCount: number;
   likeCount: number;
   likedByMe: boolean;
 };
@@ -46,7 +47,7 @@ export default function InfiniteFeed({
       loader={<Loading />}
     >
       {posts.map((post) => (
-        <PostCard {...post} />
+        <PostCard {...post} key={post.id} />
       ))}
     </InfiniteScroll>
   );
