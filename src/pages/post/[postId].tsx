@@ -124,6 +124,11 @@ export default function PostPage({ postId, pokemonName }: PostPageProps) {
         handleSubmit={handleSubmit}
       />
       <div className="mt-2 border-b"></div>
+      {useCreateComment.isLoading && (
+        <div className="w-full border-b text-center">
+          <div className="loading loading-dots h-20"></div>
+        </div>
+      )}
       {post.data?.comments?.map((comment) => (
         <Comment comment={comment} key={comment.id} />
       ))}
