@@ -1,22 +1,8 @@
+import type { FriendStatus } from "~/utils/types";
+
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
-import { FriendStatus } from "~/utils/types";
-
-const RELATIONAL_STATES_MAP = {
-  self: {},
-  none: {
-    following: false,
-  },
-  following: {
-    following: true,
-    friends: false,
-  },
-  friends: {
-    following: true,
-    friends: true,
-  },
-};
 
 type ProfileButtonsProps = {
   profileId: string;
@@ -45,7 +31,19 @@ export default function ProfileButtons({
     void useFollow.mutate({ profileId });
   }
 
-  // Viewing your profile
+  const [cacheFriendStatus, setCacheFriendStatus] = useState(friendStatus);
+
+  const useSendFriendReq = api.profile.sendFriendRequest.useMutation({
+    onSuccess: () => {
+      setCacheFriendStatus("sent");
+    },
+  });
+
+  function handleSendFriendRequest() {
+    void useSendFriendReq.mutate({ profileId });
+  }
+
+  // User viewing their profile
   if (session.data?.user.id === profileId) {
     return (
       <div
@@ -61,7 +59,7 @@ export default function ProfileButtons({
     // User is following this profile
     // Friending UI Here
     if (cacheFollow) {
-      if (friendStatus === "none") {
+      if (cacheFriendStatus === "none") {
         return (
           <>
             <button
@@ -73,13 +71,14 @@ export default function ProfileButtons({
             </button>
             <button
               className="btn-success btn-sm btn"
+              onClick={handleSendFriendRequest}
               disabled={useFollow.isLoading}
             >
               Send Friend Req.
             </button>
           </>
         );
-      } else if (friendStatus === "friend") {
+      } else if (cacheFriendStatus === "friend") {
         return (
           <>
             <button
@@ -98,7 +97,7 @@ export default function ProfileButtons({
           </>
         );
       } else {
-        if (friendStatus === "sent") {
+        if (cacheFriendStatus === "sent") {
           return (
             <>
               <button
@@ -109,11 +108,11 @@ export default function ProfileButtons({
                 {useFollow.isLoading ? "..." : "Following"}
               </button>
               <button className="btn-sm btn" disabled>
-                Sent Friend Req...
+                Friend Req. Sent...
               </button>
             </>
           );
-        } else if (friendStatus === "received") {
+        } else if (cacheFriendStatus === "received") {
           return (
             <>
               <button

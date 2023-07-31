@@ -1,4 +1,4 @@
-import { type Pokemon } from "@prisma/client";
+import type { Session, Pokemon } from "@prisma/client";
 import { type GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { getServerAuthSession } from "~/server/auth";
@@ -68,6 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 type ProfilePageProps = {
+  session: Session;
   pokemon: Pokemon;
   flavorText: string;
   profileId: string;
@@ -82,8 +83,6 @@ export default function ProfilePage({
   isFollowing,
   friendStatus,
 }: ProfilePageProps) {
-  const router = useRouter();
-
   const infiniteQuery = api.infinite.infiniteProfileFeed.useInfiniteQuery(
     { profileId },
     {
