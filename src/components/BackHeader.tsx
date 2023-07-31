@@ -5,9 +5,14 @@ import NavbarIcon from "./NavbarIcon";
 type BackHeaderProps = {
   title: string;
   children?: React.ReactNode;
+  headExtensions?: React.ReactNode;
 };
 
-export default function BackHeader({ title, children }: BackHeaderProps) {
+export default function BackHeader({
+  title,
+  children,
+  headExtensions,
+}: BackHeaderProps) {
   const router = useRouter();
   return (
     <header className="sticky top-0 z-20 bg-base-100">
@@ -16,6 +21,7 @@ export default function BackHeader({ title, children }: BackHeaderProps) {
           <NavbarIcon icon="arrowLeft" styleExtensions={"w-5 h-5"} />
         </button>
         <h1 className="grow text-2xl font-bold capitalize">{title}</h1>
+        {headExtensions}
       </nav>
       {children}
     </header>
