@@ -40,10 +40,16 @@ export default function Navbar({
           )}
           <NavLinkText>Profile</NavLinkText>
         </NavbarLink>
-        <NavbarLink href="/inbox">
+
+        <NavbarLink href="/inbox" styleExtensions="indicator">
+          <span
+            className="badge badge-secondary badge-xs indicator-start indicator-item indicator-top"
+            title="You Have New Requests"
+          ></span>
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="inbox" />
           <NavLinkText>Requests</NavLinkText>
         </NavbarLink>
+
         <NavbarLink href="/about">
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="about" />
           <NavLinkText>About</NavLinkText>
@@ -82,11 +88,15 @@ type ParentProps = {
 
 interface NavbarLinkProps extends ParentProps {
   href: string;
+  styleExtensions?: string;
 }
 
-function NavbarLink({ children, href }: NavbarLinkProps) {
+function NavbarLink({ children, href, styleExtensions = "" }: NavbarLinkProps) {
   return (
-    <Link className="flex items-center gap-4 text-xl" href={href}>
+    <Link
+      className={`flex items-center gap-4 text-xl ${styleExtensions}`}
+      href={href}
+    >
       {children}
     </Link>
   );
