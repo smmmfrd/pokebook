@@ -12,6 +12,7 @@ import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
 import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
+import { FriendStatus } from "~/utils/types";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -35,12 +36,24 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return { props: { session } };
   }
 
-  const { pokemon, isFollowing } = profileData;
+  const { pokemon, isFollowing, isFriend } = profileData;
 
   const randomFlavorText = () => {
     const texts = JSON.parse(pokemon.flavorTexts);
     return texts[Math.floor(Math.random() * texts.length)];
   };
+
+  const { sent, received } = await caller.profile.friendRequestExists({
+    profileId,
+  });
+
+  const friendStatus: FriendStatus = isFriend
+    ? "friend"
+    : sent
+    ? "sent"
+    : received
+    ? "received"
+    : "none";
 
   return {
     props: {
@@ -49,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       flavorText: randomFlavorText(),
       profileId,
       isFollowing,
+      friendStatus,
     },
   };
 };
@@ -58,7 +72,7 @@ type ProfilePageProps = {
   flavorText: string;
   profileId: string;
   isFollowing: boolean;
-  isFriend: boolean;
+  friendStatus: FriendStatus;
 };
 
 export default function ProfilePage({
@@ -66,7 +80,7 @@ export default function ProfilePage({
   flavorText,
   profileId,
   isFollowing,
-  isFriend,
+  friendStatus,
 }: ProfilePageProps) {
   const router = useRouter();
 
@@ -93,7 +107,7 @@ export default function ProfilePage({
             <ProfileButtons
               profileId={profileId}
               isFollowing={isFollowing}
-              friendStatus={isFriend ? "friend" : "none"}
+              friendStatus={friendStatus}
             />
           </div>
           <ProfileImage

@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
+import { FriendStatus } from "~/utils/types";
 
 const RELATIONAL_STATES_MAP = {
   self: {},
@@ -16,8 +17,6 @@ const RELATIONAL_STATES_MAP = {
     friends: true,
   },
 };
-
-export type FriendStatus = "none" | "sent" | "received" | "friend";
 
 type ProfileButtonsProps = {
   profileId: string;
