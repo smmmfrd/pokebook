@@ -58,6 +58,7 @@ type ProfilePageProps = {
   flavorText: string;
   profileId: string;
   isFollowing: boolean;
+  isFriend: boolean;
 };
 
 export default function ProfilePage({
@@ -65,6 +66,7 @@ export default function ProfilePage({
   flavorText,
   profileId,
   isFollowing,
+  isFriend,
 }: ProfilePageProps) {
   const router = useRouter();
 
@@ -88,7 +90,11 @@ export default function ProfilePage({
       <BackHeader title={pokemon.name}>
         <div className="flex flex-wrap justify-between gap-8 p-8 pb-6">
           <div className="flex flex-col justify-between">
-            <ProfileButtons profileId={profileId} isFollowing={isFollowing} />
+            <ProfileButtons
+              profileId={profileId}
+              isFollowing={isFollowing}
+              friendStatus={isFriend ? "friend" : "none"}
+            />
           </div>
           <ProfileImage
             src={pokemon.profileImage}

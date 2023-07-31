@@ -17,13 +17,19 @@ const RELATIONAL_STATES_MAP = {
   },
 };
 
+export type FriendStatus = "none" | "sent" | "received" | "friend";
+
+type ProfileButtonsProps = {
+  profileId: string;
+  isFollowing: boolean;
+  friendStatus: FriendStatus;
+};
+
 export default function ProfileButtons({
   profileId,
   isFollowing,
-}: {
-  profileId: string;
-  isFollowing: boolean;
-}) {
+  friendStatus,
+}: ProfileButtonsProps) {
   const session = useSession();
 
   if (session.status !== "authenticated") return <></>;

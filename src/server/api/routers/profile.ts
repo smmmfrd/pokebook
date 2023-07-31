@@ -16,6 +16,7 @@ export const profileRouter = createTRPCRouter({
         select: {
           pokemon: true,
           followers: { where: { id: currentUserId } },
+          friends: { where: { id: currentUserId } },
         },
       });
 
@@ -24,6 +25,7 @@ export const profileRouter = createTRPCRouter({
       return {
         pokemon: profile.pokemon,
         isFollowing: profile.followers.length > 0,
+        isFriend: profile.friends.length > 0,
       };
     }),
   toggleFollow: protectedProcedure
@@ -51,5 +53,20 @@ export const profileRouter = createTRPCRouter({
       }
 
       return { addedFollow };
+    }),
+
+  sendFriendRequest: protectedProcedure
+    .input(z.object({ profileId: z.string() }))
+    .mutation(async ({ input: { profileId }, ctx }) => {
+      const currentUserId = ctx.session.user.id;
+
+      await ctx.prisma.friendRequest.create({
+        data: {
+          senderId: currentUserId,
+          receiverId: profileId,
+        },
+      });
+
+      return {};
     }),
 });
