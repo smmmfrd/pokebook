@@ -10,12 +10,14 @@ type NavbarProps = {
   profileImage: string;
   userId: string;
   toggleTheme: () => void;
+  requestNotif: boolean;
 };
 
 export default function Navbar({
   profileImage,
   userId,
   toggleTheme,
+  requestNotif,
 }: NavbarProps) {
   return (
     <nav className="relative min-h-screen">
@@ -42,10 +44,12 @@ export default function Navbar({
         </NavbarLink>
 
         <NavbarLink href="/inbox" styleExtensions="indicator">
-          <span
-            className="badge badge-secondary badge-xs indicator-start indicator-item indicator-top"
-            title="You Have New Requests"
-          ></span>
+          {requestNotif && (
+            <span
+              className="badge badge-secondary badge-xs indicator-start indicator-item indicator-top"
+              title="You Have New Requests"
+            ></span>
+          )}
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="inbox" />
           <NavLinkText>Requests</NavLinkText>
         </NavbarLink>

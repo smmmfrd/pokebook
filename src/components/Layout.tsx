@@ -28,6 +28,10 @@ export default function Layout({ children }: LayoutProps) {
         profileImage={sessionData.user.profileImage}
         userId={sessionData.user.id}
         toggleTheme={toggleTheme}
+        requestNotif={
+          sessionData.user.sentFriendRequests > 0 &&
+          sessionData.user.receivedFriendRequests > 0
+        }
       />
       <main className="min-h-screen w-full border-l">{children}</main>
     </div>

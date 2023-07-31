@@ -25,6 +25,8 @@ declare module "next-auth" {
       pokemonId: number;
       profileImage: string;
       pokemonName: string;
+      sentFriendRequests: number;
+      receivedFriendRequests: number;
     } & DefaultSession["user"];
   }
 }
@@ -48,11 +50,18 @@ export const authOptions: NextAuthOptions = {
               name: true,
             },
           },
+          _count: {
+            select: {
+              sentFriendRequests: true,
+              receivedFriendRequests: true,
+            },
+          },
         },
       });
 
       if (userData == null) return { ...session };
 
+      // If somehow the user has no pokemon assigned, get a new one
       if (userData.pokemon == null) {
         const { randPokemon: newPokemon } =
           await caller.pokemon.giveUserRandomPokemon({ userId: user.id });
@@ -65,6 +74,8 @@ export const authOptions: NextAuthOptions = {
             profileImage: newPokemon?.profileImage,
             pokemonId: newPokemon?.id,
             pokemonName: newPokemon?.name,
+            sentFriendRequests: userData._count.sentFriendRequests,
+            receivedFriendRequests: userData._count.receivedFriendRequests,
           },
         };
       }
@@ -77,6 +88,8 @@ export const authOptions: NextAuthOptions = {
           profileImage: userData.profileImage,
           pokemonId: userData.pokemonId,
           pokemonName: userData.pokemon?.name,
+          sentFriendRequests: userData._count.sentFriendRequests,
+          receivedFriendRequests: userData._count.receivedFriendRequests,
         },
       };
     },
