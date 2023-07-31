@@ -59,25 +59,81 @@ export default function ProfileButtons({
       </div>
     );
   } else {
+    // User is following this profile
+    // Friending UI Here
     if (cacheFollow) {
-      return (
-        <>
-          <button
-            className="btn-secondary btn-sm btn"
-            onClick={handleFollowClick}
-            disabled={useFollow.isLoading}
-          >
-            {useFollow.isLoading ? "..." : "Following"}
-          </button>
-          <button
-            className="btn-success btn-sm btn"
-            disabled={useFollow.isLoading}
-          >
-            Send Friend Req.
-          </button>
-        </>
-      );
-    } else {
+      if (friendStatus === "none") {
+        return (
+          <>
+            <button
+              className="btn-secondary btn-sm btn"
+              onClick={handleFollowClick}
+              disabled={useFollow.isLoading}
+            >
+              {useFollow.isLoading ? "..." : "Following"}
+            </button>
+            <button
+              className="btn-success btn-sm btn"
+              disabled={useFollow.isLoading}
+            >
+              Send Friend Req.
+            </button>
+          </>
+        );
+      } else if (friendStatus === "friend") {
+        return (
+          <>
+            <button
+              className="btn-secondary btn-sm btn"
+              onClick={handleFollowClick}
+              disabled={useFollow.isLoading}
+            >
+              {useFollow.isLoading ? "..." : "Following"}
+            </button>
+            <button
+              className="btn-error btn-sm btn"
+              disabled={useFollow.isLoading}
+            >
+              Un-Friend
+            </button>
+          </>
+        );
+      } else {
+        if (friendStatus === "sent") {
+          return (
+            <>
+              <button
+                className="btn-secondary btn-sm btn"
+                onClick={handleFollowClick}
+                disabled={useFollow.isLoading}
+              >
+                {useFollow.isLoading ? "..." : "Following"}
+              </button>
+              <button className="btn-sm btn" disabled>
+                Sent Friend Req...
+              </button>
+            </>
+          );
+        } else if (friendStatus === "received") {
+          return (
+            <>
+              <button
+                className="btn-secondary btn-sm btn"
+                onClick={handleFollowClick}
+                disabled={useFollow.isLoading}
+              >
+                {useFollow.isLoading ? "..." : "Following"}
+              </button>
+              <button className="btn-sm btn" disabled>
+                Accept Friend Req.
+              </button>
+            </>
+          );
+        }
+      }
+    }
+    // User is not following this profile
+    else {
       return (
         <button
           disabled={useFollow.isLoading}
@@ -91,13 +147,4 @@ export default function ProfileButtons({
   }
 
   return <></>;
-
-  return (
-    <div className="flex gap-2">
-      {/* <button className="btn-info btn-sm btn">Follow</button> */}
-      {/* <button className="btn-error btn-sm btn">Un-Follow</button> */}
-      {/* <button className="btn-success btn-sm btn">Friend Req.</button> */}
-      {/* <button className="btn-error btn-sm btn">Un-Friend</button> */}
-    </div>
-  );
 }
