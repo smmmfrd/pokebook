@@ -105,4 +105,16 @@ export const profileRouter = createTRPCRouter({
 
       return {};
     }),
+  getAllFriendRequests: protectedProcedure.query(async ({ ctx }) => {
+    const currentUserId = ctx.session.user.id;
+
+    const received = await ctx.prisma.friendRequest.findMany({
+      where: { receiverId: currentUserId },
+    });
+    const sent = await ctx.prisma.friendRequest.findMany({
+      where: { senderId: currentUserId },
+    });
+
+    return { received, sent };
+  }),
 });

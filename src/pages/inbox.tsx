@@ -1,6 +1,8 @@
 import { type GetServerSideProps } from "next";
+
 import { getServerAuthSession } from "~/server/auth";
-import { caller } from "~/server/api/root";
+import { api } from "~/utils/api";
+
 import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
 import ProfileImage from "~/components/ProfileImage";
@@ -18,7 +20,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: { session, user: session.user },
+    props: {
+      session,
+      user: session.user,
+    },
   };
 };
 
@@ -31,6 +36,8 @@ type InboxPageProps = {
 };
 
 export default function InboxPage({ user }: InboxPageProps) {
+  const { data } = api.profile.getAllFriendRequests.useQuery();
+
   return (
     <>
       <Head>
@@ -51,6 +58,8 @@ export default function InboxPage({ user }: InboxPageProps) {
           <li className="tab-bordered tab basis-1/2">Sent Requests</li>
         </ul>
       </BackHeader>
+      <div>Received: {data?.received.length}</div>
+      <div>Sent: {data?.sent.length}</div>
     </>
   );
 }
