@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps) {
         userId={sessionData.user.id}
         toggleTheme={toggleTheme}
         requestNotif={
-          sessionData.user.sentFriendRequests > 0 &&
+          sessionData.user.sentFriendRequests > 0 ||
           sessionData.user.receivedFriendRequests > 0
         }
       />
