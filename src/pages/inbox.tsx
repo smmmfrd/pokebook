@@ -63,7 +63,12 @@ export default function InboxPage({ user }: InboxPageProps) {
             }`}
             onClick={() => setView("received")}
           >
-            Received Requests
+            <span className="relative">
+              {data != null && data?.received.length > 0 && (
+                <span className="badge badge-secondary badge-xs absolute -left-3 top-0.5 float-left"></span>
+              )}
+              Received Requests
+            </span>
           </li>
           <li
             className={`tab-bordered tab basis-1/2 ${
@@ -71,7 +76,12 @@ export default function InboxPage({ user }: InboxPageProps) {
             }`}
             onClick={() => setView("sent")}
           >
-            Sent Requests
+            <span className="relative">
+              {data != null && data?.sent.length > 0 && (
+                <span className="badge badge-secondary badge-xs absolute -left-3 top-0.5 float-left"></span>
+              )}
+              Sent Requests
+            </span>
           </li>
         </ul>
       </BackHeader>

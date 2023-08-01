@@ -46,7 +46,7 @@ export default function Navbar({
         <NavbarLink href="/inbox" styleExtensions="indicator">
           {requestNotif && (
             <span
-              className="badge badge-secondary badge-xs indicator-start indicator-item indicator-top"
+              className="indicator-start indicator-item indicator-top badge badge-secondary badge-xs left-1 top-1"
               title="You Have New Requests"
             ></span>
           )}
