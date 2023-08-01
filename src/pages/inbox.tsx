@@ -74,30 +74,47 @@ export default function InboxPage({ user }: InboxPageProps) {
         </ul>
       </BackHeader>
       {!isLoading &&
-        (view === "received" ? (
-          data?.received.map(({ sender, senderId }) => (
-            <section
-              className="flex items-center justify-between gap-2 border-b p-2"
-              key={`${user.id}${senderId}`}
-            >
-              <ProfileImage
-                src={sender.profileImage}
-                size="medium"
-                styleExtensions="shrink-0"
-              />
-              <p>
-                {`${sender.pokemon?.name[0]?.toUpperCase()}${sender.pokemon?.name.slice(
-                  1
-                )}`}{" "}
-                sent you a friend request!
-              </p>
-              <button className="btn-info btn-sm btn">Accept</button>
-              <button className="btn-error btn-sm btn">Decline</button>
-            </section>
-          ))
-        ) : (
-          <div>Sent: {data?.sent.length}</div>
-        ))}
+        (view === "received"
+          ? data?.received.map(({ sender, senderId }) => (
+              <section
+                className="flex items-center justify-between gap-2 border-b p-2"
+                key={`${user.id}${senderId}`}
+              >
+                <ProfileImage
+                  src={sender.profileImage}
+                  size="medium"
+                  styleExtensions="shrink-0"
+                />
+                <p>
+                  {`${sender.pokemon?.name[0]?.toUpperCase()}${sender.pokemon?.name.slice(
+                    1
+                  )}`}{" "}
+                  sent you a friend request!
+                </p>
+                <button className="btn-info btn-sm btn">Accept</button>
+                <button className="btn-error btn-sm btn">Decline</button>
+              </section>
+            ))
+          : data?.sent.map(({ receiver, receiverId }) => (
+              <section
+                className="flex items-center justify-around gap-2 border-b p-2"
+                key={`${receiverId}${user.id}`}
+              >
+                <ProfileImage
+                  src={receiver.profileImage}
+                  size="medium"
+                  styleExtensions="shrink-0"
+                />
+                <p>
+                  You sent a friend request to{" "}
+                  {`${receiver.pokemon?.name[0]?.toUpperCase()}${receiver.pokemon?.name.slice(
+                    1
+                  )}`}
+                  !
+                </p>
+                <button className="btn-error btn-sm btn">Cancel</button>
+              </section>
+            )))}
     </>
   );
 }
