@@ -45,6 +45,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const { sent, received } = await caller.profile.friendRequestExists({
     profileId,
+    userId: session.user.id,
   });
 
   const friendStatus: FriendStatus = isFriend

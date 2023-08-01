@@ -55,22 +55,18 @@ export const profileRouter = createTRPCRouter({
       return { addedFollow };
     }),
   friendRequestExists: publicProcedure
-    .input(z.object({ profileId: z.string() }))
-    .query(async ({ input: { profileId }, ctx }) => {
-      const currentUserId = ctx.session?.user.id;
-
-      if (currentUserId == null) return {};
-
+    .input(z.object({ profileId: z.string(), userId: z.string() }))
+    .query(async ({ input: { profileId, userId }, ctx }) => {
       const sentFriendReq = await ctx.prisma.friendRequest.findFirst({
         where: {
-          senderId: currentUserId,
+          senderId: userId,
           receiverId: profileId,
         },
       });
       const receivedFriendReq = await ctx.prisma.friendRequest.findFirst({
         where: {
           senderId: profileId,
-          receiverId: currentUserId,
+          receiverId: userId,
         },
       });
 
@@ -78,18 +74,6 @@ export const profileRouter = createTRPCRouter({
         sent: !!sentFriendReq,
         received: !!receivedFriendReq,
       };
-
-      // While smart, we need to know if the user or the profile sent the request...
-      // const existingFriendReq = await ctx.prisma.friendRequest.findFirst({
-      //   where: {
-      //     OR: [
-      //       { senderId: currentUserId, receiverId: profileId },
-      //       { senderId: profileId, receiverId: currentUserId },
-      //     ],
-      //   },
-      // });
-
-      // return { friendReqExists: !!existingFriendReq };
     }),
   sendFriendRequest: protectedProcedure
     .input(z.object({ profileId: z.string() }))
