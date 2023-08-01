@@ -41,24 +41,27 @@ export default function InboxPage({ user }: InboxPageProps) {
 
   const trpcUtils = api.useContext();
 
-  const useDeleteFriendRequest = api.profile.deleteFriendRequest.useMutation({
-    onSuccess: ({ removeId }) => {
-      trpcUtils.profile.getAllFriendRequests.setData(undefined, (oldData) => {
-        if (oldData?.received == null || oldData?.sent == null)
-          return undefined;
+  const updateData = ({ removeId }: { removeId: string }) => {
+    trpcUtils.profile.getAllFriendRequests.setData(undefined, (oldData) => {
+      if (oldData?.received == null || oldData?.sent == null) return undefined;
 
-        const newData = {
-          sent: oldData.sent.filter(
-            ({ receiverId }) => receiverId !== removeId
-          ),
-          received: oldData.received.filter(
-            ({ senderId }) => senderId !== removeId
-          ),
-        };
-        console.log(newData);
-        return newData;
-      });
-    },
+      const newData = {
+        sent: oldData.sent.filter(({ receiverId }) => receiverId !== removeId),
+        received: oldData.received.filter(
+          ({ senderId }) => senderId !== removeId
+        ),
+      };
+
+      return newData;
+    });
+  };
+
+  const useAcceptFriendRequest = api.profile.acceptFriendRequest.useMutation({
+    onSuccess: updateData,
+  });
+
+  const useDeleteFriendRequest = api.profile.deleteFriendRequest.useMutation({
+    onSuccess: updateData,
   });
 
   const [view, setView] = useState<"received" | "sent">("received");
@@ -123,7 +126,16 @@ export default function InboxPage({ user }: InboxPageProps) {
                   )}`}{" "}
                   sent you a friend request!
                 </p>
-                <button className="btn-info btn-sm btn">Accept</button>
+                <button
+                  className="btn-info btn-sm btn"
+                  onClick={() =>
+                    useAcceptFriendRequest.mutate({
+                      senderId,
+                    })
+                  }
+                >
+                  Accept
+                </button>
                 <button
                   className="btn-error btn-sm btn"
                   onClick={() =>

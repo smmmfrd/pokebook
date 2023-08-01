@@ -123,6 +123,33 @@ export const profileRouter = createTRPCRouter({
 
     return { received, sent };
   }),
+  acceptFriendRequest: protectedProcedure
+    .input(z.object({ senderId: z.string() }))
+    .mutation(async ({ input: { senderId }, ctx }) => {
+      const currentUserId = ctx.session.user.id;
+
+      await ctx.prisma.friendRequest.delete({
+        where: { senderId_receiverId: { senderId, receiverId: currentUserId } },
+      });
+
+      // Set Sender
+      await ctx.prisma.user.update({
+        where: { id: senderId },
+        data: {
+          friends: { connect: { id: currentUserId } },
+        },
+      });
+
+      // Set Receiver
+      await ctx.prisma.user.update({
+        where: { id: currentUserId },
+        data: {
+          friends: { connect: { id: senderId } },
+        },
+      });
+
+      return { removeId: senderId };
+    }),
   deleteFriendRequest: protectedProcedure
     .input(z.object({ senderId: z.string(), receiverId: z.string() }))
     .mutation(async ({ input, ctx }) => {
