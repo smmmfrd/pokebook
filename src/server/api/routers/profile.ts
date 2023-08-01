@@ -126,8 +126,15 @@ export const profileRouter = createTRPCRouter({
   deleteFriendRequest: protectedProcedure
     .input(z.object({ senderId: z.string(), receiverId: z.string() }))
     .mutation(async ({ input, ctx }) => {
+      const currentUserId = ctx.session.user.id;
+
       await ctx.prisma.friendRequest.delete({
         where: { senderId_receiverId: input },
       });
+
+      return {
+        removeId:
+          input.senderId === currentUserId ? input.receiverId : input.senderId,
+      };
     }),
 });

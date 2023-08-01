@@ -39,7 +39,27 @@ type InboxPageProps = {
 export default function InboxPage({ user }: InboxPageProps) {
   const { data, isLoading } = api.profile.getAllFriendRequests.useQuery();
 
-  const useDeleteFriendRequest = api.profile.deleteFriendRequest.useMutation();
+  const trpcUtils = api.useContext();
+
+  const useDeleteFriendRequest = api.profile.deleteFriendRequest.useMutation({
+    onSuccess: ({ removeId }) => {
+      trpcUtils.profile.getAllFriendRequests.setData(undefined, (oldData) => {
+        if (oldData?.received == null || oldData?.sent == null)
+          return undefined;
+
+        const newData = {
+          sent: oldData.sent.filter(
+            ({ receiverId }) => receiverId !== removeId
+          ),
+          received: oldData.received.filter(
+            ({ senderId }) => senderId !== removeId
+          ),
+        };
+        console.log(newData);
+        return newData;
+      });
+    },
+  });
 
   const [view, setView] = useState<"received" | "sent">("received");
 
