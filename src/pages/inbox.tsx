@@ -39,6 +39,8 @@ type InboxPageProps = {
 export default function InboxPage({ user }: InboxPageProps) {
   const { data, isLoading } = api.profile.getAllFriendRequests.useQuery();
 
+  const useDeleteFriendRequest = api.profile.deleteFriendRequest.useMutation();
+
   const [view, setView] = useState<"received" | "sent">("received");
 
   return (
@@ -92,7 +94,17 @@ export default function InboxPage({ user }: InboxPageProps) {
                   sent you a friend request!
                 </p>
                 <button className="btn-info btn-sm btn">Accept</button>
-                <button className="btn-error btn-sm btn">Decline</button>
+                <button
+                  className="btn-error btn-sm btn"
+                  onClick={() =>
+                    useDeleteFriendRequest.mutate({
+                      senderId,
+                      receiverId: user.id,
+                    })
+                  }
+                >
+                  Decline
+                </button>
               </section>
             ))
           : data?.sent.map(({ receiver, receiverId }) => (
@@ -112,7 +124,17 @@ export default function InboxPage({ user }: InboxPageProps) {
                   )}`}
                   !
                 </p>
-                <button className="btn-error btn-sm btn">Cancel</button>
+                <button
+                  className="btn-error btn-sm btn"
+                  onClick={() =>
+                    useDeleteFriendRequest.mutate({
+                      senderId: user.id,
+                      receiverId,
+                    })
+                  }
+                >
+                  Cancel
+                </button>
               </section>
             )))}
     </>
