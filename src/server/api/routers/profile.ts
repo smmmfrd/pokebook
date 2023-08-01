@@ -110,9 +110,31 @@ export const profileRouter = createTRPCRouter({
 
     const received = await ctx.prisma.friendRequest.findMany({
       where: { receiverId: currentUserId },
+      select: {
+        senderId: true,
+        sender: {
+          select: {
+            profileImage: true,
+            pokemon: {
+              select: { name: true },
+            },
+          },
+        },
+      },
     });
     const sent = await ctx.prisma.friendRequest.findMany({
       where: { senderId: currentUserId },
+      select: {
+        receiverId: true,
+        receiver: {
+          select: {
+            profileImage: true,
+            pokemon: {
+              select: { name: true },
+            },
+          },
+        },
+      },
     });
 
     return { received, sent };
