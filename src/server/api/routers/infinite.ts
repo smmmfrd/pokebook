@@ -12,7 +12,7 @@ export const infiniteRouter = createTRPCRouter({
   infiniteHomeFeed: protectedProcedure
     .input(
       z.object({
-        where: z.enum(["none", "following"]),
+        where: z.enum(["none", "following", "friends"]),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
@@ -23,13 +23,19 @@ export const infiniteRouter = createTRPCRouter({
         ctx,
         cursor,
         whereClause:
-          where === "none"
-            ? undefined
-            : where === "following"
+          where === "following"
             ? {
                 user: {
                   followers: {
                     some: { id: ctx.session?.user.id },
+                  },
+                },
+              }
+            : where === "friends"
+            ? {
+                user: {
+                  friends: {
+                    some: { id: ctx.session.user.id },
                   },
                 },
               }
