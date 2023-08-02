@@ -164,4 +164,14 @@ export const profileRouter = createTRPCRouter({
           input.senderId === currentUserId ? input.receiverId : input.senderId,
       };
     }),
+  unfriend: protectedProcedure
+    .input(z.object({ profileId: z.string() }))
+    .mutation(async ({ input: { profileId }, ctx }) => {
+      const currentUserId = ctx.session.user.id;
+
+      await ctx.prisma.user.update({
+        where: { id: profileId },
+        data: { friends: { disconnect: { id: currentUserId } } },
+      });
+    }),
 });
