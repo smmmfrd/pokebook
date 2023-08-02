@@ -40,7 +40,28 @@ export default function FriendManagement({ user }: FriendManagementProps) {
   const pokemonName = `${user.pokemonName
     .slice(0, 1)
     .toUpperCase()}${user.pokemonName.slice(1)}`;
+
+  const trpcUtils = api.useContext();
+
   const useGetAllFriends = api.profile.getAllFriends.useQuery();
+
+  const useUnfriend = api.profile.unfriend.useMutation({
+    onSuccess: ({ profileId }) => {
+      trpcUtils.profile.getAllFriends.setData(undefined, (oldData) => {
+        if (oldData == null || oldData?.friends == null) return undefined;
+
+        const newData = {
+          friends: oldData.friends.filter((friend) => friend.id !== profileId),
+        };
+
+        return newData;
+      });
+    },
+  });
+
+  function handleUnfriend(profileId: string) {
+    void useUnfriend.mutate({ profileId });
+  }
 
   return (
     <>
@@ -54,7 +75,10 @@ export default function FriendManagement({ user }: FriendManagementProps) {
       {useGetAllFriends.isLoading && <div>loading...</div>}
       {useGetAllFriends.data != null &&
         useGetAllFriends.data.friends.map((friend) => (
-          <section className="flex items-center gap-4 border-b p-4">
+          <section
+            className="flex items-center gap-4 border-b p-4"
+            key={friend.id}
+          >
             <ProfileImage
               size="large"
               src={friend.profileImage}
@@ -64,7 +88,12 @@ export default function FriendManagement({ user }: FriendManagementProps) {
               <h2 className="text-3xl font-bold">{`${friend.pokemon?.name
                 .slice(0, 1)
                 .toUpperCase()}${friend.pokemon?.name.slice(1)}`}</h2>
-              <button className="btn-error btn ml-auto block">Un-friend</button>
+              <button
+                className="btn-error btn ml-auto block"
+                onClick={() => handleUnfriend(friend.id)}
+              >
+                Un-friend
+              </button>
             </div>
           </section>
         ))}

@@ -198,5 +198,7 @@ export const profileRouter = createTRPCRouter({
         where: { id: currentUserId },
         data: { friends: { disconnect: { id: profileId } } },
       });
+
+      return { profileId };
     }),
 });
