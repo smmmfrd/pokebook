@@ -54,6 +54,26 @@ export const profileRouter = createTRPCRouter({
 
       return { addedFollow };
     }),
+  getAllFriends: protectedProcedure.query(async ({ ctx }) => {
+    const currentUserId = ctx.session.user.id;
+
+    return await ctx.prisma.user.findFirst({
+      where: { id: currentUserId },
+      select: {
+        friends: {
+          select: {
+            id: true,
+            profileImage: true,
+            pokemon: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }),
   friendRequestExists: publicProcedure
     .input(z.object({ profileId: z.string(), userId: z.string() }))
     .query(async ({ input: { profileId, userId }, ctx }) => {
