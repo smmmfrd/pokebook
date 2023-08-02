@@ -86,11 +86,18 @@ function FriendButton({ friendStatus, profileId }: FriendButtonProps) {
     },
   });
 
+  const useUnfriend = api.profile.unfriend.useMutation({
+    onSuccess: () => {
+      setCacheFriendStatus("none");
+    },
+  });
+
   function handleClick() {
     if (cacheFriendStatus === "none") {
       // Send a friend request
       void useSendFriendReq.mutate({ profileId });
     } else {
+      void useUnfriend.mutate({ profileId });
     }
   }
 
@@ -106,7 +113,7 @@ function FriendButton({ friendStatus, profileId }: FriendButtonProps) {
         cacheFriendStatus === "sent"
       }
     >
-      {useSendFriendReq.isLoading
+      {useSendFriendReq.isLoading || useUnfriend.isLoading
         ? "..."
         : cacheFriendStatus === "none"
         ? "Send Friend Req."
