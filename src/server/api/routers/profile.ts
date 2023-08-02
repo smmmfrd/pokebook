@@ -173,5 +173,10 @@ export const profileRouter = createTRPCRouter({
         where: { id: profileId },
         data: { friends: { disconnect: { id: currentUserId } } },
       });
+
+      await ctx.prisma.user.update({
+        where: { id: currentUserId },
+        data: { friends: { disconnect: { id: profileId } } },
+      });
     }),
 });
