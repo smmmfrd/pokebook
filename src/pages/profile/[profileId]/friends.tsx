@@ -6,6 +6,7 @@ import { api } from "~/utils/api";
 import BackHeader from "~/components/BackHeader";
 import ProfileImage from "~/components/ProfileImage";
 import Head from "next/head";
+import Link from "next/link";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -83,11 +84,14 @@ export default function FriendManagement({ user }: FriendManagementProps) {
               size="large"
               src={friend.profileImage}
               styleExtensions="shrink-0"
+              href={`/profile/${friend.id}`}
             />
             <div className="flex w-full flex-col gap-2">
-              <h2 className="text-3xl font-bold">{`${friend.pokemon?.name
-                .slice(0, 1)
-                .toUpperCase()}${friend.pokemon?.name.slice(1)}`}</h2>
+              <Link href={`/profile/${friend.id}`} className="hover:underline">
+                <h2 className="text-3xl font-bold">{`${friend.pokemon?.name
+                  .slice(0, 1)
+                  .toUpperCase()}${friend.pokemon?.name.slice(1)}`}</h2>
+              </Link>
               <button
                 className="btn-error btn ml-auto block"
                 onClick={() => handleUnfriend(friend.id)}
