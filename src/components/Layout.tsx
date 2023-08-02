@@ -11,19 +11,19 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
   const { data: sessionData } = useSession();
 
-  if (!sessionData) return children;
-
   const [theme, setTheme] = useState("cmyk");
-
-  const toggleTheme = () => {
-    setTheme(theme === "cmyk" ? "night" : "cmyk");
-  };
 
   useEffect(() => {
     document.querySelector("html")?.setAttribute("data-theme", theme);
   }, [theme]);
 
   const { data } = api.profile.getAllFriendRequests.useQuery();
+
+  if (!sessionData) return children;
+
+  const toggleTheme = () => {
+    setTheme(theme === "cmyk" ? "night" : "cmyk");
+  };
 
   return (
     <div className="flex min-w-full">
