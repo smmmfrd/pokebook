@@ -38,7 +38,7 @@ export default function Home() {
     onSuccess: (newPost) => {
       // Here we need to add this new post to our infinite feed, so that the user has a fluid experience.
 
-      if (session.status !== "authenticated") return;
+      if (session.status !== "authenticated" || feed !== "none") return;
 
       trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
         { where: feed },
