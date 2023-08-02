@@ -1,7 +1,7 @@
 import type { FriendStatus } from "~/utils/types";
 
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { cache, useState } from "react";
 import { api } from "~/utils/api";
 
 type ProfileButtonsProps = {
@@ -19,6 +19,24 @@ export default function ProfileButtons({
 
   if (session.status !== "authenticated") return <></>;
 
+  if (session.data?.user.id === profileId) {
+    return <p>goto: friend management!</p>;
+  } else {
+    return (
+      <>
+        <FollowButton isFollowing={isFollowing} profileId={profileId} />
+        <FriendButton friendStatus={friendStatus} profileId={profileId} />
+      </>
+    );
+  }
+}
+
+type FollowButtonProps = {
+  isFollowing: boolean;
+  profileId: string;
+};
+
+function FollowButton({ isFollowing, profileId }: FollowButtonProps) {
   const [cacheFollow, setCacheFollow] = useState(isFollowing);
 
   const useFollow = api.profile.toggleFollow.useMutation({
@@ -31,6 +49,35 @@ export default function ProfileButtons({
     void useFollow.mutate({ profileId });
   }
 
+  if (cacheFollow) {
+    return (
+      <button
+        className="btn-secondary btn-sm btn"
+        onClick={handleFollowClick}
+        disabled={useFollow.isLoading}
+      >
+        {useFollow.isLoading ? "..." : "Following"}
+      </button>
+    );
+  } else {
+    return (
+      <button
+        disabled={useFollow.isLoading}
+        onClick={handleFollowClick}
+        className="btn-info btn-sm btn"
+      >
+        {useFollow.isLoading ? "..." : "Follow"}
+      </button>
+    );
+  }
+}
+
+type FriendButtonProps = {
+  friendStatus: FriendStatus;
+  profileId: string;
+};
+
+function FriendButton({ friendStatus, profileId }: FriendButtonProps) {
   const [cacheFriendStatus, setCacheFriendStatus] = useState(friendStatus);
 
   const useSendFriendReq = api.profile.sendFriendRequest.useMutation({
@@ -39,110 +86,37 @@ export default function ProfileButtons({
     },
   });
 
-  function handleSendFriendRequest() {
-    void useSendFriendReq.mutate({ profileId });
+  function handleClick() {
+    if (cacheFriendStatus === "none") {
+      // Send a friend request
+      void useSendFriendReq.mutate({ profileId });
+    } else {
+    }
   }
 
-  // User viewing their profile
-  if (session.data?.user.id === profileId) {
-    return (
-      <div
-        className="tooltip-info tooltip tooltip-right"
-        data-tip="You can't follow or friend yourself!"
-      >
-        <button disabled className="btn-info btn-sm btn">
-          Follow
-        </button>
-      </div>
-    );
-  } else {
-    // User is following this profile
-    // Friending UI Here
-    if (cacheFollow) {
-      if (cacheFriendStatus === "none") {
-        return (
-          <>
-            <button
-              className="btn-secondary btn-sm btn"
-              onClick={handleFollowClick}
-              disabled={useFollow.isLoading}
-            >
-              {useFollow.isLoading ? "..." : "Following"}
-            </button>
-            <button
-              className="btn-success btn-sm btn"
-              onClick={handleSendFriendRequest}
-              disabled={useFollow.isLoading}
-            >
-              Send Friend Req.
-            </button>
-          </>
-        );
-      } else if (cacheFriendStatus === "friend") {
-        return (
-          <>
-            <button
-              className="btn-secondary btn-sm btn"
-              onClick={handleFollowClick}
-              disabled={useFollow.isLoading}
-            >
-              {useFollow.isLoading ? "..." : "Following"}
-            </button>
-            <button
-              className="btn-error btn-sm btn"
-              disabled={useFollow.isLoading}
-            >
-              Un-Friend
-            </button>
-          </>
-        );
-      } else {
-        if (cacheFriendStatus === "sent") {
-          return (
-            <>
-              <button
-                className="btn-secondary btn-sm btn"
-                onClick={handleFollowClick}
-                disabled={useFollow.isLoading}
-              >
-                {useFollow.isLoading ? "..." : "Following"}
-              </button>
-              <button className="btn-sm btn" disabled>
-                Friend Req. Sent...
-              </button>
-            </>
-          );
-        } else if (cacheFriendStatus === "received") {
-          return (
-            <>
-              <button
-                className="btn-secondary btn-sm btn"
-                onClick={handleFollowClick}
-                disabled={useFollow.isLoading}
-              >
-                {useFollow.isLoading ? "..." : "Following"}
-              </button>
-              <button className="btn-sm btn" disabled>
-                Accept Friend Req.
-              </button>
-            </>
-          );
-        }
+  return (
+    <button
+      className={`${
+        cacheFriendStatus === "none" ? "btn-success" : "btn-error"
+      } btn-sm btn`}
+      onClick={handleClick}
+      disabled={
+        useSendFriendReq.isLoading ||
+        cacheFriendStatus === "received" ||
+        cacheFriendStatus === "sent"
       }
-    }
-    // User is not following this profile
-    else {
-      return (
-        <button
-          disabled={useFollow.isLoading}
-          onClick={handleFollowClick}
-          className="btn-info btn-sm btn"
-        >
-          {useFollow.isLoading ? "..." : "Follow"}
-        </button>
-      );
-    }
-  }
-
-  return <></>;
+    >
+      {useSendFriendReq.isLoading
+        ? "..."
+        : cacheFriendStatus === "none"
+        ? "Send Friend Req."
+        : cacheFriendStatus === "friend"
+        ? "Un-Friend"
+        : cacheFriendStatus === "received"
+        ? "Accept Friend Req."
+        : cacheFriendStatus === "sent"
+        ? "Friend Req. Sent..."
+        : ""}
+    </button>
+  );
 }
