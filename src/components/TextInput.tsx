@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { IconMap } from "~/utils/IconsMap";
 
+const MAX_LENGTH = 255;
+
 type TextInputProps = {
   pokemonName: string;
   placeholderText: string;
@@ -29,10 +31,19 @@ export default function TextInput({
   }
 
   const [inputValue, setInputValue] = useState("");
+
   function handleMouseUp(index: number) {
+    if (inputValue.length > MAX_LENGTH) return;
+
     setInputValue((prev) =>
       `${prev} ${pokemonName.slice(0, index + 1)}`.trim()
     );
+  }
+
+  function handlePunctuation(punctuation: string) {
+    if (inputValue.length > MAX_LENGTH) return;
+
+    setInputValue((prev) => `${prev}${punctuation}`);
   }
 
   function handleDelete() {
@@ -58,7 +69,7 @@ export default function TextInput({
           <div
             className={`flex-grow py-4 text-center first:pl-4 last:pr-4 ${
               hoverIndex >= index ? "bg-info" : "bg-none"
-            }`}
+            } ${inputValue.length > MAX_LENGTH && "text-base-300"}`}
             key={index}
             onMouseUp={() => handleMouseUp(index)}
             onMouseOver={() => handleMouseOver(index)}
@@ -68,45 +79,28 @@ export default function TextInput({
         ))}
       </div>
 
-      {/* TEXT DISPLAY */}
-      <div
-        className={`textarea-bordered textarea w-full cursor-default overflow-hidden text-xl ${
-          !open && "cursor-pointer"
-        }`}
-      >
-        {inputValue.length > 0 ? (
-          inputValue
-        ) : (
-          <span className="text-neutral-content">
-            {open ? "Use above to enter text..." : placeholderText}
-          </span>
-        )}
-      </div>
-
       {/* INPUT BUTTONS */}
-      <div
-        className={`mb-4 flex justify-between p-4 pt-1 ${!open && "hidden"}`}
-      >
+      <div className={`flex justify-between p-4 pt-1 ${!open && "hidden"}`}>
         {/* PUNCTUATION BUTTONS */}
         <div className="join items-center">
           <button
             className="btn-square join-item btn"
-            disabled={inputValue.length === 0}
-            onClick={() => setInputValue((prev) => `${prev}.`)}
+            disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
+            onClick={() => handlePunctuation(".")}
           >
             .
           </button>
           <button
             className="btn-square join-item btn"
-            disabled={inputValue.length === 0}
-            onClick={() => setInputValue((prev) => `${prev}!`)}
+            disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
+            onClick={() => handlePunctuation("!")}
           >
             !
           </button>
           <button
             className="btn-square join-item btn"
-            disabled={inputValue.length === 0}
-            onClick={() => setInputValue((prev) => `${prev}?`)}
+            disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
+            onClick={() => handlePunctuation("?")}
           >
             ?
           </button>
@@ -120,6 +114,21 @@ export default function TextInput({
           <span className="h-4 w-4">{IconMap.undo}</span>
           DELETE
         </button>
+      </div>
+
+      {/* TEXT DISPLAY */}
+      <div
+        className={`textarea-bordered textarea mb-4 w-full cursor-default overflow-hidden text-xl ${
+          !open && "cursor-pointer"
+        }`}
+      >
+        {inputValue.length > 0 ? (
+          inputValue
+        ) : (
+          <span className="text-neutral-content">
+            {open ? "Use above to enter text..." : placeholderText}
+          </span>
+        )}
       </div>
 
       {/* CANCEL AND CLOSE BUTTONS */}
