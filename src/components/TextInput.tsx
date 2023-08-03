@@ -52,7 +52,7 @@ export default function TextInput({
 
   return (
     <form
-      className={`mx-auto max-w-sm p-4 pb-2 ${!open && "cursor-pointer"}`}
+      className={`mx-auto max-w-sm p-4 pb-2 ${open ? "" : "cursor-pointer"}`}
       onMouseDown={() => setOpen(true)}
       onSubmit={(e) => {
         e.preventDefault();
@@ -69,7 +69,7 @@ export default function TextInput({
           <div
             className={`flex-grow py-4 text-center first:pl-4 last:pr-4 ${
               hoverIndex >= index ? "bg-info" : "bg-none"
-            } ${inputValue.length > MAX_LENGTH && "text-base-300"}`}
+            } ${inputValue.length > MAX_LENGTH ? "text-base-300" : ""}`}
             key={index}
             onMouseUp={() => handleMouseUp(index)}
             onMouseOver={() => handleMouseOver(index)}
@@ -80,7 +80,7 @@ export default function TextInput({
       </div>
 
       {/* INPUT BUTTONS */}
-      <div className={`flex justify-between p-4 pt-1 ${!open && "hidden"}`}>
+      <div className={`flex justify-between p-4 pt-1 ${open ? "hidden" : ""}`}>
         {/* PUNCTUATION BUTTONS */}
         <div className="join items-center">
           <button
@@ -119,7 +119,7 @@ export default function TextInput({
       {/* TEXT DISPLAY */}
       <div
         className={`textarea-bordered textarea mb-4 w-full cursor-default overflow-hidden text-xl ${
-          !open && "cursor-pointer"
+          open ? "" : "cursor-pointer"
         }`}
       >
         {inputValue.length > 0 ? (
@@ -135,7 +135,7 @@ export default function TextInput({
       <div className="flex justify-between">
         <button
           type="reset"
-          className={`btn-outline btn ${!open && "hidden"}`}
+          className={`btn-outline btn ${open ? "" : "hidden"}`}
           onClick={(e) => {
             e.stopPropagation();
             setOpen(false);
@@ -146,7 +146,7 @@ export default function TextInput({
         <button
           type="reset"
           disabled={inputValue.length === 0}
-          className={`btn-primary btn ${!open && "hidden"}`}
+          className={`btn-primary btn ${open ? "" : "hidden"}`}
           onClick={(e) => {
             e.stopPropagation();
             setOpen(false);

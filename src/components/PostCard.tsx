@@ -1,5 +1,4 @@
 import moment from "moment";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
@@ -131,7 +130,7 @@ export default function PostCard({
           {toggleLike.isLoading ? (
             <div
               className={`loading loading-spinner loading-sm ${
-                !likedByMe && "text-secondary"
+                likedByMe ? "" : "text-secondary"
               }`}
             ></div>
           ) : likedByMe ? (
