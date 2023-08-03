@@ -1,8 +1,7 @@
 import { api } from "~/utils/api";
 
-import { InferGetServerSidePropsType, type GetServerSideProps } from "next";
+import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "~/server/auth";
-import { caller } from "~/server/api/root";
 
 import TextInput from "~/components/TextInput";
 import InfiniteFeed from "~/components/InfiniteFeed";
@@ -99,7 +98,7 @@ export default function Home() {
         <ul className="tabs w-full justify-between">
           <li
             className={`tab-bordered tab ${
-              feed === "none" && "tab-active"
+              feed === "none" ? "tab-active" : ""
             } flex-grow`}
             onClick={() => setFeed("none")}
           >
@@ -107,7 +106,7 @@ export default function Home() {
           </li>
           <li
             className={`tab-bordered tab ${
-              feed === "following" && "tab-active"
+              feed === "following" ? "tab-active" : ""
             } flex-grow`}
             onClick={() => setFeed("following")}
           >
@@ -115,7 +114,7 @@ export default function Home() {
           </li>
           <li
             className={`tab-bordered tab ${
-              feed === "friends" && "tab-active"
+              feed === "friends" ? "tab-active" : ""
             } flex-grow`}
             onClick={() => setFeed("friends")}
           >

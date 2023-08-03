@@ -9,7 +9,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session) {
     return {
       redirect: {
-        destination: ctx.query.returnURL ? `${ctx.query.returnURL}` : "/",
+        destination: ctx.query.returnURL
+          ? `${
+              Array.isArray(ctx.query.returnURL)
+                ? ctx.query.returnURL.join()
+                : ctx.query.returnURL
+            }`
+          : "/",
         permanent: false,
       },
     };
