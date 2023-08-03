@@ -1,7 +1,7 @@
 import type { FriendStatus } from "~/utils/types";
 
 import { useSession } from "next-auth/react";
-import { cache, useState } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 import Link from "next/link";
 

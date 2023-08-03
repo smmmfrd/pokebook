@@ -1,8 +1,6 @@
-import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
-import { api } from "~/utils/api";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
 
@@ -46,7 +44,7 @@ export default function Navbar({
         <NavbarLink href="/inbox" styleExtensions="indicator">
           {requestNotif && (
             <span
-              className="indicator-start indicator-item indicator-top badge badge-secondary badge-xs left-1 top-1"
+              className="badge badge-secondary badge-xs indicator-start indicator-item indicator-top left-1 top-1"
               title="You Have New Requests"
             ></span>
           )}
