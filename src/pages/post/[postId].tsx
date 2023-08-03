@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import { caller } from "~/server/api/root";
 import { getServerAuthSession } from "~/server/auth";
@@ -183,26 +183,30 @@ type CommentProps = {
 };
 
 function Comment({ comment }: CommentProps) {
-  const pokemonName: string = `${comment.user?.pokemon?.name
-    .slice(0, 1)
-    .toUpperCase()}${comment.user?.pokemon?.name.slice(1)}`;
+  const pokemonName = comment.user?.pokemon?.name
+    ? `${comment.user?.pokemon?.name
+        .slice(0, 1)
+        .toUpperCase()}${comment.user?.pokemon?.name.slice(1)}`
+    : "";
+
+  if (comment.user == null) return <></>;
 
   return (
     <section
-      key={`${comment.createdAt.getTime()}${comment.user?.id}`}
+      key={`${comment.createdAt.getTime()}${comment.user.id}`}
       className="flex gap-4 border-b px-6 pb-3.5 pt-2.5"
     >
       <ProfileImage
-        src={comment.user?.profileImage ?? ""}
+        src={comment.user.profileImage ?? ""}
         styleExtensions="mt-2"
-        href={`/profile/${comment.user?.id}`}
+        href={`/profile/${comment.user.id}`}
         size="medium"
       />
       <div className="flex flex-col items-start gap-0.5">
         <p>
           <Link
             className="capitalize hover:underline"
-            href={`/profile/${comment.user?.id}`}
+            href={`/profile/${comment.user.id}`}
           >
             {pokemonName}{" "}
           </Link>

@@ -1,18 +1,16 @@
 import type { Session, Pokemon } from "@prisma/client";
 import { type GetServerSideProps } from "next";
-import { useRouter } from "next/router";
 import { getServerAuthSession } from "~/server/auth";
 import { caller } from "~/server/api/root";
 
 import { api } from "~/utils/api";
 
 import InfiniteFeed from "~/components/InfiniteFeed";
-import NavbarIcon from "~/components/NavbarIcon";
 import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
 import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
-import { FriendStatus } from "~/utils/types";
+import type { FriendStatus } from "~/utils/types";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -39,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { pokemon, isFollowing, isFriend } = profileData;
 
   const randomFlavorText = () => {
-    const texts = JSON.parse(pokemon.flavorTexts);
+    const texts = JSON.parse(pokemon.flavorTexts) as string[];
     return texts[Math.floor(Math.random() * texts.length)];
   };
 
@@ -97,7 +95,7 @@ export default function ProfilePage({
     <>
       <Head>
         <title>
-          {`${pokemon.name[0]?.toUpperCase()}${pokemon.name.slice(1)}'s
+          {`${pokemon.name.slice(0, 1).toUpperCase()}${pokemon.name.slice(1)}'s
           Profile | Pokebook`}
         </title>
       </Head>

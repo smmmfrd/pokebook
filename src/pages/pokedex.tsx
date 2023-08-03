@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { type GetStaticProps } from "next";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -29,7 +29,7 @@ export default function Pokedex({ pokemon }: PokedoxProps) {
     if (auth.status === "loading") return;
 
     if (auth.data === null || !auth.data.user) {
-      router.replace(
+      void router.replace(
         {
           pathname: "/login",
           query: { from: encodeURIComponent(router.asPath) },
@@ -37,7 +37,7 @@ export default function Pokedex({ pokemon }: PokedoxProps) {
         "/login"
       );
     }
-  }, [auth.data, router]);
+  }, [auth.data, router, auth.status]);
 
   return (
     <>
@@ -54,7 +54,6 @@ export default function Pokedex({ pokemon }: PokedoxProps) {
                 type="checkbox"
                 checked={mon.user}
                 className="checkbox-warning checkbox cursor-auto"
-                onChange={() => {}}
               />
             </span>
             <Image

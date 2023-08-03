@@ -1,6 +1,5 @@
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "~/server/auth";
-import { caller } from "~/server/api/root";
 import { api } from "~/utils/api";
 
 import BackHeader from "~/components/BackHeader";
@@ -20,10 +19,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const pokemonName = `${session.user.pokemonName
-    .slice(0, 1)
-    .toUpperCase()}${session.user.pokemonName.slice(1)}`;
-
   return {
     props: { session, user: session.user },
   };
@@ -38,9 +33,8 @@ type FriendManagementProps = {
 };
 
 export default function FriendManagement({ user }: FriendManagementProps) {
-  const pokemonName = `${user.pokemonName
-    .slice(0, 1)
-    .toUpperCase()}${user.pokemonName.slice(1)}`;
+  const getName = (name: string | undefined): string =>
+    name ? `${name.slice(0, 1).toUpperCase()}${name.slice(1)}` : "";
 
   const trpcUtils = api.useContext();
 
@@ -67,10 +61,10 @@ export default function FriendManagement({ user }: FriendManagementProps) {
   return (
     <>
       <Head>
-        <title>{`${pokemonName}'s Friends`}</title>
+        <title>{`${getName(user.pokemonName)}'s Friends`}</title>
       </Head>
       <BackHeader
-        title={`${pokemonName}'s Friends`}
+        title={`${getName(user.pokemonName)}'s Friends`}
         headExtensions={<ProfileImage size="small" src={user.profileImage} />}
       />
       {useGetAllFriends.isLoading && <div>loading...</div>}
@@ -88,9 +82,9 @@ export default function FriendManagement({ user }: FriendManagementProps) {
             />
             <div className="flex w-full flex-col gap-2">
               <Link href={`/profile/${friend.id}`} className="hover:underline">
-                <h2 className="text-3xl font-bold">{`${friend.pokemon?.name
-                  .slice(0, 1)
-                  .toUpperCase()}${friend.pokemon?.name.slice(1)}`}</h2>
+                <h2 className="text-3xl font-bold">{`${getName(
+                  friend.pokemon?.name
+                )}`}</h2>
               </Link>
               <button
                 className="btn-error btn ml-auto block"
