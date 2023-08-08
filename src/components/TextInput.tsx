@@ -80,7 +80,7 @@ export default function TextInput({
       </div>
 
       {/* INPUT BUTTONS */}
-      <div className={`flex justify-between p-4 pt-1 ${open ? "hidden" : ""}`}>
+      <div className={`flex justify-between p-4 pt-1 ${open ? "" : "hidden"}`}>
         {/* PUNCTUATION BUTTONS */}
         <div className="join items-center">
           <button
@@ -125,7 +125,7 @@ export default function TextInput({
         {inputValue.length > 0 ? (
           inputValue
         ) : (
-          <span className="text-neutral-content">
+          <span className="select-none text-neutral-content">
             {open ? "Use above to enter text..." : placeholderText}
           </span>
         )}
