@@ -21,6 +21,19 @@ export default function TextInput({
     }
   }, [open]);
 
+  // This is a control variable to make sure the mouse up event was started by the user first clicking down on one of the characters.
+  const [goodInput, setGoodInput] = useState(false);
+
+  useEffect(() => {
+    const handleOutsideClick = () => setGoodInput(false);
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.addEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   const [hoverIndex, setHoverIndex] = useState(-1);
   function handleMouseOver(index: number) {
     setHoverIndex(index);
@@ -33,7 +46,7 @@ export default function TextInput({
   const [inputValue, setInputValue] = useState("");
 
   function handleMouseUp(index: number) {
-    if (inputValue.length > MAX_LENGTH) return;
+    if (inputValue.length > MAX_LENGTH || !goodInput) return;
 
     setInputValue((prev) =>
       `${prev} ${pokemonName.slice(0, index + 1)}`.trim()
@@ -53,7 +66,10 @@ export default function TextInput({
   return (
     <form
       className={`mx-auto max-w-sm p-4 pb-2 ${open ? "" : "cursor-pointer"}`}
-      onMouseDown={() => setOpen(true)}
+      onMouseDown={(e) => {
+        e.stopPropagation();
+        setOpen(true);
+      }}
       onSubmit={(e) => {
         e.preventDefault();
       }}
@@ -71,6 +87,7 @@ export default function TextInput({
               hoverIndex >= index ? "bg-info" : "bg-none"
             } ${inputValue.length > MAX_LENGTH ? "text-base-300" : ""}`}
             key={index}
+            onMouseDown={() => setGoodInput(true)}
             onMouseUp={() => handleMouseUp(index)}
             onMouseOver={() => handleMouseOver(index)}
           >
