@@ -67,7 +67,11 @@ export default function FriendManagement({ user }: FriendManagementProps) {
         title={`${getName(user.pokemonName)}'s Friends`}
         headExtensions={<ProfileImage size="small" src={user.profileImage} />}
       />
-      {useGetAllFriends.isLoading && <div>loading...</div>}
+      {useGetAllFriends.isLoading && (
+        <div className="w-full text-center">
+          <div className="loading loading-spinner loading-lg"></div>
+        </div>
+      )}
       {useGetAllFriends.data != null &&
         useGetAllFriends.data.friends.map((friend) => (
           <section
