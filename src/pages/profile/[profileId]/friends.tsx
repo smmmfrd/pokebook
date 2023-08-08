@@ -68,7 +68,7 @@ export default function FriendManagement({ user }: FriendManagementProps) {
         headExtensions={<ProfileImage size="small" src={user.profileImage} />}
       />
       {useGetAllFriends.isLoading && (
-        <div className="w-full text-center">
+        <div className="w-full pt-4 text-center">
           <div className="loading loading-spinner loading-lg"></div>
         </div>
       )}

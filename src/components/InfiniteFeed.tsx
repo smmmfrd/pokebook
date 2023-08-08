@@ -55,7 +55,7 @@ export default function InfiniteFeed({
 
 function Loading() {
   return (
-    <div className="w-full text-center">
+    <div className="w-full pt-4 text-center">
       <div className="loading loading-infinity loading-lg"></div>
     </div>
   );

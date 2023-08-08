@@ -112,29 +112,6 @@ export default function PostPage({
     useCreateComment.mutate({ postId, content: text });
   }
 
-  // if (dynamicPost.isLoading) {
-  //   return (
-  //     <>
-  //       <Head>
-  //         <title>{`${pokemonName}'s Post`}</title>
-  //       </Head>
-
-  //       <div className="w-full text-center">
-  //         <div className="loading loading-infinity loading-lg"></div>
-  //       </div>
-  //       <TextInput
-  //         pokemonName={data?.user.pokemonName ?? ""}
-  //         placeholderText="Leave a Comment..."
-  //         handleSubmit={handleSubmit}
-  //       />
-
-  //       <div className="w-full text-center">
-  //         <div className="loading loading-infinity loading-lg"></div>
-  //       </div>
-  //     </>
-  //   );
-  // }
-
   return (
     <>
       <Head>
@@ -157,7 +134,7 @@ export default function PostPage({
       />
       <div className="mt-2 border-b"></div>
       {useCreateComment.isLoading && (
-        <div className="w-full border-b text-center">
+        <div className="w-full border-b pt-4 text-center">
           <div className="loading loading-dots h-20"></div>
         </div>
       )}
