@@ -119,8 +119,7 @@ export default function ProfilePage({
           </p>
         </div>
         <ul className="tabs w-full justify-between">
-          <li className="tab-bordered tab tab-active flex-grow">Posts</li>
-          <li className="tab-bordered tab flex-grow">Likes</li>
+          <li className={`tab-bordered tab tab-active flex-grow`}>Posts</li>
         </ul>
       </BackHeader>
       <InfiniteFeed
