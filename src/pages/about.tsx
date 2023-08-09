@@ -7,31 +7,33 @@ export default function AboutPage() {
       <Head>
         <title>About | Pokebook</title>
       </Head>
-      <h2>About</h2>
-      <p>
-        This is a personal project by{" "}
-        <Link
-          href="https://github.com/smmmfrd"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="link font-bold"
-        >
-          @smmmfrd.
-        </Link>
-      </p>
-      <p>
-        All Pokèmon data & images are from
-        <Link
-          href="https://pokeapi.co/"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="link font-bold"
-        >
-          {" "}
-          PokèAPI.
-        </Link>
-      </p>
-      <p>All rights to Pokèmon belong to Nintendo.</p>
+      <div className="py-4 [&>*]:mb-4 [&>*]:px-4 [&>p]:text-lg">
+        <h2 className="border-b pb-4 text-4xl">About</h2>
+        <p>
+          This is a personal project by{" "}
+          <Link
+            href="https://github.com/smmmfrd"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="link font-bold"
+          >
+            @smmmfrd.
+          </Link>
+        </p>
+        <p>
+          All Pokèmon data & images are from
+          <Link
+            href="https://pokeapi.co/"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="link font-bold"
+          >
+            {" "}
+            PokèAPI.
+          </Link>
+        </p>
+        <p>Pokèmon is trademark of Nintendo.</p>
+      </div>
     </>
   );
 }
