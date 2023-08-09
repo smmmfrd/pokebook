@@ -89,7 +89,7 @@ export default function Home() {
       <Head>
         <title>Home | Pokebook</title>
       </Head>
-      <nav className="sticky top-0 z-20 w-full border-b bg-base-100">
+      <nav className="sticky top-0 z-20 w-full bg-base-100">
         <TextInput
           pokemonName={session.data?.user.pokemonName ?? ""}
           placeholderText="+ New Post..."

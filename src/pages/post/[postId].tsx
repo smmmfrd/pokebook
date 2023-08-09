@@ -115,7 +115,7 @@ export default function PostPage({
   return (
     <>
       <Head>
-        <title>{`${pokemonName}'s Post`}</title>
+        <title>{`${pokemonName}'s Post | Pokebook`}</title>
       </Head>
       <BackHeader title={`${pokemonName}'s Post`}></BackHeader>
       <PostCard

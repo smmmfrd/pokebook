@@ -61,7 +61,7 @@ export default function FriendManagement({ user }: FriendManagementProps) {
   return (
     <>
       <Head>
-        <title>{`${getName(user.pokemonName)}'s Friends`}</title>
+        <title>{`${getName(user.pokemonName)}'s Friends | Pokebook`}</title>
       </Head>
       <BackHeader
         title={`${getName(user.pokemonName)}'s Friends`}

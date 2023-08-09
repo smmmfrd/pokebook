@@ -72,7 +72,7 @@ export default function InboxPage({ user }: InboxPageProps) {
   return (
     <>
       <Head>
-        <title>{`${getName(user.pokemonName)}'s Inbox`}</title>
+        <title>{`${getName(user.pokemonName)}'s Inbox | Pokebook`}</title>
       </Head>
       <BackHeader
         title={`${getName(user.pokemonName)}'s Inbox`}
