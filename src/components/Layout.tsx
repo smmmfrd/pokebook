@@ -17,7 +17,9 @@ export default function Layout({ children }: LayoutProps) {
     document.querySelector("html")?.setAttribute("data-theme", theme);
   }, [theme]);
 
-  const { data } = api.profile.getAllFriendRequests.useQuery();
+  const { data } = api.profile.getAllFriendRequests.useQuery(undefined, {
+    enabled: !!sessionData,
+  });
 
   if (!sessionData) return children;
 
