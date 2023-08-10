@@ -30,6 +30,17 @@ export default function AboutPage() {
           >
             {" "}
             PokèAPI.
+          </Link>{" "}
+        </p>
+        <p>
+          The Website's icon is the{" "}
+          <Link
+            href="https://github.com/PokeAPI/sprites/blob/master/sprites/items/fame-checker.png"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="link font-bold"
+          >
+            fame checker.
           </Link>
         </p>
         <p>Pokèmon is trademark of Nintendo.</p>

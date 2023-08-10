@@ -4,6 +4,8 @@ This is a personal project by [@smmmfrd](https://github.com/smmmfrd).
 
 All Pokèmon data & images are from [PokèAPI](https://pokeapi.co/).
 
+The favicon is the [fame checker.](https://github.com/PokeAPI/sprites/blob/master/sprites/items/fame-checker.png)
+
 Pokèmon is trademark of Nintendo.
 
 ## Create T3 App
