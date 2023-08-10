@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="relative flex min-h-screen w-0 items-start lg:w-min">
-      <div className="sticky top-60 hidden w-48 rounded-br-lg rounded-tr-lg bg-neutral-content py-4 text-right text-primary-content lg:block [&>p]:px-2">
+      <div className="sticky top-60 hidden w-48 rounded-br-lg rounded-tr-lg bg-info py-3 text-info-content lg:block [&>p]:px-2">
         <p>Pokèmon is trademark of Nintendo</p>
         <div className="divider divider-vertical my-1"></div>
         <p>
