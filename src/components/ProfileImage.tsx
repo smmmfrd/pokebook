@@ -19,9 +19,7 @@ export default function ProfileImage({
     size === "small" ? "h-8 w-8" : size === "medium" ? "h-12 w-12" : "h-24 w-24"
   }`;
 
-  const mainStyles = `${styleExtensions} relative ${heightAndWidth} overflow-hidden rounded-full ${
-    size === "large" ? "ring" : "ring-1"
-  } ring-primary bg-base-300/[0.1]`;
+  const mainStyles = `${styleExtensions} relative ${heightAndWidth} overflow-hidden rounded-full ring ring-primary bg-base-300/[0.1]`;
 
   const ImageComponent = () => (
     <>
