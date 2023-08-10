@@ -67,8 +67,11 @@ export default function TextInput({
     <form
       className={`mx-auto max-w-sm p-4 pb-2 ${open ? "" : "cursor-pointer"}`}
       onMouseDown={(e) => {
-        e.stopPropagation();
-        setOpen(true);
+        if (!open) {
+          e.stopPropagation();
+          setGoodInput(false);
+          setOpen(true);
+        }
       }}
       onSubmit={(e) => {
         e.preventDefault();
@@ -87,7 +90,10 @@ export default function TextInput({
               hoverIndex >= index ? "bg-info" : "bg-none"
             } ${inputValue.length > MAX_LENGTH ? "text-base-300" : ""}`}
             key={index}
-            onMouseDown={() => setGoodInput(true)}
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              setGoodInput(true);
+            }}
             onMouseUp={() => handleMouseUp(index)}
             onMouseOver={() => handleMouseOver(index)}
           >
