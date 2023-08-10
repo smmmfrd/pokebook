@@ -175,14 +175,14 @@ function Comment({ comment }: CommentProps) {
     >
       <ProfileImage
         src={comment.user.profileImage ?? ""}
-        styleExtensions="mt-2"
+        styleExtensions="mt-1 -ml-2"
         href={`/profile/${comment.user.id}`}
         size="medium"
       />
-      <div className="flex flex-col items-start gap-0.5">
+      <div className="flex flex-col items-start">
         <p>
           <Link
-            className="capitalize hover:underline"
+            className="font-medium capitalize hover:underline"
             href={`/profile/${comment.user.id}`}
           >
             {pokemonName}{" "}
@@ -191,9 +191,7 @@ function Comment({ comment }: CommentProps) {
             {dateTimeFormatter(comment.createdAt)}
           </span>
         </p>
-        <p className="rounded-xl bg-base-content px-2 py-1 text-base-100">
-          {comment.content}
-        </p>
+        <p className="">{comment.content}</p>
       </div>
     </section>
   );
