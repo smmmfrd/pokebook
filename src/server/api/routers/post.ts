@@ -15,15 +15,11 @@ export const postRouter = createTRPCRouter({
           id: true,
           content: true,
           createdAt: true,
-          user: {
+          poster: {
             select: {
               id: true,
               profileImage: true,
-              pokemon: {
-                select: {
-                  name: true,
-                },
-              },
+              name: true,
             },
           },
         },
@@ -35,13 +31,13 @@ export const postRouter = createTRPCRouter({
         id: post.id,
         content: post.content,
         createdAt: post.createdAt.toISOString(),
-        user: post.user,
+        user: post.poster,
       };
     }),
   getDynamicData: protectedProcedure
     .input(z.object({ postId: z.string() }))
     .query(async ({ input: { postId }, ctx }) => {
-      const currentUserId = ctx.session.user.id;
+      const currentUserId = ctx.session.user.pokemonId;
 
       const post = await ctx.prisma.post.findFirst({
         where: { id: postId },
@@ -51,15 +47,11 @@ export const postRouter = createTRPCRouter({
               id: true,
               content: true,
               createdAt: true,
-              user: {
+              poster: {
                 select: {
                   id: true,
                   profileImage: true,
-                  pokemon: {
-                    select: {
-                      name: true,
-                    },
-                  },
+                  name: true,
                 },
               },
             },
@@ -68,7 +60,7 @@ export const postRouter = createTRPCRouter({
             },
           },
           _count: { select: { likes: true, comments: true } },
-          likes: { where: { userId: currentUserId } },
+          likes: { where: { creatorId: currentUserId } },
         },
       });
 
@@ -87,13 +79,9 @@ export const postRouter = createTRPCRouter({
       return await ctx.prisma.post.findFirst({
         where: { id: postId },
         select: {
-          user: {
+          poster: {
             select: {
-              pokemon: {
-                select: {
-                  name: true,
-                },
-              },
+              name: true,
             },
           },
         },
@@ -103,7 +91,7 @@ export const postRouter = createTRPCRouter({
     .input(z.object({ content: z.string() }))
     .mutation(async ({ input: { content }, ctx }) => {
       const post = await ctx.prisma.post.create({
-        data: { userId: ctx.session.user.id, content },
+        data: { posterId: ctx.session.user.pokemonId, content },
       });
 
       return post;
@@ -111,17 +99,17 @@ export const postRouter = createTRPCRouter({
   toggleLike: protectedProcedure
     .input(z.object({ postId: z.string() }))
     .mutation(async ({ input: { postId }, ctx }) => {
-      const data = { postId, userId: ctx.session.user.id };
+      const data = { postId, creatorId: ctx.session.user.pokemonId };
 
       const existingLike = await ctx.prisma.like.findUnique({
-        where: { userId_postId: data },
+        where: { creatorId_postId: data },
       });
 
       if (existingLike == null) {
         await ctx.prisma.like.create({ data });
         return { addedLike: true };
       } else {
-        await ctx.prisma.like.delete({ where: { userId_postId: data } });
+        await ctx.prisma.like.delete({ where: { creatorId_postId: data } });
         return { addedLike: false };
       }
     }),
