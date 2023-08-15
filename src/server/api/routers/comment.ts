@@ -9,7 +9,7 @@ export const commentRouter = createTRPCRouter({
         data: {
           content,
           postId,
-          userId: ctx.session.user.id,
+          posterId: ctx.session.user.pokemonId,
         },
       });
 
