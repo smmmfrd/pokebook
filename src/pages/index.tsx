@@ -50,13 +50,11 @@ export default function Home() {
             likeCount: 0,
             commentCount: 0,
             likedByMe: false,
-            // User data is in the post queries so we need to throw that in here.
-            user: {
-              id: session.data.user.id,
+            // Poster data is in the post queries so we need to throw that in here.
+            poster: {
+              id: session.data.user.pokemonId,
               profileImage: session.data.user.profileImage,
-              pokemon: {
-                name: session.data.user.pokemonName,
-              },
+              name: session.data.user.pokemonName,
             },
           };
 

@@ -112,7 +112,7 @@ async function getInfinitePosts({
       id: post.id,
       content: post.content,
       createdAt: post.createdAt,
-      user: post.poster,
+      poster: post.poster,
       likeCount: post._count.likes,
       commentCount: post._count.comments,
       likedByMe: post.likes.length > 0,
