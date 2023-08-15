@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 
 type ProfileButtonsProps = {
-  profileId: string;
+  profileId: number;
   isFollowing: boolean;
   friendStatus: FriendStatus;
 };
@@ -20,7 +20,7 @@ export default function ProfileButtons({
 
   if (session.status !== "authenticated") return <></>;
 
-  if (session.data?.user.id === profileId) {
+  if (session.data?.user.pokemonId === profileId) {
     return (
       <Link
         href={`/profile/${profileId}/friends`}
@@ -41,7 +41,7 @@ export default function ProfileButtons({
 
 type FollowButtonProps = {
   isFollowing: boolean;
-  profileId: string;
+  profileId: number;
 };
 
 function FollowButton({ isFollowing, profileId }: FollowButtonProps) {
@@ -82,7 +82,7 @@ function FollowButton({ isFollowing, profileId }: FollowButtonProps) {
 
 type FriendButtonProps = {
   friendStatus: FriendStatus;
-  profileId: string;
+  profileId: number;
 };
 
 function FriendButton({ friendStatus, profileId }: FriendButtonProps) {
