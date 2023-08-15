@@ -18,6 +18,8 @@ export const infiniteRouter = createTRPCRouter({
       })
     )
     .query(async ({ input: { where, limit = 10, cursor }, ctx }) => {
+      const currentUserId = ctx.session.user.pokemonId;
+
       return await getInfinitePosts({
         limit,
         ctx,
@@ -25,17 +27,17 @@ export const infiniteRouter = createTRPCRouter({
         whereClause:
           where === "following"
             ? {
-                user: {
+                poster: {
                   followers: {
-                    some: { id: ctx.session?.user.id },
+                    some: { id: currentUserId },
                   },
                 },
               }
             : where === "friends"
             ? {
-                user: {
+                poster: {
                   friends: {
-                    some: { id: ctx.session.user.id },
+                    some: { id: currentUserId },
                   },
                 },
               }
@@ -45,7 +47,7 @@ export const infiniteRouter = createTRPCRouter({
   infiniteProfileFeed: publicProcedure
     .input(
       z.object({
-        profileId: z.string(),
+        profileId: z.number(),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
@@ -55,7 +57,7 @@ export const infiniteRouter = createTRPCRouter({
         limit,
         ctx,
         cursor,
-        whereClause: { userId: profileId },
+        whereClause: { posterId: profileId },
       });
     }),
 });
@@ -71,7 +73,7 @@ async function getInfinitePosts({
   cursor: { id: string; createdAt: Date } | undefined;
   whereClause?: Prisma.PostWhereInput;
 }) {
-  const currentUserId = ctx.session?.user.id;
+  const currentUserId = ctx.session?.user.pokemonId;
 
   const data = await ctx.prisma.post.findMany({
     take: limit + 1,
@@ -84,16 +86,12 @@ async function getInfinitePosts({
       createdAt: true,
       _count: { select: { likes: true, comments: true } },
       likes:
-        currentUserId == null ? false : { where: { userId: currentUserId } },
-      user: {
+        currentUserId == null ? false : { where: { creatorId: currentUserId } },
+      poster: {
         select: {
           id: true,
           profileImage: true,
-          pokemon: {
-            select: {
-              name: true,
-            },
-          },
+          name: true,
         },
       },
     },
@@ -114,7 +112,7 @@ async function getInfinitePosts({
       id: post.id,
       content: post.content,
       createdAt: post.createdAt,
-      user: post.user,
+      user: post.poster,
       likeCount: post._count.likes,
       commentCount: post._count.comments,
       likedByMe: post.likes.length > 0,
