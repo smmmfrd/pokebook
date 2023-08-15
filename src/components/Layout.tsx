@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
     enabled: !!sessionData,
   });
 
-  if (!sessionData) return children;
+  if (!sessionData) return <>{children}</>;
 
   const toggleTheme = () => {
     setTheme(theme === "cmyk" ? "night" : "cmyk");
