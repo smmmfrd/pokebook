@@ -1,24 +1,9 @@
 import moment from "moment";
 import Link from "next/link";
 import { api } from "~/utils/api";
+import { InfinitePost } from "./InfiniteFeed";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
-
-export type PostCardProps = {
-  id: string;
-  content: string;
-  createdAt: Date | string;
-  user: {
-    id: string;
-    profileImage: string | null;
-    pokemon: {
-      name: string;
-    } | null;
-  };
-  commentCount: number | undefined;
-  likeCount: number | undefined;
-  likedByMe: boolean | undefined;
-};
 
 export const dateTimeFormatter = (createdAt: Date | string) =>
   moment(createdAt).fromNow();
@@ -27,11 +12,11 @@ export default function PostCard({
   id,
   content,
   createdAt,
-  user,
+  poster,
   commentCount,
   likeCount,
   likedByMe,
-}: PostCardProps) {
+}: InfinitePost) {
   const trpcUtils = api.useContext();
 
   const toggleLike = api.post.toggleLike.useMutation({
@@ -74,7 +59,7 @@ export default function PostCard({
         updateData
       );
       trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
-        { profileId: user.id },
+        { profileId: poster.id },
         updateData
       );
 
@@ -99,16 +84,16 @@ export default function PostCard({
       <header className="flex items-start gap-6">
         <ProfileImage
           styleExtensions="relative"
-          src={user.profileImage}
-          href={`/profile/${user.id}`}
+          src={poster.profileImage}
+          href={`/profile/${poster.id}`}
           size="large"
         />
         <div className="flex flex-col gap-2">
           <Link
             className="text-xl font-bold capitalize hover:underline"
-            href={`/profile/${user.id}`}
+            href={`/profile/${poster.id}`}
           >
-            {user?.pokemon?.name}
+            {poster.name}
           </Link>
           {/* DATE */}
           <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>

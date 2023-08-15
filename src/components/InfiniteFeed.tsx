@@ -1,16 +1,14 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import PostCard from "./PostCard";
 
-type Post = {
+export type InfinitePost = {
   id: string;
   content: string;
   createdAt: Date;
-  user: {
-    id: string;
-    profileImage: string | null;
-    pokemon: {
-      name: string;
-    } | null;
+  poster: {
+    id: number;
+    profileImage: string;
+    name: string;
   };
   commentCount: number;
   likeCount: number;
@@ -18,7 +16,7 @@ type Post = {
 };
 
 type InfiniteFeedProps = {
-  posts?: Post[];
+  posts?: InfinitePost[];
   isLoading: boolean;
   isError: boolean;
   hasMore: boolean | undefined;
