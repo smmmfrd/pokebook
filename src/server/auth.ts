@@ -48,12 +48,12 @@ export const authOptions: NextAuthOptions = {
           pokemon: {
             select: {
               name: true,
-            },
-          },
-          _count: {
-            select: {
-              sentFriendRequests: true,
-              receivedFriendRequests: true,
+              _count: {
+                select: {
+                  sentFriendRequests: true,
+                  receivedFriendRequests: true,
+                },
+              },
             },
           },
         },
@@ -74,8 +74,8 @@ export const authOptions: NextAuthOptions = {
             profileImage: newPokemon?.profileImage,
             pokemonId: newPokemon?.id,
             pokemonName: newPokemon?.name,
-            sentFriendRequests: userData._count.sentFriendRequests,
-            receivedFriendRequests: userData._count.receivedFriendRequests,
+            sentFriendRequests: newPokemon?._count.sentFriendRequests,
+            receivedFriendRequests: newPokemon?._count.receivedFriendRequests,
           },
         };
       }
@@ -88,8 +88,9 @@ export const authOptions: NextAuthOptions = {
           profileImage: userData.profileImage,
           pokemonId: userData.pokemonId,
           pokemonName: userData.pokemon?.name,
-          sentFriendRequests: userData._count.sentFriendRequests,
-          receivedFriendRequests: userData._count.receivedFriendRequests,
+          sentFriendRequests: userData.pokemon?._count.sentFriendRequests,
+          receivedFriendRequests:
+            userData.pokemon?._count.receivedFriendRequests,
         },
       };
     },

@@ -31,6 +31,12 @@ export const pokemonRouter = createTRPCRouter({
           id: true,
           profileImage: true,
           name: true,
+          _count: {
+            select: {
+              sentFriendRequests: true,
+              receivedFriendRequests: true,
+            },
+          },
         },
       });
 
