@@ -38,7 +38,7 @@ model Post {
   createdAt DateTime @default(now())
 
   posterId Int
-  pokemon  Pokemon @relation(fields: [posterId], references: [id], onDelete: Cascade)
+  poster   Pokemon @relation(fields: [posterId], references: [id], onDelete: Cascade)
 
   comments Comment[]
   likes    Like[]
@@ -53,7 +53,7 @@ model Comment {
   createdAt DateTime @default(now())
 
   posterId Int
-  pokemon  Pokemon @relation(fields: [posterId], references: [id])
+  poster   Pokemon @relation(fields: [posterId], references: [id])
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
@@ -66,7 +66,7 @@ model Like {
   createdAt DateTime @default(now())
 
   creatorId Int
-  Pokemon   Pokemon @relation(fields: [creatorId], references: [id])
+  creator   Pokemon @relation(fields: [creatorId], references: [id])
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
