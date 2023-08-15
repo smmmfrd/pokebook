@@ -32,7 +32,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="flex min-w-full">
       <Navbar
         profileImage={sessionData.user.profileImage}
-        userId={sessionData.user.id}
+        userId={sessionData.user.pokemonId}
         toggleTheme={toggleTheme}
         requestNotif={
           data == null

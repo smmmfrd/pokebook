@@ -6,7 +6,7 @@ import ProfileImage from "./ProfileImage";
 
 type NavbarProps = {
   profileImage: string;
-  userId: string;
+  userId: number;
   toggleTheme: () => void;
   requestNotif: boolean;
 };
