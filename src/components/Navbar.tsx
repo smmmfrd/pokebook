@@ -56,10 +56,10 @@ export default function Navbar({
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="about" />
           <NavLinkText>About</NavLinkText>
         </NavbarLink>
-        <NavbarLink href="/pokedex">
+        {/* <NavbarLink href="/pokedex">
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="pokedex" />
           <NavLinkText>Pokedex</NavLinkText>
-        </NavbarLink>
+        </NavbarLink> */}
         <button
           className="flex items-center gap-4 text-xl"
           onClick={() => void signOut()}
