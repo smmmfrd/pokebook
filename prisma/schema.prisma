@@ -13,6 +13,7 @@ model Pokemon {
   name         String
   profileImage String @db.Text
   flavorTexts  String @db.Text
+  typesJson    String @db.Text
 
   user User?
 
