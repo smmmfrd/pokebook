@@ -15,7 +15,7 @@ import type { FriendStatus } from "~/utils/types";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  if (!session) {
+  if (!session || ctx.query.profileId == null) {
     return {
       redirect: {
         destination: `/login?returnURL=${encodeURIComponent("")}`,
@@ -24,11 +24,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const profileId = ctx.query.profileId as string;
+  // GET THE PROFILE
+  // Queries in next.js can be string | string[]
+  const cleanQuery = Array.isArray(ctx.query.profileId)
+    ? ctx.query.profileId.join("")
+    : ctx.query.profileId;
 
-  const profileData = await caller.profile.getById({
-    profileId,
-  });
+  const profileId = parseInt(cleanQuery);
+
+  const profileData = await caller.profile.getById({ profileId });
 
   if (profileData == null || profileData.pokemon == null) {
     return { props: { session } };
@@ -41,9 +45,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return texts[Math.floor(Math.random() * texts.length)];
   };
 
+  // FRIENDSHIP STATUS
   const { sent, received } = await caller.profile.friendRequestExists({
     profileId,
-    userId: session.user.id,
+    userPokemonId: session.user.pokemonId,
   });
 
   const friendStatus: FriendStatus = isFriend
@@ -70,7 +75,7 @@ type ProfilePageProps = {
   session: Session;
   pokemon: Pokemon;
   flavorText: string;
-  profileId: string;
+  profileId: number;
   isFollowing: boolean;
   friendStatus: FriendStatus;
 };
@@ -94,10 +99,7 @@ export default function ProfilePage({
   return (
     <>
       <Head>
-        <title>
-          {`${pokemon.name.slice(0, 1).toUpperCase()}${pokemon.name.slice(1)}'s
-          Profile | Pokebook`}
-        </title>
+        <title>{`${pokemon.name}'s Profile | Pokebook`}</title>
       </Head>
       <BackHeader title={pokemon.name}>
         <div className="flex flex-wrap justify-between gap-8 p-8 pb-6">
