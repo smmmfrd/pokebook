@@ -28,14 +28,12 @@ type FriendManagementProps = {
   user: {
     profileImage: string;
     pokemonName: string;
+    pokemonId: number;
     id: string;
   };
 };
 
 export default function FriendManagement({ user }: FriendManagementProps) {
-  const getName = (name: string | undefined): string =>
-    name ? `${name.slice(0, 1).toUpperCase()}${name.slice(1)}` : "";
-
   const trpcUtils = api.useContext();
 
   const useGetAllFriends = api.profile.getAllFriends.useQuery();
@@ -54,17 +52,17 @@ export default function FriendManagement({ user }: FriendManagementProps) {
     },
   });
 
-  function handleUnfriend(profileId: string) {
+  function handleUnfriend(profileId: number) {
     void useUnfriend.mutate({ profileId });
   }
 
   return (
     <>
       <Head>
-        <title>{`${getName(user.pokemonName)}'s Friends | Pokebook`}</title>
+        <title>{`${user.pokemonName}'s Friends | Pokebook`}</title>
       </Head>
       <BackHeader
-        title={`${getName(user.pokemonName)}'s Friends`}
+        title={`${user.pokemonName}'s Friends`}
         headExtensions={<ProfileImage size="small" src={user.profileImage} />}
       />
       {useGetAllFriends.isLoading && (
@@ -86,9 +84,7 @@ export default function FriendManagement({ user }: FriendManagementProps) {
             />
             <div className="flex w-full flex-col gap-2">
               <Link href={`/profile/${friend.id}`} className="hover:underline">
-                <h2 className="text-3xl font-bold">{`${getName(
-                  friend.pokemon?.name
-                )}`}</h2>
+                <h2 className="text-3xl font-bold">{`${friend.name}`}</h2>
               </Link>
               <button
                 className="btn-error btn ml-auto block"
