@@ -32,19 +32,17 @@ type InboxPageProps = {
   user: {
     profileImage: string;
     pokemonName: string;
+    pokemonId: number;
     id: string;
   };
 };
 
 export default function InboxPage({ user }: InboxPageProps) {
-  const getName = (name: string | undefined): string =>
-    name ? `${name.slice(0, 1).toUpperCase()}${name.slice(1)}` : "";
-
   const { data, isLoading } = api.profile.getAllFriendRequests.useQuery();
 
   const trpcUtils = api.useContext();
 
-  const updateData = ({ removeId }: { removeId: string }) => {
+  const updateData = ({ removeId }: { removeId: number }) => {
     trpcUtils.profile.getAllFriendRequests.setData(undefined, (oldData) => {
       if (oldData?.received == null || oldData?.sent == null) return undefined;
 
@@ -72,10 +70,10 @@ export default function InboxPage({ user }: InboxPageProps) {
   return (
     <>
       <Head>
-        <title>{`${getName(user.pokemonName)}'s Inbox | Pokebook`}</title>
+        <title>{`${user.pokemonName}'s Inbox | Pokebook`}</title>
       </Head>
       <BackHeader
-        title={`${getName(user.pokemonName)}'s Inbox`}
+        title={`${user.pokemonName}'s Inbox`}
         headExtensions={<ProfileImage size="medium" src={user.profileImage} />}
       >
         <ul className="tabs justify-between">
@@ -119,10 +117,7 @@ export default function InboxPage({ user }: InboxPageProps) {
                   size="medium"
                   styleExtensions="shrink-0"
                 />
-                <p>
-                  {`${getName(sender.pokemon?.name)}`} sent you a friend
-                  request!
-                </p>
+                <p>{`${sender.name}`} sent you a friend request!</p>
                 <button
                   className="btn-info btn-sm btn"
                   onClick={() =>
@@ -138,7 +133,7 @@ export default function InboxPage({ user }: InboxPageProps) {
                   onClick={() =>
                     useDeleteFriendRequest.mutate({
                       senderId,
-                      receiverId: user.id,
+                      receiverId: user.pokemonId,
                     })
                   }
                 >
@@ -156,15 +151,12 @@ export default function InboxPage({ user }: InboxPageProps) {
                   size="medium"
                   styleExtensions="shrink-0"
                 />
-                <p>
-                  You sent a friend request to{" "}
-                  {`${getName(receiver.pokemon?.name)}`}!
-                </p>
+                <p>You sent a friend request to {`${receiver.name}`}!</p>
                 <button
                   className="btn-error btn-sm btn"
                   onClick={() =>
                     useDeleteFriendRequest.mutate({
-                      senderId: user.id,
+                      senderId: user.pokemonId,
                       receiverId,
                     })
                   }
