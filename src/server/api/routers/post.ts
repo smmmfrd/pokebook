@@ -31,7 +31,7 @@ export const postRouter = createTRPCRouter({
         id: post.id,
         content: post.content,
         createdAt: post.createdAt.toISOString(),
-        user: post.poster,
+        poster: post.poster,
       };
     }),
   getDynamicData: protectedProcedure

@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (
     !session ||
     data == null ||
-    data.user.pokemon == null ||
+    data.poster == null ||
     staticPostData.id == null
   ) {
     return {
@@ -34,15 +34,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const pokemonName = `${data.user.pokemon.name
-    .slice(0, 1)
-    .toUpperCase()}${data.user.pokemon.name.slice(1)}`;
-
   return {
     props: {
       session,
       postId,
-      pokemonName,
+      pokemonName: data.poster.name,
       staticPostData,
     },
   };
@@ -55,12 +51,10 @@ type PostPageProps = {
     id: string;
     content: string;
     createdAt: string;
-    user: {
-      id: string;
-      profileImage: string | null;
-      pokemon: {
-        name: string;
-      } | null;
+    poster: {
+      id: number;
+      profileImage: string;
+      name: string;
     };
   };
 };
@@ -121,11 +115,15 @@ export default function PostPage({
       <PostCard
         id={staticPostData.id}
         content={staticPostData.content}
-        createdAt={staticPostData.createdAt}
-        user={staticPostData.user}
-        commentCount={dynamicPost.data?.commentCount}
-        likeCount={dynamicPost.data?.likeCount}
-        likedByMe={dynamicPost.data?.likedByMe}
+        createdAt={new Date(staticPostData.createdAt)}
+        poster={staticPostData.poster}
+        commentCount={
+          dynamicPost.data?.commentCount ? dynamicPost.data.commentCount : 0
+        }
+        likeCount={dynamicPost.data?.likeCount ? dynamicPost.data.likeCount : 0}
+        likedByMe={
+          dynamicPost.data?.likedByMe ? dynamicPost.data.likedByMe : false
+        }
       />
       <TextInput
         pokemonName={data?.user.pokemonName ?? ""}
@@ -149,41 +147,37 @@ type CommentProps = {
   comment: {
     content: string;
     createdAt: Date;
-    user: {
-      id: string;
-      profileImage: string | null;
-      pokemon: {
-        name: string;
-      } | null;
-    } | null;
+    poster: {
+      id: number;
+      profileImage: string;
+      name: string;
+    };
   };
 };
 
 function Comment({ comment }: CommentProps) {
-  const pokemonName = comment.user?.pokemon?.name
-    ? `${comment.user?.pokemon?.name
+  const pokemonName = comment.poster.name
+    ? `${comment.poster.name
         .slice(0, 1)
-        .toUpperCase()}${comment.user?.pokemon?.name.slice(1)}`
+        .toUpperCase()}${comment.poster.name.slice(1)}`
     : "";
-
-  if (comment.user == null) return <></>;
 
   return (
     <section
-      key={`${comment.createdAt.getTime()}${comment.user.id}`}
+      key={`${comment.createdAt.getTime()}${comment.poster.id}`}
       className="flex gap-4 border-b px-6 pb-3.5 pt-2.5"
     >
       <ProfileImage
-        src={comment.user.profileImage ?? ""}
+        src={comment.poster.profileImage ?? ""}
         styleExtensions="mt-1 -ml-2"
-        href={`/profile/${comment.user.id}`}
+        href={`/profile/${comment.poster.id}`}
         size="medium"
       />
       <div className="flex flex-col items-start">
         <p>
           <Link
             className="font-medium capitalize hover:underline"
-            href={`/profile/${comment.user.id}`}
+            href={`/profile/${comment.poster.id}`}
           >
             {pokemonName}{" "}
           </Link>
