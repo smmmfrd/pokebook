@@ -26,6 +26,7 @@ export const pokemonRouter = createTRPCRouter({
       const availPokemon = await ctx.prisma.pokemon.findMany({
         where: {
           OR: [{ user: null }, { user: undefined }],
+          bot: false,
         },
         select: {
           id: true,
