@@ -15,6 +15,7 @@ model Pokemon {
   flavorTexts  String @db.Text
   typesJson    String @db.Text
 
+  bot  Boolean @default(false)
   user User?
 
   posts Post[]
