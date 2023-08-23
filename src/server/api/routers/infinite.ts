@@ -92,6 +92,7 @@ async function getInfinitePosts({
           id: true,
           profileImage: true,
           name: true,
+          bot: true,
         },
       },
     },

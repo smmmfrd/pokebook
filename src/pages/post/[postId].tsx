@@ -55,6 +55,7 @@ type PostPageProps = {
       id: number;
       profileImage: string;
       name: string;
+      bot: boolean;
     };
   };
 };

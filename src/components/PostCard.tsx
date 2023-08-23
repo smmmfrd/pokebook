@@ -1,6 +1,7 @@
 import moment from "moment";
 import Link from "next/link";
 import { api } from "~/utils/api";
+import { IconMap } from "~/utils/IconsMap";
 import { InfinitePost } from "./InfiniteFeed";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
@@ -90,10 +91,18 @@ export default function PostCard({
         />
         <div className="flex flex-col gap-2">
           <Link
-            className="text-xl font-bold capitalize hover:underline"
+            className="flex items-center gap-4 text-xl font-bold capitalize hover:underline"
             href={`/profile/${poster.id}`}
           >
             {poster.name}
+            {poster.bot && (
+              <span
+                className="tooltip tooltip-bottom h-6 w-6"
+                data-tip="This is a bot."
+              >
+                {IconMap["bot"]}
+              </span>
+            )}
           </Link>
           {/* DATE */}
           <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>

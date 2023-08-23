@@ -9,6 +9,7 @@ export type InfinitePost = {
     id: number;
     profileImage: string;
     name: string;
+    bot: boolean;
   };
   commentCount: number;
   likeCount: number;
