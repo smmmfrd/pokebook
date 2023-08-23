@@ -164,7 +164,7 @@ function FriendRequestsDisplay({
             className="flex items-center justify-between gap-2 border-b p-2"
             key={`${user.pokemonId}${senderId}`}
           >
-            <section>
+            <section className="flex gap-2">
               <ProfileImage
                 src={sender.profileImage}
                 size="medium"
@@ -172,7 +172,7 @@ function FriendRequestsDisplay({
               />
               <p>{`${sender.name}`} sent you a friend request!</p>
             </section>
-            <section>
+            <section className="flex gap-1">
               <button
                 className="btn-info btn-sm btn"
                 onClick={() => acceptFriendRequest(senderId)}
@@ -195,10 +195,10 @@ function FriendRequestsDisplay({
       <>
         {data.sent.map(({ receiver, receiverId }) => (
           <article
-            className="flex items-center justify-around gap-2 border-b p-2"
+            className="flex items-center justify-between gap-2 border-b p-2"
             key={`${receiverId}${user.pokemonId}`}
           >
-            <section>
+            <section className="flex gap-2">
               <ProfileImage
                 src={receiver.profileImage}
                 size="medium"
