@@ -41,14 +41,22 @@ export default function InboxPage({ user }: InboxPageProps) {
 
   const trpcUtils = api.useContext();
 
-  const updateData = ({ removeId }: { removeId: number }) => {
+  const updateData = ({
+    senderId: removeSenderId,
+    receiverId: removeReceiverId,
+  }: {
+    senderId: number;
+    receiverId?: number;
+  }) => {
     trpcUtils.profile.getAllFriendRequests.setData(undefined, (oldData) => {
       if (oldData?.received == null || oldData?.sent == null) return undefined;
 
       const newData = {
-        sent: oldData.sent.filter(({ receiverId }) => receiverId !== removeId),
+        sent: oldData.sent.filter(
+          ({ receiverId }) => receiverId !== removeReceiverId
+        ),
         received: oldData.received.filter(
-          ({ senderId }) => senderId !== removeId
+          ({ senderId }) => senderId !== removeSenderId
         ),
       };
 
@@ -57,11 +65,11 @@ export default function InboxPage({ user }: InboxPageProps) {
   };
 
   const useAcceptFriendRequest = api.profile.acceptFriendRequest.useMutation({
-    onSuccess: updateData,
+    onMutate: updateData,
   });
 
   const useDeleteFriendRequest = api.profile.deleteFriendRequest.useMutation({
-    onSuccess: updateData,
+    onMutate: updateData,
   });
 
   const [view, setView] = useState<"received" | "sent">("received");

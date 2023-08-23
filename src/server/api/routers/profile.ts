@@ -166,7 +166,7 @@ export const profileRouter = createTRPCRouter({
         },
       });
 
-      return { removeId: senderId };
+      // return { removeId: senderId };
     }),
   deleteFriendRequest: protectedProcedure
     .input(z.object({ senderId: z.number(), receiverId: z.number() }))
@@ -177,10 +177,10 @@ export const profileRouter = createTRPCRouter({
         where: { senderId_receiverId: input },
       });
 
-      return {
-        removeId:
-          input.senderId === currentUserId ? input.receiverId : input.senderId,
-      };
+      // return {
+      //   removeId:
+      //     input.senderId === currentUserId ? input.receiverId : input.senderId,
+      // };
     }),
   unfriend: protectedProcedure
     .input(z.object({ profileId: z.number() }))
