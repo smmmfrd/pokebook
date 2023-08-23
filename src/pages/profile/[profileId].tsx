@@ -32,7 +32,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const profileId = parseInt(cleanQuery);
 
-  const profileData = await caller.profile.getById({ profileId });
+  const profileData = await caller.profile.getById({
+    profileId,
+    userId: session.user.pokemonId,
+  });
 
   if (profileData == null || profileData.pokemon == null) {
     return { props: { session } };

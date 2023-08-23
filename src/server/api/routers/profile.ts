@@ -7,18 +7,24 @@ import {
 
 export const profileRouter = createTRPCRouter({
   getById: publicProcedure
-    .input(z.object({ profileId: z.number() }))
-    .query(async ({ input: { profileId }, ctx }) => {
-      const currentUserId = ctx.session?.user.pokemonId;
-
+    .input(z.object({ profileId: z.number(), userId: z.number() }))
+    .query(async ({ input: { profileId, userId }, ctx }) => {
       const profile = await ctx.prisma.pokemon.findFirst({
         where: { id: profileId },
         select: {
           name: true,
           profileImage: true,
           flavorTexts: true,
-          followers: { where: { id: currentUserId } },
-          friends: { where: { id: currentUserId } },
+          followers: {
+            select: {
+              id: true,
+            },
+          },
+          friends: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
 
@@ -30,8 +36,8 @@ export const profileRouter = createTRPCRouter({
           profileImage: profile.profileImage,
           flavorTexts: profile.flavorTexts,
         },
-        isFollowing: profile.followers.length > 0,
-        isFriend: profile.friends.length > 0,
+        isFollowing: profile.followers.some(({ id }) => id === userId),
+        isFriend: profile.friends.some(({ id }) => id === userId),
       };
     }),
   toggleFollow: protectedProcedure
