@@ -33,7 +33,6 @@ type InboxPageProps = {
     profileImage: string;
     pokemonName: string;
     pokemonId: number;
-    id: string;
   };
 };
 
@@ -105,66 +104,117 @@ export default function InboxPage({ user }: InboxPageProps) {
           </li>
         </ul>
       </BackHeader>
-      {!isLoading &&
-        (view === "received"
-          ? data?.received.map(({ sender, senderId }) => (
-              <section
-                className="flex items-center justify-between gap-2 border-b p-2"
-                key={`${user.id}${senderId}`}
-              >
-                <ProfileImage
-                  src={sender.profileImage}
-                  size="medium"
-                  styleExtensions="shrink-0"
-                />
-                <p>{`${sender.name}`} sent you a friend request!</p>
-                <button
-                  className="btn-info btn-sm btn"
-                  onClick={() =>
-                    useAcceptFriendRequest.mutate({
-                      senderId,
-                    })
-                  }
-                >
-                  Accept
-                </button>
-                <button
-                  className="btn-error btn-sm btn"
-                  onClick={() =>
-                    useDeleteFriendRequest.mutate({
-                      senderId,
-                      receiverId: user.pokemonId,
-                    })
-                  }
-                >
-                  Decline
-                </button>
-              </section>
-            ))
-          : data?.sent.map(({ receiver, receiverId }) => (
-              <section
-                className="flex items-center justify-around gap-2 border-b p-2"
-                key={`${receiverId}${user.id}`}
-              >
-                <ProfileImage
-                  src={receiver.profileImage}
-                  size="medium"
-                  styleExtensions="shrink-0"
-                />
-                <p>You sent a friend request to {`${receiver.name}`}!</p>
-                <button
-                  className="btn-error btn-sm btn"
-                  onClick={() =>
-                    useDeleteFriendRequest.mutate({
-                      senderId: user.pokemonId,
-                      receiverId,
-                    })
-                  }
-                >
-                  Cancel
-                </button>
-              </section>
-            )))}
+      {!isLoading && data != null && (
+        <FriendRequestsDisplay
+          view={view}
+          data={data}
+          user={user}
+          acceptFriendRequest={(senderId) => {
+            useAcceptFriendRequest.mutate({
+              senderId,
+            });
+          }}
+          deleteFriendRequest={(senderId, receiverId) => {
+            useDeleteFriendRequest.mutate({
+              senderId,
+              receiverId,
+            });
+          }}
+        />
+      )}
     </>
   );
+}
+
+type FriendRequestsDisplayProps = {
+  view: "received" | "sent";
+  data: {
+    received: {
+      senderId: number;
+      sender: {
+        profileImage: string;
+        name: string;
+      };
+    }[];
+    sent: {
+      receiverId: number;
+      receiver: {
+        profileImage: string;
+        name: string;
+      };
+    }[];
+  };
+  user: { pokemonId: number };
+  acceptFriendRequest: (senderId: number) => void;
+  deleteFriendRequest: (senderId: number, receiverId: number) => void;
+};
+
+function FriendRequestsDisplay({
+  view,
+  data,
+  user,
+  acceptFriendRequest,
+  deleteFriendRequest,
+}: FriendRequestsDisplayProps) {
+  if (view === "received") {
+    return (
+      <>
+        {data.received.map(({ sender, senderId }) => (
+          <article
+            className="flex items-center justify-between gap-2 border-b p-2"
+            key={`${user.pokemonId}${senderId}`}
+          >
+            <section>
+              <ProfileImage
+                src={sender.profileImage}
+                size="medium"
+                styleExtensions="shrink-0"
+              />
+              <p>{`${sender.name}`} sent you a friend request!</p>
+            </section>
+            <section>
+              <button
+                className="btn-info btn-sm btn"
+                onClick={() => acceptFriendRequest(senderId)}
+              >
+                Accept
+              </button>
+              <button
+                className="btn-error btn-sm btn"
+                onClick={() => deleteFriendRequest(senderId, user.pokemonId)}
+              >
+                Decline
+              </button>
+            </section>
+          </article>
+        ))}
+      </>
+    );
+  } else {
+    return (
+      <>
+        {data.sent.map(({ receiver, receiverId }) => (
+          <article
+            className="flex items-center justify-around gap-2 border-b p-2"
+            key={`${receiverId}${user.pokemonId}`}
+          >
+            <section>
+              <ProfileImage
+                src={receiver.profileImage}
+                size="medium"
+                styleExtensions="shrink-0"
+              />
+              <p>You sent a friend request to {`${receiver.name}`}!</p>
+            </section>
+            <button
+              className="btn-error btn-sm btn"
+              onClick={() => deleteFriendRequest(user.pokemonId, receiverId)}
+            >
+              Cancel
+            </button>
+          </article>
+        ))}
+      </>
+    );
+  }
 }
