@@ -59,7 +59,7 @@ export default function Layout({ children }: LayoutProps) {
             : data.received.length > 0 || data.sent.length > 0
         }
       />
-      <main className="min-h-screen w-full max-w-2xl border-l border-r">
+      <main className="-mr-[1px] min-h-screen w-full max-w-xl border-l border-r">
         {children}
       </main>
       <Footer />
