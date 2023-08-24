@@ -1,5 +1,6 @@
 import moment from "moment";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { IconMap } from "~/utils/IconsMap";
 import { InfinitePost } from "./InfiniteFeed";
@@ -18,6 +19,8 @@ export default function PostCard({
   likeCount,
   likedByMe,
 }: InfinitePost) {
+  const router = useRouter();
+
   const trpcUtils = api.useContext();
 
   const toggleLike = api.post.toggleLike.useMutation({
@@ -95,20 +98,26 @@ export default function PostCard({
           size="large"
         />
         <div className="flex flex-col gap-2">
-          <Link
-            className="flex items-center gap-4 text-xl font-bold capitalize hover:underline"
-            href={`/profile/${poster.id}`}
-          >
-            {poster.name}
+          <div className="flex items-center gap-4 ">
+            <Link
+              className="text-xl font-bold capitalize hover:underline"
+              href={`/profile/${poster.id}`}
+            >
+              {poster.name}
+            </Link>
             {poster.bot && (
               <span
-                className="tooltip tooltip-bottom h-6 w-6"
-                data-tip="This is a bot."
+                className="tooltip tooltip-bottom h-6 w-6 cursor-pointer"
+                data-tip="This is a bot, click to learn more!"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/about");
+                }}
               >
                 {IconMap["bot"]}
               </span>
             )}
-          </Link>
+          </div>
           {/* DATE */}
           <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>
         </div>
