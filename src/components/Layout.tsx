@@ -9,14 +9,32 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 
+const THEMES = {
+  light: "cmyk",
+  dark: "night",
+};
+
 export default function Layout({ children }: LayoutProps) {
   const { data: sessionData } = useSession();
 
-  const [theme, setTheme] = useState("cmyk");
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [theme, setTheme] = useState<string>(THEMES.light);
 
   useEffect(() => {
-    document.querySelector("html")?.setAttribute("data-theme", theme);
-  }, [theme]);
+    if (!loaded) {
+      const answer = localStorage.getItem("theme-preference");
+      if (answer == null) {
+        localStorage.setItem("theme-preference", THEMES.light);
+      } else {
+        console.log(answer);
+        setTheme(answer);
+      }
+      setLoaded(true);
+    } else {
+      document.querySelector("html")?.setAttribute("data-theme", theme);
+      localStorage.setItem("theme-preference", theme);
+    }
+  }, [theme, loaded]);
 
   const { data } = api.profile.getAllFriendRequests.useQuery(undefined, {
     enabled: !!sessionData,
@@ -25,7 +43,7 @@ export default function Layout({ children }: LayoutProps) {
   if (!sessionData) return <>{children}</>;
 
   const toggleTheme = () => {
-    setTheme(theme === "cmyk" ? "night" : "cmyk");
+    setTheme(theme === THEMES.light ? THEMES.dark : THEMES.light);
   };
 
   return (
