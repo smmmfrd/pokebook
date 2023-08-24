@@ -48,16 +48,26 @@ export const infiniteRouter = createTRPCRouter({
     .input(
       z.object({
         profileId: z.number(),
+        where: z.enum(["posts", "likes"]),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
     )
-    .query(async ({ input: { profileId, limit = 10, cursor }, ctx }) => {
+    .query(async ({ input: { profileId, limit = 10, cursor, where }, ctx }) => {
+      if (where === "posts") {
+        return await getInfinitePosts({
+          limit,
+          ctx,
+          cursor,
+          whereClause: { posterId: profileId },
+        });
+      }
+
       return await getInfinitePosts({
         limit,
         ctx,
         cursor,
-        whereClause: { posterId: profileId },
+        whereClause: { likes: { some: { creatorId: profileId } } },
       });
     }),
 });
