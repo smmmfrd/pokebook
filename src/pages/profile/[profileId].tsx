@@ -11,6 +11,7 @@ import ProfileImage from "~/components/ProfileImage";
 import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
 import type { FriendStatus } from "~/utils/types";
+import { useState } from "react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -90,8 +91,10 @@ export default function ProfilePage({
   isFollowing,
   friendStatus,
 }: ProfilePageProps) {
+  const [feed, setFeed] = useState<"posts" | "likes">("posts");
+
   const infiniteQuery = api.infinite.infiniteProfileFeed.useInfiniteQuery(
-    { profileId },
+    { profileId, where: feed },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
@@ -124,7 +127,22 @@ export default function ProfilePage({
           </p>
         </div>
         <ul className="tabs w-full justify-between">
-          <li className={`tab-bordered tab tab-active flex-grow`}>Posts</li>
+          <li
+            className={`tab-bordered tab ${
+              feed === "posts" ? "tab-active" : ""
+            } flex-grow`}
+            onClick={() => setFeed("posts")}
+          >
+            Posts
+          </li>
+          <li
+            className={`tab-bordered tab ${
+              feed === "likes" ? "tab-active" : ""
+            } flex-grow`}
+            onClick={() => setFeed("likes")}
+          >
+            Likes
+          </li>
         </ul>
       </BackHeader>
       <InfiniteFeed
