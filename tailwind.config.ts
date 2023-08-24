@@ -7,6 +7,6 @@ export default {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["fantasy", "night", "acid", "winter", "cmyk"],
+    themes: ["cmyk", "dark"],
   },
 } satisfies Config;

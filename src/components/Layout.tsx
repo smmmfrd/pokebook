@@ -11,7 +11,7 @@ type LayoutProps = {
 
 const THEMES = {
   light: "cmyk",
-  dark: "night",
+  dark: "dark",
 };
 
 export default function Layout({ children }: LayoutProps) {
