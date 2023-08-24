@@ -86,7 +86,7 @@ export default function TextInput({
       >
         {pokemonName.split("").map((char, index) => (
           <div
-            className={`flex-grow py-4 text-center first:pl-4 last:pr-4 ${
+            className={`flex-grow py-4 text-center uppercase first:pl-4 last:pr-4 ${
               hoverIndex >= index ? "bg-info" : "bg-none"
             } ${inputValue.length > MAX_LENGTH ? "text-base-300" : ""}`}
             key={index}
@@ -147,7 +147,7 @@ export default function TextInput({
       <div
         className={`textarea-bordered textarea mb-4 w-full cursor-default overflow-hidden text-xl ${
           open ? "" : "cursor-pointer"
-        }`}
+        } ${inputValue.length > 0 ? "uppercase" : ""}`}
       >
         {inputValue.length > 0 ? (
           inputValue

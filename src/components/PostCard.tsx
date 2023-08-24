@@ -122,7 +122,7 @@ export default function PostCard({
           <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>
         </div>
       </header>
-      <p>{content}</p>
+      <p className="uppercase">{content}</p>
       <footer className="flex gap-2">
         {/* Comment Button */}
         <Link className="btn-ghost btn-sm btn" href={`/post/${id}`}>
