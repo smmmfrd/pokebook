@@ -35,7 +35,13 @@ export default function InfiniteFeed({
   if (isError) return <p>error</p>;
 
   if (posts == null || posts.length === 0) {
-    return <h2>No posts found</h2>;
+    return (
+      <section className="p-8">
+        <h2 className="text-center text-lg italic text-neutral-content">
+          No Posts found
+        </h2>
+      </section>
+    );
   }
 
   return (
