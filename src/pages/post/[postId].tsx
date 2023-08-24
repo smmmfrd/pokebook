@@ -78,7 +78,8 @@ export default function PostPage({
   const useCreateComment = api.comment.createNew.useMutation({
     onSuccess: ({ newComment }) => {
       trpcUtils.post.getDynamicData.setData({ postId }, (oldData) => {
-        if (oldData?.likedByMe == null || data == null) return {};
+        if (oldData == null || oldData.commentCount == null || data == null)
+          return {};
 
         return {
           ...oldData,
@@ -88,12 +89,10 @@ export default function PostPage({
               id: newComment.id,
               content: newComment.content,
               createdAt: newComment.createdAt,
-              user: {
-                id: data?.user.id,
-                profileImage: data?.user.profileImage,
-                pokemon: {
-                  name: data?.user.pokemonName,
-                },
+              poster: {
+                id: data.user.pokemonId,
+                profileImage: data.user.profileImage,
+                name: data.user.pokemonName,
               },
             },
             ...oldData.comments,
@@ -157,12 +156,6 @@ type CommentProps = {
 };
 
 function Comment({ comment }: CommentProps) {
-  const pokemonName = comment.poster.name
-    ? `${comment.poster.name
-        .slice(0, 1)
-        .toUpperCase()}${comment.poster.name.slice(1)}`
-    : "";
-
   return (
     <section
       key={`${comment.createdAt.getTime()}${comment.poster.id}`}
@@ -180,7 +173,7 @@ function Comment({ comment }: CommentProps) {
             className="font-medium capitalize hover:underline"
             href={`/profile/${comment.poster.id}`}
           >
-            {pokemonName}{" "}
+            {comment.poster.name}{" "}
           </Link>
           <span className="text-xs opacity-50">
             {dateTimeFormatter(comment.createdAt)}
