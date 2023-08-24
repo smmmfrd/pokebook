@@ -44,6 +44,11 @@ export default function AboutPage() {
           </Link>
         </p>
         <p>Pokèmon is trademark of Nintendo.</p>
+        <h3 className="text-3xl">Bots</h3>
+        <p>
+          Certain Pokèmon are set as bots, every so often they will post, send
+          friend requests, and accept any sent to them as well.
+        </p>
       </div>
     </>
   );
