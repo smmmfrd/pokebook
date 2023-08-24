@@ -59,8 +59,13 @@ export default function PostCard({
         { where: "following" },
         updateData
       );
+
       trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
-        { profileId: poster.id },
+        { profileId: poster.id, where: "posts" },
+        updateData
+      );
+      trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
+        { profileId: poster.id, where: "likes" },
         updateData
       );
 
