@@ -1,5 +1,24 @@
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { getServerAuthSession } from "~/server/auth";
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+};
 
 export default function AboutPage() {
   return (
@@ -48,6 +67,11 @@ export default function AboutPage() {
         <p>
           Certain Pokèmon are set as bots, every so often they will post, send
           friend requests, and accept any sent to them as well.
+        </p>
+        <h3 className="text-3xl">User's Pokèmon</h3>
+        <p>
+          <strong>WARNING:</strong> if a user does not post for three (3) days,
+          they will lose their randomly assigned pokèmon.
         </p>
       </div>
     </>

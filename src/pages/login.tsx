@@ -51,14 +51,22 @@ export default function LoginPage() {
               Next Auth.
             </Link>{" "}
           </p>
+          <p>
+            On signing in for the first time, you will be assigned a random
+            pokèmon, and if you do not post for 3 days, you will lose it (if you
+            come back you will get another).
+          </p>
         </header>
         <div className="divider divider-vertical max-h-96 sm:divider-horizontal"></div>
-        <div className="flex basis-1/2 justify-between gap-12 sm:flex-col sm:items-start">
-          <button className="btn-primary btn" onClick={() => void signIn()}>
-            Log In
-          </button>
+        <button
+          className="btn-primary btn mr-auto"
+          onClick={() => void signIn()}
+        >
+          Log In
+        </button>
+        {/* <div className="flex basis-1/2 justify-between gap-12 sm:flex-col sm:items-start">
           <button className="btn-secondary btn">Guest Log In</button>
-        </div>
+        </div> */}
       </main>
     </>
   );
