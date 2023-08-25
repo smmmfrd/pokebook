@@ -55,6 +55,7 @@ export default function Home() {
               id: session.data.user.pokemonId,
               profileImage: session.data.user.profileImage,
               name: session.data.user.pokemonName,
+              bot: false,
             },
           };
 
