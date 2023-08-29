@@ -83,7 +83,7 @@ export default function InboxPage({ user }: InboxPageProps) {
         title={`${user.pokemonName}'s Inbox`}
         headExtensions={<ProfileImage size="medium" src={user.profileImage} />}
       >
-        <ul className="tabs justify-between">
+        <ul className="tabs justify-between pt-2">
           <li
             className={`tab-bordered tab basis-1/2 ${
               view === "received" ? "tab-active" : ""
