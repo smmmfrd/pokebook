@@ -26,7 +26,6 @@ export default function Layout({ children }: LayoutProps) {
       if (answer == null) {
         localStorage.setItem("theme-preference", THEMES.light);
       } else {
-        console.log(answer);
         setTheme(answer);
       }
       setLoaded(true);
