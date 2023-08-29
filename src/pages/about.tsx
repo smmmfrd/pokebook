@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";

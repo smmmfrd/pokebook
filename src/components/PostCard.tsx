@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { IconMap } from "~/utils/IconsMap";
-import { InfinitePost } from "./InfiniteFeed";
+import { type InfinitePost } from "./InfiniteFeed";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
 
@@ -111,7 +111,7 @@ export default function PostCard({
                 data-tip="This is a bot, click to learn more!"
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.push("/about");
+                  void router.push("/about");
                 }}
               >
                 {IconMap["bot"]}
