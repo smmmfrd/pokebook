@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="relative flex min-h-screen w-0 items-start lg:w-min">
       <div className="sticky top-60 hidden w-48 rounded-br-lg rounded-tr-lg bg-info py-3 text-info-content lg:block [&>p]:px-2">
-        <p>Pokèmon is trademark of Nintendo</p>
+        <p>Pokémon and Pokémon character names are trademarks of Nintendo.</p>
         <div className="divider divider-vertical my-1"></div>
         <p>
           This is a project by{" "}
