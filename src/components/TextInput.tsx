@@ -87,7 +87,7 @@ export default function TextInput({
         {pokemonName.split("").map((char, index) => (
           <div
             className={`flex-grow py-4 text-center uppercase first:pl-4 last:pr-4 ${
-              hoverIndex >= index ? "bg-info" : "bg-none"
+              hoverIndex >= index ? "bg-primary" : "bg-none"
             } ${inputValue.length > MAX_LENGTH ? "text-base-300" : ""}`}
             key={index}
             onMouseDown={(e) => {
