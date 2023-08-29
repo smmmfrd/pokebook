@@ -104,41 +104,42 @@ export default function TextInput({
 
       {/* INPUT BUTTONS */}
       <div
-        className={`mb-4 flex justify-between overflow-hidden transition-all duration-100 ${
-          open && inputValue.length > 0 ? "h-min" : "h-0"
+        className={`content mb-4 flex justify-between overflow-hidden transition-all duration-200 ${
+          open && inputValue.length > 0 ? "max-h-12" : "max-h-0"
         }`}
       >
         {/* PUNCTUATION BUTTONS */}
-        <div className="join items-center [&>*]:border-2 [&>*]:font-sans [&>*]:text-3xl [&>*]:font-bold">
+        <div className="join [&>*]:font-mono [&>*]:text-2xl [&>*]:font-bold">
           <button
-            className="btn-outline join-item btn rounded-t-none border-t-0"
-            disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
+            className="btn-outline join-item btn rounded-t-none border-2 border-t-0"
+            // disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
             onClick={() => handlePunctuation(".")}
           >
             .
           </button>
           <button
-            className="btn-outline join-item btn rounded-t-none border-t-0"
-            disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
+            className="btn-outline join-item btn rounded-t-none border-2 border-t-0"
+            // disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
             onClick={() => handlePunctuation("!")}
           >
             !
           </button>
           <button
-            className="btn-outline join-item btn rounded-t-none border-t-0"
-            disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
+            className="btn-outline join-item btn rounded-t-none border-2 border-t-0"
+            // disabled={inputValue.length === 0 || inputValue.length > MAX_LENGTH}
             onClick={() => handlePunctuation("?")}
           >
             ?
           </button>
         </div>
+
         {/* DELETE BUTTON */}
         <button
           type="button"
           className="btn-outline btn-error btn rounded-t-none border-2 border-t-0 text-lg font-bold"
           onClick={handleDelete}
         >
-          <span className="h-6 w-6">{IconMap.undo}</span>
+          <span className="h-5 w-5">{IconMap.undo}</span>
           DELETE
         </button>
       </div>
