@@ -65,13 +65,7 @@ export default function PostPage({
   pokemonName,
   staticPostData,
 }: PostPageProps) {
-  const dynamicPost = api.post.getDynamicData.useQuery(
-    { postId },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-    }
-  );
+  const dynamicPost = api.post.getDynamicData.useQuery({ postId });
   const { data } = useSession();
   const trpcUtils = api.useContext();
 
