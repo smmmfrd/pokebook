@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="relative flex min-h-screen w-0 items-start lg:w-min">
-      <div className="sticky top-60 hidden w-48 rounded-br-lg rounded-tr-lg bg-info py-3 text-info-content lg:block [&>p]:px-2">
+    <footer className="relative flex min-h-screen w-0 items-start lg:w-full">
+      <div className="sticky top-60 mx-auto hidden w-80 rounded-lg bg-neutral-content px-2 py-4 text-neutral lg:block [&>p]:px-2">
         <p>Pokémon and Pokémon character names are trademarks of Nintendo.</p>
         <div className="divider divider-vertical my-1"></div>
         <p>
