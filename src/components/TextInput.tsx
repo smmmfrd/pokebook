@@ -65,7 +65,7 @@ export default function TextInput({
 
   return (
     <form
-      className={`mx-auto max-w-sm p-4 pb-2 ${open ? "" : "cursor-pointer"}`}
+      className={`p-4 pb-2 ${open ? "" : "cursor-pointer"}`}
       onMouseDown={(e) => {
         if (!open) {
           e.stopPropagation();
