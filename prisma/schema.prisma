@@ -68,7 +68,7 @@ model Like {
   createdAt DateTime @default(now())
 
   creatorId Int
-  creator   Pokemon @relation(fields: [creatorId], references: [id])
+  creator   Pokemon @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
