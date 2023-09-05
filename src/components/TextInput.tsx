@@ -34,15 +34,6 @@ export default function TextInput({
     };
   }, []);
 
-  const [hoverIndex, setHoverIndex] = useState(-1);
-  function handleMouseOver(index: number) {
-    setHoverIndex(index);
-  }
-
-  function handleMouseLeave() {
-    setHoverIndex(-1);
-  }
-
   const [inputValue, setInputValue] = useState("");
 
   function handleMouseUp(index: number) {
@@ -77,6 +68,90 @@ export default function TextInput({
         e.preventDefault();
       }}
     >
+      <InputButtons
+        open={open}
+        pokemonName={pokemonName}
+        inputValue={inputValue}
+        setGoodInput={setGoodInput}
+        handleDelete={handleDelete}
+        handleMouseUp={handleMouseUp}
+        handlePunctuation={handlePunctuation}
+      />
+
+      {/* TEXT DISPLAY */}
+      <div
+        className={`textarea-bordered textarea mb-4 w-full cursor-default overflow-hidden text-xl ${
+          open ? "" : "cursor-pointer"
+        } ${inputValue.length > 0 ? "uppercase" : ""}`}
+      >
+        {inputValue.length > 0 ? (
+          inputValue
+        ) : (
+          <span className="select-none text-neutral-content">
+            {open ? "Use above to enter text..." : placeholderText}
+          </span>
+        )}
+      </div>
+
+      {/* CANCEL AND POST BUTTONS */}
+      <div className="flex justify-between">
+        <button
+          type="reset"
+          className={`btn-outline btn ${open ? "" : "hidden"}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(false);
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          type="reset"
+          disabled={inputValue.length === 0}
+          className={`btn-primary btn ${open ? "" : "hidden"}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpen(false);
+            handleSubmit(inputValue);
+          }}
+        >
+          Post
+        </button>
+      </div>
+    </form>
+  );
+}
+
+type InputButtonsProps = {
+  open: boolean;
+  pokemonName: string;
+  inputValue: string;
+  setGoodInput: (value: boolean) => void;
+  handleDelete: () => void;
+  handleMouseUp: (index: number) => void;
+  handlePunctuation: (punc: string) => void;
+};
+
+function InputButtons({
+  open,
+  pokemonName,
+  inputValue,
+  setGoodInput,
+  handleDelete,
+  handleMouseUp,
+  handlePunctuation,
+}: InputButtonsProps) {
+  const [hoverIndex, setHoverIndex] = useState(-1);
+  function handleMouseOver(index: number) {
+    setHoverIndex(index);
+  }
+
+  function handleMouseLeave() {
+    setHoverIndex(-1);
+  }
+
+  return (
+    <>
       {/* INPUT */}
       <div
         onMouseLeave={handleMouseLeave}
@@ -143,47 +218,6 @@ export default function TextInput({
           DELETE
         </button>
       </div>
-
-      {/* TEXT DISPLAY */}
-      <div
-        className={`textarea-bordered textarea mb-4 w-full cursor-default overflow-hidden text-xl ${
-          open ? "" : "cursor-pointer"
-        } ${inputValue.length > 0 ? "uppercase" : ""}`}
-      >
-        {inputValue.length > 0 ? (
-          inputValue
-        ) : (
-          <span className="select-none text-neutral-content">
-            {open ? "Use above to enter text..." : placeholderText}
-          </span>
-        )}
-      </div>
-
-      {/* CANCEL AND CLOSE BUTTONS */}
-      <div className="flex justify-between">
-        <button
-          type="reset"
-          className={`btn-outline btn ${open ? "" : "hidden"}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpen(false);
-          }}
-        >
-          Cancel
-        </button>
-        <button
-          type="reset"
-          disabled={inputValue.length === 0}
-          className={`btn-primary btn ${open ? "" : "hidden"}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpen(false);
-            handleSubmit(inputValue);
-          }}
-        >
-          Post
-        </button>
-      </div>
-    </form>
+    </>
   );
 }
