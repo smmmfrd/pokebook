@@ -8,6 +8,7 @@ import InfiniteFeed from "~/components/InfiniteFeed";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Head from "next/head";
+import { useLimit } from "~/utils/hooks";
 
 type FeedEnum = "none" | "following" | "friends";
 
@@ -83,6 +84,19 @@ export default function Home() {
     }
   );
 
+  const [canPost, tickPosts] = useLimit(
+    `${session.data?.user.pokemonName || ""}`,
+    "posts",
+    5
+  );
+
+  function handleSubmit(text: string) {
+    tickPosts();
+    console.log("User can post:", canPost);
+
+    newPost.mutate({ content: text });
+  }
+
   return (
     <>
       <Head>
@@ -92,7 +106,7 @@ export default function Home() {
         <TextInput
           pokemonName={session.data?.user.pokemonName ?? ""}
           placeholderText="+ New Post..."
-          handleSubmit={(text: string) => newPost.mutate({ content: text })}
+          handleSubmit={handleSubmit}
         />
         <ul className="tabs w-full justify-between">
           <li
