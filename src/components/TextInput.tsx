@@ -5,12 +5,14 @@ const MAX_LENGTH = 255;
 
 type TextInputProps = {
   pokemonName: string;
+  enabled: boolean;
   placeholderText: string;
   handleSubmit: (text: string) => void;
 };
 
 export default function TextInput({
   pokemonName,
+  enabled,
   placeholderText,
   handleSubmit,
 }: TextInputProps) {
@@ -61,7 +63,9 @@ export default function TextInput({
         if (!open) {
           e.stopPropagation();
           setGoodInput(false);
-          setOpen(true);
+          if (enabled) {
+            setOpen(true);
+          }
         }
       }}
       onSubmit={(e) => {
@@ -86,9 +90,13 @@ export default function TextInput({
       >
         {inputValue.length > 0 ? (
           inputValue
-        ) : (
+        ) : enabled ? (
           <span className="select-none text-neutral-content">
             {open ? "Use above to enter text..." : placeholderText}
+          </span>
+        ) : (
+          <span className="select-none italic text-neutral-content">
+            Hourly limit reached...
           </span>
         )}
       </div>

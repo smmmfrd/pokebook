@@ -30,8 +30,9 @@ const useLimit = (
     const checkTime = `${checkDate.getMonth()}${checkDate.getDate()}${checkDate.getHours()}`;
 
     if (data.time === checkTime) {
-      setValid(data.ticks >= limit);
+      setValid(data.ticks < limit);
     } else {
+      setValid(true);
       data.time = checkTime;
       data.ticks = 0;
     }
@@ -55,14 +56,11 @@ const useLimit = (
 
   const ticked = () => {
     const data = checkValid();
+
+    data.ticks += 1;
     console.log(itemName, data);
-    localStorage.setItem(
-      itemName,
-      JSON.stringify({
-        ...data,
-        ticks: data.ticks + 1,
-      })
-    );
+
+    localStorage.setItem(itemName, JSON.stringify(data));
   };
 
   return [valid, ticked];

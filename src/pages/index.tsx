@@ -105,6 +105,7 @@ export default function Home() {
       <nav className="sticky top-0 z-20 w-full bg-base-100">
         <TextInput
           pokemonName={session.data?.user.pokemonName ?? ""}
+          enabled={canPost}
           placeholderText="+ New Post..."
           handleSubmit={handleSubmit}
         />
