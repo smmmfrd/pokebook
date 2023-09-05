@@ -38,8 +38,7 @@ export default function LoginPage() {
       <main className="flex min-h-screen flex-col items-center px-12 py-40 sm:flex-row">
         <header className="max-w-xs basis-1/2 [&>*]:mb-4">
           <h1 className="text-4xl">Pokébook</h1>
-          <p>To view any content you must sign in, or as a guest.</p>
-          <p>You must sign in by connecting a Discord account to this app.</p>
+          <p>You must sign in by connecting a Discord account to this site.</p>
           <p>
             This connection is handled by the open source authentication service{" "}
             <Link
@@ -59,7 +58,7 @@ export default function LoginPage() {
         </header>
         <div className="divider divider-vertical max-h-96 sm:divider-horizontal"></div>
         <button
-          className="btn-primary btn mr-auto"
+          className="btn-primary btn sm:mr-auto"
           onClick={() => void signIn()}
         >
           Log In
