@@ -58,7 +58,6 @@ const useLimit = (
     const data = checkValid();
 
     data.ticks += 1;
-    console.log(itemName, data);
 
     localStorage.setItem(itemName, JSON.stringify(data));
   };

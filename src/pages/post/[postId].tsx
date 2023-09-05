@@ -10,6 +10,7 @@ import TextInput from "~/components/TextInput";
 import ProfileImage from "~/components/ProfileImage";
 import Link from "next/link";
 import BackHeader from "~/components/BackHeader";
+import { useLimit } from "~/utils/hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -96,7 +97,14 @@ export default function PostPage({
     },
   });
 
+  const [canComment, tickComments] = useLimit(
+    `${data?.user.pokemonName || ""}`,
+    "comments",
+    10
+  );
+
   function handleSubmit(text: string) {
+    tickComments();
     useCreateComment.mutate({ postId, content: text });
   }
 
@@ -121,6 +129,7 @@ export default function PostPage({
       />
       <TextInput
         pokemonName={data?.user.pokemonName ?? ""}
+        enabled={canComment}
         placeholderText="Leave a Comment..."
         handleSubmit={handleSubmit}
       />
