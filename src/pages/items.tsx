@@ -1,8 +1,17 @@
+import { Item } from "@prisma/client";
 import Head from "next/head";
+import { caller } from "~/server/api/root";
 
-type ItemsPageProps = {};
+export async function getStaticProps() {
+  const items = await caller.item.getAll();
+  return { props: { items } };
+}
 
-export default function ItemsPage({}: ItemsPageProps) {
+type ItemsPageProps = {
+  items: Item[];
+};
+
+export default function ItemsPage({ items }: ItemsPageProps) {
   return (
     <>
       <Head>
@@ -11,6 +20,11 @@ export default function ItemsPage({}: ItemsPageProps) {
       <nav className="border-b px-4 py-2">
         <h1 className="text-3xl">Items</h1>
       </nav>
+      {items.map((item) => (
+        <section>
+          <header>{item.name}</header>
+        </section>
+      ))}
     </>
   );
 }
