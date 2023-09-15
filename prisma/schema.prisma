@@ -9,16 +9,19 @@ datasource db {
 }
 
 model Pokemon {
-  id                     Int             @id
-  name                   String
-  profileImage           String          @db.Text
-  flavorTexts            String          @db.Text
-  typesJson              String          @db.Text
-  bot                    Boolean         @default(false)
-  user                   User?
-  posts                  Post[]
-  comments               Comment[]
-  likes                  Like[]
+  id           Int     @id
+  name         String
+  profileImage String  @db.Text
+  flavorTexts  String  @db.Text
+  typesJson    String  @db.Text
+  bot          Boolean @default(false)
+
+  user     User?
+  posts    Post[]
+  comments Comment[]
+  likes    Like[]
+  reviews  Review[]
+
   followers              Pokemon[]       @relation("Followers")
   follows                Pokemon[]       @relation("Followers")
   friends                Pokemon[]       @relation("Friends")
@@ -132,14 +135,20 @@ model Item {
   effect   String @db.Text
   sprite   String @db.Text
   itemType String
+
+  reviews Review[]
 }
 
 model Review {
   id       String  @id
   content  String  @db.Text
   positive Boolean
-  itemId   Int
+
+  itemId Int
+  item   Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
   posterId Int
+  poster   Pokemon @relation(fields: [posterId], references: [id], onDelete: Cascade)
 
   @@index([itemId])
   @@index([posterId])
