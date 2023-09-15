@@ -1,24 +1,5 @@
-import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { getServerAuthSession } from "~/server/auth";
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { session },
-  };
-};
 
 export default function AboutPage() {
   return (

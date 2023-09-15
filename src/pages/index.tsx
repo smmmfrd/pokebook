@@ -1,8 +1,5 @@
 import { api } from "~/utils/api";
 
-import { type GetServerSideProps } from "next";
-import { getServerAuthSession } from "~/server/auth";
-
 import TextInput from "~/components/TextInput";
 import InfiniteFeed from "~/components/InfiniteFeed";
 import { useSession } from "next-auth/react";
@@ -11,23 +8,6 @@ import Head from "next/head";
 import { useLimit } from "~/utils/hooks";
 
 type FeedEnum = "none" | "following" | "friends";
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { session },
-  };
-};
 
 export default function Home() {
   const session = useSession();

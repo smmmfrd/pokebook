@@ -13,20 +13,13 @@ import BackHeader from "~/components/BackHeader";
 import { useLimit } from "~/utils/hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-
   const postId = ctx.query.postId as string;
 
   const data = await caller.post.getPokemonByPost({ postId });
 
   const staticPostData = await caller.post.getStaticData({ postId });
 
-  if (
-    !session ||
-    data == null ||
-    data.poster == null ||
-    staticPostData.id == null
-  ) {
+  if (data == null || data.poster == null || staticPostData.id == null) {
     return {
       redirect: {
         destination: `/login?returnURL=${encodeURIComponent("")}`,
@@ -37,7 +30,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      session,
       postId,
       pokemonName: data.poster.name,
       staticPostData,
