@@ -1,5 +1,6 @@
 import { Item } from "@prisma/client";
 import Head from "next/head";
+import Image from "next/image";
 import { caller } from "~/server/api/root";
 
 export async function getStaticProps() {
@@ -40,22 +41,38 @@ export default function ItemsPage({ items }: ItemsPageProps) {
       <Head>
         <title>Items</title>
       </Head>
-      <nav className="border-b py-2">
-        <h1 className="px-4 text-3xl">Items</h1>
+      <nav className="px-4">
+        <h1 className="py-2 text-4xl">Items</h1>
 
-        <ul className="flex flex-wrap justify-center gap-1">
+        <h2 className="mx-4 mb-2 text-xl">Choose by Category:</h2>
+        <ul className="mx-4 flex flex-col justify-end gap-4 rounded-xl bg-base-300 py-3">
           {itemTypes.map((type) => (
-            <li>
-              <button className="btn-xs btn">
-                {type.name.split(/(?=[A-Z])/).join(" ")} - ({type.count})
+            <li
+              key={type.name}
+              className="border-b border-b-neutral px-4 pb-3 last:-mb-2 last:border-none"
+            >
+              <button className="group flex w-full justify-between text-left font-mono text-xl transition-all hover:py-1">
+                <span className="group-hover:underline">
+                  {type.name.split(/(?=[A-Z])/).join(" ")}
+                </span>{" "}
+                <span>({type.count}) &rarr;</span>
               </button>
             </li>
           ))}
         </ul>
       </nav>
       {/* {items.map((item) => (
-        <section>
-          <header>{item.name}</header>
+        <section key={item.id} className="w-full border-b px-2 py-2">
+          <header className="flex">
+            <h2 className="text-xl">{item.name}</h2>
+            <Image
+              src={item.sprite}
+              alt={`${item.name}'s sprite`}
+              height={30}
+              width={30}
+            />
+          </header>
+          <p>{item.effect}</p>
         </section>
       ))} */}
     </>
