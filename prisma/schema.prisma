@@ -9,41 +9,32 @@ datasource db {
 }
 
 model Pokemon {
-  id           Int    @id
-  name         String
-  profileImage String @db.Text
-  flavorTexts  String @db.Text
-  typesJson    String @db.Text
-
-  bot  Boolean @default(false)
-  user User?
-
-  posts Post[]
-
-  comments Comment[]
-
-  likes Like[]
-
-  followers Pokemon[] @relation("Followers")
-  follows   Pokemon[] @relation("Followers")
-
-  friends  Pokemon[] @relation("Friends")
-  friendOf Pokemon[] @relation("Friends")
-
+  id                     Int             @id
+  name                   String
+  profileImage           String          @db.Text
+  flavorTexts            String          @db.Text
+  typesJson              String          @db.Text
+  bot                    Boolean         @default(false)
+  user                   User?
+  posts                  Post[]
+  comments               Comment[]
+  likes                  Like[]
+  followers              Pokemon[]       @relation("Followers")
+  follows                Pokemon[]       @relation("Followers")
+  friends                Pokemon[]       @relation("Friends")
+  friendOf               Pokemon[]       @relation("Friends")
   sentFriendRequests     FriendRequest[] @relation("SentRequests")
   receivedFriendRequests FriendRequest[] @relation("ReceivedRequests")
 }
 
 model Post {
-  id        String   @id @default(uuid())
-  content   String   @db.Text
-  createdAt DateTime @default(now())
-
-  posterId Int
-  poster   Pokemon @relation(fields: [posterId], references: [id], onDelete: Cascade)
-
-  comments Comment[]
-  likes    Like[]
+  id        String    @id @default(uuid())
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  posterId  Int
+  poster    Pokemon   @relation(fields: [posterId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  likes     Like[]
 
   @@unique([createdAt, id])
   @@index([posterId])
@@ -53,12 +44,10 @@ model Comment {
   id        String   @id @default(uuid())
   content   String   @db.Text
   createdAt DateTime @default(now())
-
-  posterId Int
-  poster   Pokemon @relation(fields: [posterId], references: [id])
-
-  postId String
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  posterId  Int
+  postId    String
+  poster    Pokemon  @relation(fields: [posterId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([posterId])
   @@index([postId])
@@ -66,12 +55,10 @@ model Comment {
 
 model Like {
   createdAt DateTime @default(now())
-
   creatorId Int
-  creator   Pokemon @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-
-  postId String
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  creator   Pokemon  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@id([creatorId, postId])
   @@index([creatorId])
@@ -79,10 +66,9 @@ model Like {
 }
 
 model FriendRequest {
-  senderId Int
-  sender   Pokemon @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
-
+  senderId   Int
   receiverId Int
+  sender     Pokemon @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
   receiver   Pokemon @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
 
   @@id([senderId, receiverId])
@@ -100,9 +86,7 @@ model User {
   profileImage  String?
   accounts      Account[]
   sessions      Session[]
-
-  // Extensions
-  pokemon Pokemon? @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  pokemon       Pokemon?  @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -140,4 +124,41 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Item {
+  id       Int    @id
+  name     String
+  effect   String @db.Text
+  sprite   String @db.Text
+  itemType String
+}
+
+model Review {
+  id       String  @id
+  content  String  @db.Text
+  positive Boolean
+  itemId   Int
+  posterId Int
+
+  @@index([itemId])
+  @@index([posterId])
+}
+
+model Followers {
+  A Int
+  B Int
+
+  @@unique([A, B], map: "_Followers_AB_unique")
+  @@index([B], map: "_Followers_B_index")
+  @@map("_Followers")
+}
+
+model Friends {
+  A Int
+  B Int
+
+  @@unique([A, B], map: "_Friends_AB_unique")
+  @@index([B], map: "_Friends_B_index")
+  @@map("_Friends")
 }

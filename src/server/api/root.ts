@@ -5,6 +5,7 @@ import { infiniteRouter } from "./routers/infinite";
 import { pokemonRouter } from "./routers/pokemon";
 import { postRouter } from "./routers/post";
 import { profileRouter } from "./routers/profile";
+import { itemRouter } from "./routers/item";
 
 /**
  * This is the primary router for your server.
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   comment: commentRouter,
   infinite: infiniteRouter,
+  item: itemRouter,
 });
 
 // server side tRPC
