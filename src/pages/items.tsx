@@ -17,35 +17,37 @@ type ItemType = {
 };
 
 export default function ItemsPage({ items }: ItemsPageProps) {
-  const itemTypes = items.reduce((acc, item) => {
-    const typeIndex = acc.findIndex((type) => type.name === item.itemType);
-    if (typeIndex >= 0) {
-      return acc.map((type, index) =>
-        index === typeIndex
-          ? {
-              ...type,
-              count: type.count + 1,
-            }
-          : type
-      );
-    } else {
-      return [...acc, { name: item.itemType, count: 1 }];
-    }
-  }, [] as ItemType[]);
+  const itemTypes = items
+    .reduce((acc, item) => {
+      const typeIndex = acc.findIndex((type) => type.name === item.itemType);
+      if (typeIndex >= 0) {
+        return acc.map((type, index) =>
+          index === typeIndex
+            ? {
+                ...type,
+                count: type.count + 1,
+              }
+            : type
+        );
+      } else {
+        return [...acc, { name: item.itemType, count: 1 }];
+      }
+    }, [] as ItemType[])
+    .sort((a, b) => (a.count > b.count ? -1 : 1));
 
   return (
     <>
       <Head>
         <title>Items</title>
       </Head>
-      <nav className="border-b px-4 py-2">
-        <h1 className="text-3xl">Items</h1>
+      <nav className="border-b py-2">
+        <h1 className="px-4 text-3xl">Items</h1>
 
-        <ul>
+        <ul className="flex flex-wrap justify-center gap-1">
           {itemTypes.map((type) => (
             <li>
-              <button>
-                {type.name} - ({type.count})
+              <button className="btn-xs btn">
+                {type.name.split(/(?=[A-Z])/).join(" ")} - ({type.count})
               </button>
             </li>
           ))}
