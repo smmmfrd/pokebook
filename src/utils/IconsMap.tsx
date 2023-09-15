@@ -72,7 +72,7 @@ export const IconMap = {
       />
     </svg>
   ),
-  pokedex: (
+  bulletList: (
     // BulletList
     <svg
       aria-hidden="true"
