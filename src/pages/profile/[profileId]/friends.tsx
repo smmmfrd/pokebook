@@ -10,18 +10,16 @@ import Link from "next/link";
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
 
-  if (!session) {
+  if (session) {
     return {
-      redirect: {
-        destination: `/login?returnURL=${encodeURIComponent(ctx.resolvedUrl)}`,
-        permanent: false,
+      props: {
+        session,
+        user: session.user,
       },
     };
   }
 
-  return {
-    props: { session, user: session.user },
-  };
+  return { props: {} };
 };
 
 type FriendManagementProps = {
