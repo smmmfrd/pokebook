@@ -100,8 +100,9 @@ export default function PostCard({
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-4 ">
             <Link
-              className="text-xl font-bold capitalize hover:underline"
+              className="text-xl font-bold capitalize underline-offset-8 hover:underline"
               href={`/profile/${poster.id}`}
+              title={`Go to ${poster.name}'s profile...`}
             >
               {poster.name}
             </Link>

@@ -165,11 +165,12 @@ function Comment({ comment }: CommentProps) {
       <div className="flex flex-col items-start">
         <p>
           <Link
-            className="font-medium capitalize hover:underline"
+            className="font-medium capitalize underline-offset-4 hover:underline"
             href={`/profile/${comment.poster.id}`}
+            title={`Go to ${comment.poster.name}'s profile...`}
           >
-            {comment.poster.name}{" "}
-          </Link>
+            {comment.poster.name}
+          </Link>{" "}
           <span className="text-xs opacity-50">
             {dateTimeFormatter(comment.createdAt)}
           </span>

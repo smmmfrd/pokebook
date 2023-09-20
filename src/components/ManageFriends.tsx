@@ -54,7 +54,7 @@ export default function ManageFriends() {
           Close
         </button>
 
-        <ul className="max-w- flex max-h-[576px] flex-col gap-2 overflow-auto">
+        <ul className="flex max-h-[576px] flex-col gap-1 overflow-auto">
           {useGetAllFriends.isLoading && (
             <div className="w-full pt-4 text-center">
               <div className="loading loading-spinner loading-lg"></div>
@@ -63,7 +63,7 @@ export default function ManageFriends() {
           {useGetAllFriends.data != null &&
             useGetAllFriends.data.friends.map((friend) => (
               <li
-                className="flex items-center gap-4 rounded-lg bg-primary-focus p-4"
+                className="flex gap-4 rounded-lg bg-primary-focus p-4"
                 key={friend.id}
               >
                 <ProfileImage
@@ -72,15 +72,15 @@ export default function ManageFriends() {
                   styleExtensions="shrink-0"
                   href={`/profile/${friend.id}`}
                 />
-                <div className="flex w-full flex-col gap-2">
+                <div className="flex w-full flex-col justify-between gap-2">
                   <Link
                     href={`/profile/${friend.id}`}
-                    className="hover:underline"
+                    className="underline-offset-8 hover:underline"
                   >
                     <h2 className="text-3xl font-bold">{`${friend.name}`}</h2>
                   </Link>
                   <button
-                    className="btn-error btn ml-auto block"
+                    className="btn-error btn-sm btn ml-auto block"
                     onClick={() => handleUnfriend(friend.id)}
                   >
                     Un-friend
