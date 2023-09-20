@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { api } from "~/utils/api";
 import ProfileImage from "./ProfileImage";
 import Link from "next/link";
+import { IconMap } from "~/utils/IconsMap";
 
 export default function ManageFriends() {
   const trpcUtils = api.useContext();
@@ -27,6 +28,7 @@ export default function ManageFriends() {
   function handleUnfriend(profileId: number) {
     void useUnfriend.mutate({ profileId });
   }
+
   return (
     <>
       <button
@@ -35,8 +37,21 @@ export default function ManageFriends() {
       >
         Manage Friends
       </button>
-      <dialog ref={supportDialog}>
-        <ul>
+      <dialog
+        ref={supportDialog}
+        className="relative w-full max-w-sm rounded-3xl bg-primary py-9"
+      >
+        <button
+          // className="btn-neutral btn-xs btn-circle btn absolute right-2 top-2"
+          className="btn-neutral btn-xs btn absolute right-5 top-1.5"
+          onClick={() => supportDialog.current?.close()}
+          title="Close this popup"
+        >
+          {/* <span className="h-5 w-5">{IconMap["close"]}</span> */}
+          Close
+        </button>
+
+        <ul className="flex flex-col px-4">
           {useGetAllFriends.isLoading && (
             <div className="w-full pt-4 text-center">
               <div className="loading loading-spinner loading-lg"></div>
@@ -45,7 +60,7 @@ export default function ManageFriends() {
           {useGetAllFriends.data != null &&
             useGetAllFriends.data.friends.map((friend) => (
               <li
-                className="flex items-center gap-4 border-b p-4"
+                className="flex items-center gap-4 rounded-lg bg-primary-focus p-4"
                 key={friend.id}
               >
                 <ProfileImage
