@@ -56,10 +56,12 @@ export default function Navbar({
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="about" />
           <NavLinkText>About</NavLinkText>
         </NavbarLink>
-        <NavbarLink href="/items">
+
+        {/* <NavbarLink href="/items">
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="bulletList" />
           <NavLinkText>Items</NavLinkText>
-        </NavbarLink>
+        </NavbarLink> */}
+
         <button
           className="flex items-center gap-4 text-xl"
           onClick={() => void signOut()}

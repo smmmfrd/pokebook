@@ -44,7 +44,7 @@ export default function ItemsPage({ items }: ItemsPageProps) {
       <nav className="px-4">
         <h1 className="py-2 text-4xl">Items</h1>
 
-        <h2 className="mx-4 mb-2 text-xl">Choose by Category:</h2>
+        <h2 className="mx-4 mb-2 text-xl">Find item by Category:</h2>
         <ul className="mx-4 flex flex-col justify-end gap-4 rounded-xl bg-base-300 py-3">
           {itemTypes.map((type) => (
             <li
@@ -52,7 +52,7 @@ export default function ItemsPage({ items }: ItemsPageProps) {
               className="border-b border-b-neutral px-4 pb-3 last:-mb-2 last:border-none"
             >
               <button className="group flex w-full justify-between text-left font-mono text-xl transition-all hover:py-1">
-                <span className="group-hover:underline">
+                <span className="underline-offset-4 group-hover:underline">
                   {type.name.split(/(?=[A-Z])/).join(" ")}
                 </span>{" "}
                 <span>({type.count}) &rarr;</span>
