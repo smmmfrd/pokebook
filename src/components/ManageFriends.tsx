@@ -39,19 +39,22 @@ export default function ManageFriends() {
       </button>
       <dialog
         ref={supportDialog}
-        className="relative w-full max-w-sm rounded-3xl bg-primary py-9"
+        className="relative w-full max-w-sm rounded-3xl bg-primary px-12 py-9"
       >
         <button
           // className="btn-neutral btn-xs btn-circle btn absolute right-2 top-2"
-          className="btn-neutral btn-xs btn absolute right-5 top-1.5"
-          onClick={() => supportDialog.current?.close()}
+          className="btn-neutral btn-xs btn absolute right-5 top-1.5 z-10"
+          onClick={(e) => {
+            e.stopPropagation();
+            supportDialog.current?.close();
+          }}
           title="Close this popup"
         >
           {/* <span className="h-5 w-5">{IconMap["close"]}</span> */}
           Close
         </button>
 
-        <ul className="flex flex-col px-4">
+        <ul className="max-w- flex max-h-[576px] flex-col gap-2 overflow-auto">
           {useGetAllFriends.isLoading && (
             <div className="w-full pt-4 text-center">
               <div className="loading loading-spinner loading-lg"></div>
