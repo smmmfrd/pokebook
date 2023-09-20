@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import ManageFriends from "./ManageFriends";
 
 type ProfileButtonsProps = {
   profileId: number;
@@ -21,14 +22,7 @@ export default function ProfileButtons({
   if (session.status !== "authenticated") return <></>;
 
   if (session.data?.user.pokemonId === profileId) {
-    return (
-      <Link
-        href={`/profile/${profileId}/friends`}
-        className="btn-info btn my-auto"
-      >
-        Manage Friends
-      </Link>
-    );
+    return <ManageFriends />;
   } else {
     return (
       <>
