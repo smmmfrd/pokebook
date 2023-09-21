@@ -96,9 +96,10 @@ export default function PostCard({
           src={poster.profileImage}
           href={`/profile/${poster.id}`}
           size="large"
+          bot={poster.bot}
         />
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-4 ">
+          <div className="flex items-center gap-1">
             <Link
               className="text-xl font-bold capitalize underline-offset-8 hover:underline"
               href={`/profile/${poster.id}`}
@@ -106,18 +107,6 @@ export default function PostCard({
             >
               {poster.name}
             </Link>
-            {poster.bot && (
-              <span
-                className="tooltip tooltip-bottom h-6 w-6 cursor-pointer"
-                data-tip="This is a bot, click to learn more!"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  void router.push("/about");
-                }}
-              >
-                {IconMap["bot"]}
-              </span>
-            )}
           </div>
           {/* DATE */}
           <p className="text-xs font-thin">{dateTimeFormatter(createdAt)}</p>

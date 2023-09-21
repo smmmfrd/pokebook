@@ -120,6 +120,7 @@ export default function ProfilePage({
             src={pokemon.profileImage}
             styleExtensions="shrink-0 shadow-md"
             size="large"
+            bot={pokemon.bot}
           />
           <p className="shrink">
             <span className="font-bold">INFO: </span>

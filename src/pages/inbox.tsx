@@ -76,7 +76,9 @@ export default function InboxPage({ user }: InboxPageProps) {
       </Head>
       <BackHeader
         title={`${user.pokemonName}'s Inbox`}
-        headExtensions={<ProfileImage size="medium" src={user.profileImage} />}
+        headExtensions={
+          <ProfileImage size="medium" src={user.profileImage} bot={false} />
+        }
       >
         <ul className="tabs justify-between pt-2">
           <li
@@ -137,6 +139,7 @@ type FriendRequestsDisplayProps = {
       sender: {
         profileImage: string;
         name: string;
+        bot: boolean;
       };
     }[];
     sent: {
@@ -144,6 +147,7 @@ type FriendRequestsDisplayProps = {
       receiver: {
         profileImage: string;
         name: string;
+        bot: boolean;
       };
     }[];
   };
@@ -172,6 +176,7 @@ function FriendRequestsDisplay({
                 src={sender.profileImage}
                 size="medium"
                 styleExtensions="shrink-0"
+                bot={sender.bot}
               />
               <p>{`${sender.name}`} sent you a friend request!</p>
             </section>
@@ -206,6 +211,7 @@ function FriendRequestsDisplay({
                 src={receiver.profileImage}
                 size="medium"
                 styleExtensions="shrink-0"
+                bot={receiver.bot}
               />
               <p>You sent a friend request to {`${receiver.name}`}!</p>
             </section>

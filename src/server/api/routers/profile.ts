@@ -15,6 +15,7 @@ export const profileRouter = createTRPCRouter({
           name: true,
           profileImage: true,
           flavorTexts: true,
+          bot: true,
           followers: {
             select: {
               id: true,
@@ -35,6 +36,7 @@ export const profileRouter = createTRPCRouter({
           name: profile.name,
           profileImage: profile.profileImage,
           flavorTexts: profile.flavorTexts,
+          bot: profile.bot,
         },
         isFollowing: profile.followers.some(({ id }) => id === userId),
         isFriend: profile.friends.some(({ id }) => id === userId),
@@ -77,6 +79,7 @@ export const profileRouter = createTRPCRouter({
             id: true,
             profileImage: true,
             name: true,
+            bot: true,
           },
         },
       },
@@ -128,6 +131,7 @@ export const profileRouter = createTRPCRouter({
           select: {
             profileImage: true,
             name: true,
+            bot: true,
           },
         },
       },
@@ -140,6 +144,7 @@ export const profileRouter = createTRPCRouter({
           select: {
             profileImage: true,
             name: true,
+            bot: true,
           },
         },
       },

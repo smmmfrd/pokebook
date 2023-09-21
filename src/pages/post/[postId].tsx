@@ -146,6 +146,7 @@ type CommentProps = {
       id: number;
       profileImage: string;
       name: string;
+      bot: boolean;
     };
   };
 };
@@ -161,6 +162,7 @@ function Comment({ comment }: CommentProps) {
         styleExtensions="mt-1 -ml-2"
         href={`/profile/${comment.poster.id}`}
         size="medium"
+        bot={comment.poster.bot}
       />
       <div className="flex flex-col items-start">
         <p>

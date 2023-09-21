@@ -34,6 +34,7 @@ export default function Navbar({
               src={profileImage}
               size="small"
               styleExtensions="ring-base-content"
+              bot={false}
             />
           ) : (
             <NavbarIcon styleExtensions={"w-8 h-8"} icon="profile" />
