@@ -57,6 +57,28 @@ export const pokemonRouter = createTRPCRouter({
 
       return { randPokemon };
     }),
+  getRandomBotPokemon: publicProcedure.query(async ({ ctx }) => {
+    const bots = await ctx.prisma.pokemon.findMany({
+      where: {
+        bot: true,
+      },
+      select: {
+        id: true,
+        profileImage: true,
+        name: true,
+        _count: {
+          select: {
+            sentFriendRequests: true,
+            receivedFriendRequests: true,
+          },
+        },
+      },
+    });
+
+    const random = bots[Math.floor(Math.random() * bots.length)];
+
+    return { random };
+  }),
   getPokemon: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ input: { userId }, ctx }) => {

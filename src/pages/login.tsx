@@ -4,6 +4,8 @@ import { getServerAuthSession } from "~/server/auth";
 import { signIn } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
+import { api } from "~/utils/api";
+import { useEffect } from "react";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -29,6 +31,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default function LoginPage() {
+  const { data, refetch, isLoading } = api.pokemon.getRandomBotPokemon.useQuery(
+    undefined,
+    {
+      enabled: false,
+    }
+  );
+
+  useEffect(() => {
+    if (data?.random != null) {
+      console.log(data.random);
+    }
+  }, [data, isLoading]);
+
   return (
     <>
       <Head>
@@ -57,15 +72,23 @@ export default function LoginPage() {
           </p>
         </header>
         <div className="divider divider-vertical max-h-96 sm:divider-horizontal"></div>
-        <button
-          className="btn-primary btn sm:mr-auto"
-          onClick={() => void signIn()}
-        >
-          Log In
-        </button>
-        {/* <div className="flex basis-1/2 justify-between gap-12 sm:flex-col sm:items-start">
-          <button className="btn-secondary btn">Guest Log In</button>
-        </div> */}
+
+        <div className="flex basis-1/2 justify-between gap-12 sm:flex-col sm:items-start">
+          <button
+            className="btn-primary btn sm:mr-auto"
+            onClick={() => void signIn()}
+          >
+            Log In
+          </button>
+          <button
+            className="btn-secondary btn"
+            onClick={async () => {
+              void refetch();
+            }}
+          >
+            Guest Log In
+          </button>
+        </div>
       </main>
     </>
   );
