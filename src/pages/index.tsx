@@ -116,6 +116,13 @@ export default function Home() {
           </li>
         </ul>
       </nav>
+      {newPost.isLoading && (
+        <section>
+          <div className="w-full border-b pt-4 text-center">
+            <div className="loading loading-infinity loading-lg"></div>
+          </div>
+        </section>
+      )}
       <InfiniteFeed
         posts={infiniteQuery.data?.pages.flatMap((page) => page.posts)}
         isError={infiniteQuery.isError}
