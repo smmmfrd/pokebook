@@ -13,7 +13,6 @@ export const config = {
     "/",
     "/post/:postId*",
     "/profile/:profileId*",
-    // "/profile/:profileId*/friends",
     "/404",
     "/about",
     "/inbox",

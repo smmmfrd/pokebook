@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session || ctx.query.profileId == null) {
     return {
       redirect: {
-        destination: `/login?returnURL=${encodeURIComponent("")}`,
+        destination: "/",
         permanent: false,
       },
     };

@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (data == null || data.poster == null || staticPostData.id == null) {
     return {
       redirect: {
-        destination: `/login?returnURL=${encodeURIComponent("")}`,
+        destination: "/",
         permanent: false,
       },
     };
