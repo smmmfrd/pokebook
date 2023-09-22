@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export default function middleware(request: NextRequest) {
-  if (request.cookies.get("next-auth.session-token") == null) {
+  if (
+    request.cookies.get("guest-pokemon") == null &&
+    request.cookies.get("next-auth.session-token") == null
+  ) {
     return NextResponse.redirect(
       new URL(`/login?returnURL=${request.nextUrl.pathname}`, request.url)
     );

@@ -6,6 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
+import { setCookie } from "cookies-next";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -40,7 +41,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (data?.random != null) {
-      console.log(data.random);
+      const poke = data.random;
+      console.log();
+      setCookie("guest-pokemon", poke);
     }
   }, [data, isLoading]);
 
