@@ -6,52 +6,18 @@ import { api } from "~/utils/api";
 
 import TextInput from "~/components/TextInput";
 import InfiniteFeed from "~/components/InfiniteFeed";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Head from "next/head";
-import { useLimit } from "~/utils/hooks";
-
-type FeedEnum = "none" | "following" | "friends";
+import { getServerSideUserPokemon, useLimit } from "~/utils/hooks";
+import type { HomeFeedEnum, UserPokemon } from "~/utils/types";
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   ctx
 ) => {
   const session = await getServerAuthSession(ctx);
+  const userPokemon = await getServerSideUserPokemon(session);
 
-  const guestCookie = ctx.req.cookies["guest-pokemon"];
-  const guestPokemon = await JSON.parse(guestCookie ?? "");
-
-  if (session) {
-    return {
-      props: {
-        userPokemon: {
-          id: session.user.pokemonId,
-          name: session.user.pokemonName,
-          profileImage: session.user.profileImage,
-        },
-      },
-    };
-  }
-
-  if (guestCookie) {
-    return {
-      props: {
-        userPokemon: guestPokemon,
-      },
-    };
-  }
-
-  return {
-    props: {
-      userPokemon: { id: 0, name: "", profileImage: "" },
-    },
-  };
-};
-
-type UserPokemon = {
-  id: number;
-  name: string;
-  profileImage: string;
+  return { props: { userPokemon } };
 };
 
 type HomeProps = {
@@ -60,7 +26,7 @@ type HomeProps = {
 
 export default function Home({ userPokemon }: HomeProps) {
   const trpcUtils = api.useContext();
-  const [feed, setFeed] = useState<FeedEnum>("none");
+  const [feed, setFeed] = useState<HomeFeedEnum>("none");
 
   const newPost = api.post.createPost.useMutation({
     onSuccess: (newPost) => {
@@ -112,11 +78,10 @@ export default function Home({ userPokemon }: HomeProps) {
     }
   );
 
-  const [canPost, tickPosts] = useLimit(`${userPokemon.name}`, "posts", 5);
+  const [canPost, tickPosts] = useLimit(`${userPokemon.name}`, "posts", 4);
 
   function handleSubmit(text: string) {
     tickPosts();
-    console.log("User can post:", canPost);
 
     newPost.mutate({ content: text, pokemonId: userPokemon.id });
   }

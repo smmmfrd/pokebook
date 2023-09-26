@@ -10,49 +10,45 @@ import ProfileButtons from "~/components/ProfileButtons";
 import ProfileImage from "~/components/ProfileImage";
 import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
-import type { FriendStatus } from "~/utils/types";
+import type { FriendStatus, ProfileFeedEnum, UserPokemon } from "~/utils/types";
 import { useState } from "react";
+import { getServerSideUserPokemon } from "~/utils/hooks";
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<
+  ProfilePageProps | {}
+> = async (ctx) => {
   const session = await getServerAuthSession(ctx);
+  const userPokemon = await getServerSideUserPokemon(session);
 
-  if (!session || ctx.query.profileId == null) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  // GET THE PROFILE
-  // Queries in next.js can be string | string[]
-  const cleanQuery = Array.isArray(ctx.query.profileId)
-    ? ctx.query.profileId.join("")
-    : ctx.query.profileId;
+  const cleanQuery = ctx.query.profileId as string;
 
   const profileId = parseInt(cleanQuery);
 
   const profileData = await caller.profile.getById({
     profileId,
-    userId: session.user.pokemonId,
+    userId: userPokemon.id,
   });
 
   if (profileData == null || profileData.pokemon == null) {
-    return { props: { session } };
+    return {
+      redirect: {
+        destination: "404",
+        permanent: false,
+      },
+    };
   }
 
-  const { pokemon, isFollowing, isFriend } = profileData;
+  const { pokemon: profilePokemon, isFollowing, isFriend } = profileData;
 
   const randomFlavorText = () => {
-    const texts = JSON.parse(pokemon.flavorTexts) as string[];
+    const texts = JSON.parse(profilePokemon.flavorTexts) as string[];
     return texts[Math.floor(Math.random() * texts.length)];
   };
 
   // FRIENDSHIP STATUS
   const { sent, received } = await caller.profile.friendRequestExists({
     profileId,
-    userPokemonId: session.user.pokemonId,
+    userPokemonId: userPokemon.id,
   });
 
   const friendStatus: FriendStatus = isFriend
@@ -65,8 +61,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      session,
-      pokemon,
+      userPokemon,
+      profilePokemon,
       flavorText: randomFlavorText(),
       profileId,
       isFollowing,
@@ -76,8 +72,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 type ProfilePageProps = {
-  session: Session;
-  pokemon: Pokemon;
+  userPokemon: UserPokemon;
+  profilePokemon: Pokemon;
   flavorText: string;
   profileId: number;
   isFollowing: boolean;
@@ -85,16 +81,17 @@ type ProfilePageProps = {
 };
 
 export default function ProfilePage({
-  pokemon,
+  userPokemon,
+  profilePokemon,
   flavorText,
   profileId,
   isFollowing,
   friendStatus,
 }: ProfilePageProps) {
-  const [feed, setFeed] = useState<"posts" | "likes">("posts");
+  const [feed, setFeed] = useState<ProfileFeedEnum>("posts");
 
   const infiniteQuery = api.infinite.infiniteProfileFeed.useInfiniteQuery(
-    { profileId, where: feed },
+    { profileId, userPokemonId: userPokemon.id, where: feed },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       refetchOnWindowFocus: false,
@@ -105,9 +102,9 @@ export default function ProfilePage({
   return (
     <>
       <Head>
-        <title>{`${pokemon.name}'s Profile | Pokebook`}</title>
+        <title>{`${profilePokemon.name}'s Profile | Pokebook`}</title>
       </Head>
-      <BackHeader title={pokemon.name}>
+      <BackHeader title={profilePokemon.name}>
         <div className="flex flex-wrap justify-between gap-8 p-8 pb-6">
           <div className="flex flex-col justify-between">
             <ProfileButtons
@@ -117,10 +114,10 @@ export default function ProfilePage({
             />
           </div>
           <ProfileImage
-            src={pokemon.profileImage}
+            src={profilePokemon.profileImage}
             styleExtensions="shrink-0 shadow-md"
             size="large"
-            bot={pokemon.bot}
+            bot={profilePokemon.bot}
           />
           <p className="shrink">
             <span className="font-bold">INFO: </span>

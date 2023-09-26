@@ -1,6 +1,7 @@
 import { getCookie } from "cookies-next";
 import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
+import type { UserPokemon } from "./types";
 
 type StorageData = {
   time: string;
@@ -97,10 +98,25 @@ const useUserPokemon = (sessionData: Session | null): UserPokemon => {
   return { id: 0, name: "", profileImage: "" };
 };
 
-type UserPokemon = {
-  id: number;
-  name: string;
-  profileImage: string;
-};
+async function getServerSideUserPokemon(
+  sessionData: Session | null
+): Promise<UserPokemon> {
+  if (sessionData != null) {
+    return {
+      id: sessionData.user.pokemonId,
+      name: sessionData.user.pokemonName,
+      profileImage: sessionData.user.profileImage,
+    };
+  }
 
-export { useLimit, useUserPokemon };
+  const guestCookie = getCookie("guest-pokemon");
+  if (guestCookie != null) {
+    const guestPokemon = await JSON.parse(guestCookie);
+
+    return guestPokemon;
+  }
+
+  return { id: 0, name: "", profileImage: "" };
+}
+
+export { useLimit, useUserPokemon, getServerSideUserPokemon };
