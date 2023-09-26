@@ -7,6 +7,7 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { useEffect } from "react";
 import { setCookie } from "cookies-next";
+import { useRouter } from "next/router";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -39,11 +40,27 @@ export default function LoginPage() {
     }
   );
 
+  const router = useRouter();
+
   useEffect(() => {
     if (data?.random != null) {
       const poke = data.random;
-      console.log();
-      setCookie("guest-pokemon", poke);
+      setCookie("guest-pokemon", poke, {
+        maxAge: 3600,
+      });
+      console.log(
+        "Guest Pokemon:",
+        poke,
+        "returning to: ",
+        router.query.returnURL
+      );
+      if (router.query.returnURL) {
+        router.push(
+          Array.isArray(router.query.returnURL)
+            ? router.query.returnURL.join("")
+            : router.query.returnURL
+        );
+      }
     }
   }, [data, isLoading]);
 
