@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 
 import Navbar from "./Navbar";
 import { api } from "~/utils/api";
@@ -16,8 +15,7 @@ const THEMES = {
 };
 
 export default function Layout({ children }: LayoutProps) {
-  const session = useSession();
-  const userPokemon = useUserPokemon(session.data);
+  const userPokemon = useUserPokemon();
 
   const [loaded, setLoaded] = useState<boolean>(false);
   const [theme, setTheme] = useState<string>(THEMES.light);
@@ -44,7 +42,7 @@ export default function Layout({ children }: LayoutProps) {
     }
   );
 
-  if (userPokemon.id === 0) return <>{children}</>;
+  if (userPokemon.name.length === 0) return <>{children}</>;
 
   const toggleTheme = () => {
     setTheme(theme === THEMES.light ? THEMES.dark : THEMES.light);

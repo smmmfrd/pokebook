@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
+import { useGuestStore } from "~/store/GuestStore";
 
 type NavbarProps = {
   profileImage: string;
@@ -17,6 +18,13 @@ export default function Navbar({
   toggleTheme,
   requestNotif,
 }: NavbarProps) {
+  const { removeGuestPokemon } = useGuestStore();
+
+  function handleSignOut() {
+    void signOut();
+    removeGuestPokemon();
+  }
+
   return (
     <nav className="relative min-h-screen">
       <ul className="sticky top-0 flex h-full max-h-screen flex-col gap-8 p-2 sm:p-8">
@@ -29,7 +37,7 @@ export default function Navbar({
           <NavLinkText>Home</NavLinkText>
         </NavbarLink>
         <NavbarLink href={`/profile/${userId}`}>
-          {profileImage ? (
+          {profileImage.length > 0 ? (
             <ProfileImage
               src={profileImage}
               size="small"
@@ -65,7 +73,7 @@ export default function Navbar({
 
         <button
           className="flex items-center gap-4 text-xl"
-          onClick={() => void signOut()}
+          onClick={handleSignOut}
         >
           <NavbarIcon styleExtensions={"w-8 h-8"} icon="signOut" />
           <NavLinkText>Sign Out</NavLinkText>

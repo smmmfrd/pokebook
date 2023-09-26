@@ -8,6 +8,7 @@ import { api } from "~/utils/api";
 import { useEffect } from "react";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import { useGuestStore } from "~/store/GuestStore";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
@@ -40,6 +41,8 @@ export default function LoginPage() {
     }
   );
 
+  const { setGuestPokemon } = useGuestStore();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -48,18 +51,15 @@ export default function LoginPage() {
       setCookie("guest-pokemon", poke, {
         maxAge: 3600,
       });
-      console.log(
-        "Guest Pokemon:",
-        poke,
-        "returning to: ",
-        router.query.returnURL
-      );
+      setGuestPokemon(poke);
       if (router.query.returnURL) {
         router.push(
           Array.isArray(router.query.returnURL)
             ? router.query.returnURL.join("")
             : router.query.returnURL
         );
+      } else {
+        router.push("/");
       }
     }
   }, [data, isLoading]);

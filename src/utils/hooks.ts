@@ -2,6 +2,8 @@ import { getCookie } from "cookies-next";
 import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
 import type { UserPokemon } from "./types";
+import { useGuestStore } from "~/store/GuestStore";
+import { useSession } from "next-auth/react";
 
 type StorageData = {
   time: string;
@@ -68,34 +70,29 @@ const useLimit = (
   return [valid, ticked];
 };
 
-const useUserPokemon = (sessionData: Session | null): UserPokemon => {
-  const [guestPokemon, setGuestPokemon] = useState<UserPokemon | null>(null);
+const defaultUserPokemon = { id: 0, name: "", profileImage: "" };
 
-  useEffect(() => {
-    async function getGuest() {
-      const guestCookie = getCookie("guest-pokemon");
-      if (guestCookie != null) {
-        const guestData = await JSON.parse(guestCookie);
-        setGuestPokemon(guestData);
-      }
-    }
+const useUserPokemon = (): UserPokemon => {
+  const session = useSession();
+  const [userPokemon, setUserPokemon] =
+    useState<UserPokemon>(defaultUserPokemon);
+  const { guestPokemon } = useGuestStore();
 
-    getGuest();
-  }, []);
+  if (guestPokemon != null && userPokemon.id != guestPokemon.id) {
+    console.log("fucking fuck");
 
-  if (sessionData != null) {
-    return {
-      id: sessionData.user.pokemonId,
-      name: sessionData.user.pokemonName,
-      profileImage: sessionData.user.profileImage,
-    };
+    setUserPokemon(guestPokemon);
   }
 
-  if (guestPokemon != null) {
-    return guestPokemon;
+  if (session.data != null && userPokemon.id != session.data.user.pokemonId) {
+    setUserPokemon({
+      id: session.data.user.pokemonId,
+      name: session.data.user.pokemonName,
+      profileImage: session.data.user.profileImage,
+    });
   }
 
-  return { id: 0, name: "", profileImage: "" };
+  return userPokemon;
 };
 
 async function getServerSideUserPokemon(
