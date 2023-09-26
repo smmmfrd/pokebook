@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import Navbar from "./Navbar";
 import { api } from "~/utils/api";
 import Footer from "./Footer";
+import { useUserPokemon } from "~/utils/hooks";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -15,7 +16,8 @@ const THEMES = {
 };
 
 export default function Layout({ children }: LayoutProps) {
-  const { data: sessionData } = useSession();
+  const session = useSession();
+  const userPokemon = useUserPokemon(session.data);
 
   const [loaded, setLoaded] = useState<boolean>(false);
   const [theme, setTheme] = useState<string>(THEMES.light);
@@ -35,11 +37,14 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [theme, loaded]);
 
-  const { data } = api.profile.getAllFriendRequests.useQuery(undefined, {
-    enabled: !!sessionData,
-  });
+  const { data } = api.profile.getAllFriendRequests.useQuery(
+    { pokemonId: userPokemon.id },
+    {
+      enabled: userPokemon.id > 0,
+    }
+  );
 
-  if (!sessionData) return <>{children}</>;
+  if (userPokemon.id === 0) return <>{children}</>;
 
   const toggleTheme = () => {
     setTheme(theme === THEMES.light ? THEMES.dark : THEMES.light);
@@ -48,14 +53,13 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="flex min-w-full">
       <Navbar
-        profileImage={sessionData.user.profileImage}
-        userId={sessionData.user.pokemonId}
+        profileImage={userPokemon.profileImage}
+        userId={userPokemon.id}
         toggleTheme={toggleTheme}
         requestNotif={
-          data == null
-            ? sessionData.user.sentFriendRequests > 0 ||
-              sessionData.user.receivedFriendRequests > 0
-            : data.received.length > 0 || data.sent.length > 0
+          data != null
+            ? data.received.length > 0 || data.sent.length > 0
+            : false
         }
       />
       <main className="-mr-[1px] min-h-screen w-full max-w-xl border-l border-r">

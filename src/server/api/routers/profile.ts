@@ -68,23 +68,23 @@ export const profileRouter = createTRPCRouter({
 
       return { addedFollow };
     }),
-  getAllFriends: protectedProcedure.query(async ({ ctx }) => {
-    const currentUserId = ctx.session.user.pokemonId;
-
-    return await ctx.prisma.pokemon.findFirst({
-      where: { id: currentUserId },
-      select: {
-        friends: {
-          select: {
-            id: true,
-            profileImage: true,
-            name: true,
-            bot: true,
+  getAllFriends: protectedProcedure
+    .input(z.object({ pokemonId: z.number() }))
+    .query(async ({ input: { pokemonId }, ctx }) => {
+      return await ctx.prisma.pokemon.findFirst({
+        where: { id: pokemonId },
+        select: {
+          friends: {
+            select: {
+              id: true,
+              profileImage: true,
+              name: true,
+              bot: true,
+            },
           },
         },
-      },
-    });
-  }),
+      });
+    }),
   friendRequestExists: publicProcedure
     .input(z.object({ profileId: z.number(), userPokemonId: z.number() }))
     .query(async ({ input: { profileId, userPokemonId }, ctx }) => {
@@ -120,38 +120,38 @@ export const profileRouter = createTRPCRouter({
 
       return {};
     }),
-  getAllFriendRequests: protectedProcedure.query(async ({ ctx }) => {
-    const currentUserId = ctx.session.user.pokemonId;
-
-    const received = await ctx.prisma.friendRequest.findMany({
-      where: { receiverId: currentUserId },
-      select: {
-        senderId: true,
-        sender: {
-          select: {
-            profileImage: true,
-            name: true,
-            bot: true,
+  getAllFriendRequests: publicProcedure
+    .input(z.object({ pokemonId: z.number() }))
+    .query(async ({ input: { pokemonId }, ctx }) => {
+      const received = await ctx.prisma.friendRequest.findMany({
+        where: { receiverId: pokemonId },
+        select: {
+          senderId: true,
+          sender: {
+            select: {
+              profileImage: true,
+              name: true,
+              bot: true,
+            },
           },
         },
-      },
-    });
-    const sent = await ctx.prisma.friendRequest.findMany({
-      where: { senderId: currentUserId },
-      select: {
-        receiverId: true,
-        receiver: {
-          select: {
-            profileImage: true,
-            name: true,
-            bot: true,
+      });
+      const sent = await ctx.prisma.friendRequest.findMany({
+        where: { senderId: pokemonId },
+        select: {
+          receiverId: true,
+          receiver: {
+            select: {
+              profileImage: true,
+              name: true,
+              bot: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    return { received, sent };
-  }),
+      return { received, sent };
+    }),
   acceptFriendRequest: protectedProcedure
     .input(z.object({ senderId: z.number() }))
     .mutation(async ({ input: { senderId }, ctx }) => {
