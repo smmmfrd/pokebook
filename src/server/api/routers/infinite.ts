@@ -9,27 +9,27 @@ import {
 } from "~/server/api/trpc";
 
 export const infiniteRouter = createTRPCRouter({
-  infiniteHomeFeed: protectedProcedure
+  infiniteHomeFeed: publicProcedure
     .input(
       z.object({
         where: z.enum(["none", "following", "friends"]),
+        pokemonId: z.number(),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
     )
-    .query(async ({ input: { where, limit = 10, cursor }, ctx }) => {
-      const currentUserId = ctx.session.user.pokemonId;
-
+    .query(async ({ input: { where, pokemonId, limit = 10, cursor }, ctx }) => {
       return await getInfinitePosts({
-        limit,
         ctx,
+        limit,
+        pokemonId,
         cursor,
         whereClause:
           where === "following"
             ? {
                 poster: {
                   followers: {
-                    some: { id: currentUserId },
+                    some: { id: pokemonId },
                   },
                 },
               }
@@ -37,7 +37,7 @@ export const infiniteRouter = createTRPCRouter({
             ? {
                 poster: {
                   friends: {
-                    some: { id: currentUserId },
+                    some: { id: pokemonId },
                   },
                 },
               }
@@ -49,42 +49,50 @@ export const infiniteRouter = createTRPCRouter({
       z.object({
         profileId: z.number(),
         where: z.enum(["posts", "likes"]),
+        userPokemonId: z.number(),
         limit: z.number().optional(),
         cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
       })
     )
-    .query(async ({ input: { profileId, limit = 10, cursor, where }, ctx }) => {
-      if (where === "posts") {
+    .query(
+      async ({
+        input: { profileId, userPokemonId, limit = 10, cursor, where },
+        ctx,
+      }) => {
+        if (where === "posts") {
+          return await getInfinitePosts({
+            ctx,
+            limit,
+            pokemonId: userPokemonId,
+            cursor,
+            whereClause: { posterId: profileId },
+          });
+        }
+
         return await getInfinitePosts({
-          limit,
           ctx,
+          limit,
+          pokemonId: userPokemonId,
           cursor,
-          whereClause: { posterId: profileId },
+          whereClause: { likes: { some: { creatorId: profileId } } },
         });
       }
-
-      return await getInfinitePosts({
-        limit,
-        ctx,
-        cursor,
-        whereClause: { likes: { some: { creatorId: profileId } } },
-      });
-    }),
+    ),
 });
 
 async function getInfinitePosts({
   ctx,
   limit,
+  pokemonId,
   cursor,
   whereClause,
 }: {
   ctx: inferAsyncReturnType<typeof createTRPCContext>;
   limit: number;
+  pokemonId: number;
   cursor: { id: string; createdAt: Date } | undefined;
   whereClause?: Prisma.PostWhereInput;
 }) {
-  const currentUserId = ctx.session?.user.pokemonId;
-
   const data = await ctx.prisma.post.findMany({
     take: limit + 1,
     cursor: cursor ? { createdAt_id: cursor } : undefined,
@@ -95,8 +103,7 @@ async function getInfinitePosts({
       content: true,
       createdAt: true,
       _count: { select: { likes: true, comments: true } },
-      likes:
-        currentUserId == null ? false : { where: { creatorId: currentUserId } },
+      likes: pokemonId == null ? false : { where: { creatorId: pokemonId } },
       poster: {
         select: {
           id: true,

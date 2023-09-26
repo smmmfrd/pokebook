@@ -1,3 +1,7 @@
+import { type GetServerSideProps } from "next";
+
+import { getServerAuthSession } from "~/server/auth";
+
 import { api } from "~/utils/api";
 
 import TextInput from "~/components/TextInput";
@@ -9,8 +13,52 @@ import { useLimit } from "~/utils/hooks";
 
 type FeedEnum = "none" | "following" | "friends";
 
-export default function Home() {
-  const session = useSession();
+export const getServerSideProps: GetServerSideProps<HomeProps> = async (
+  ctx
+) => {
+  const session = await getServerAuthSession(ctx);
+
+  const guestCookie = ctx.req.cookies["guest-pokemon"];
+  const guestPokemon = await JSON.parse(guestCookie ?? "");
+
+  if (session) {
+    return {
+      props: {
+        userPokemon: {
+          id: session.user.pokemonId,
+          name: session.user.pokemonName,
+          profileImage: session.user.profileImage,
+        },
+      },
+    };
+  }
+
+  if (guestCookie) {
+    return {
+      props: {
+        userPokemon: guestPokemon,
+      },
+    };
+  }
+
+  return {
+    props: {
+      userPokemon: { id: 0, name: "", profileImage: "" },
+    },
+  };
+};
+
+type UserPokemon = {
+  id: number;
+  name: string;
+  profileImage: string;
+};
+
+type HomeProps = {
+  userPokemon: UserPokemon;
+};
+
+export default function Home({ userPokemon }: HomeProps) {
   const trpcUtils = api.useContext();
   const [feed, setFeed] = useState<FeedEnum>("none");
 
@@ -18,10 +66,10 @@ export default function Home() {
     onSuccess: (newPost) => {
       // Here we need to add this new post to our infinite feed, so that the user has a fluid experience.
 
-      if (session.status !== "authenticated" || feed !== "none") return;
+      if (feed !== "none") return;
 
       trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
-        { where: feed },
+        { where: feed, pokemonId: userPokemon.id },
         (oldData) => {
           if (oldData == null || oldData.pages[0] == null) return;
 
@@ -33,9 +81,9 @@ export default function Home() {
             likedByMe: false,
             // Poster data is in the post queries so we need to throw that in here.
             poster: {
-              id: session.data.user.pokemonId,
-              profileImage: session.data.user.profileImage,
-              name: session.data.user.pokemonName,
+              id: userPokemon.id,
+              profileImage: userPokemon.profileImage,
+              name: userPokemon.name,
               bot: false,
             },
           };
@@ -56,7 +104,7 @@ export default function Home() {
   });
 
   const infiniteQuery = api.infinite.infiniteHomeFeed.useInfiniteQuery(
-    { where: feed },
+    { where: feed, pokemonId: userPokemon.id },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor, // Here we pass the next cursor from the last time it was queried.
       refetchOnWindowFocus: false,
@@ -64,17 +112,13 @@ export default function Home() {
     }
   );
 
-  const [canPost, tickPosts] = useLimit(
-    `${session.data?.user.pokemonName || ""}`,
-    "posts",
-    5
-  );
+  const [canPost, tickPosts] = useLimit(`${userPokemon.name}`, "posts", 5);
 
   function handleSubmit(text: string) {
     tickPosts();
     console.log("User can post:", canPost);
 
-    newPost.mutate({ content: text });
+    newPost.mutate({ content: text, pokemonId: userPokemon.id });
   }
 
   return (
@@ -84,7 +128,7 @@ export default function Home() {
       </Head>
       <nav className="sticky top-0 z-20 w-full bg-base-100">
         <TextInput
-          pokemonName={session.data?.user.pokemonName ?? ""}
+          pokemonName={userPokemon.name}
           enabled={canPost}
           placeholderText="+ New Post..."
           handleSubmit={handleSubmit}

@@ -89,11 +89,11 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
-  createPost: protectedProcedure
-    .input(z.object({ content: z.string() }))
-    .mutation(async ({ input: { content }, ctx }) => {
+  createPost: publicProcedure
+    .input(z.object({ content: z.string(), pokemonId: z.number() }))
+    .mutation(async ({ input: { content, pokemonId }, ctx }) => {
       const post = await ctx.prisma.post.create({
-        data: { posterId: ctx.session.user.pokemonId, content },
+        data: { posterId: pokemonId, content },
       });
 
       return post;
