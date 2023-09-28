@@ -2,10 +2,10 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import { IconMap } from "~/utils/IconsMap";
 import { type InfinitePost } from "./InfiniteFeed";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
+import { useUserPokemon } from "~/utils/hooks";
 
 export const dateTimeFormatter = (createdAt: Date | string) =>
   moment(createdAt).fromNow();
@@ -19,8 +19,7 @@ export default function PostCard({
   likeCount,
   likedByMe,
 }: InfinitePost) {
-  const router = useRouter();
-
+  const userPokemon = useUserPokemon();
   const trpcUtils = api.useContext();
 
   const toggleLike = api.post.toggleLike.useMutation({
@@ -55,20 +54,20 @@ export default function PostCard({
       };
 
       trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
-        { where: "none" },
+        { where: "none", pokemonId: userPokemon.id },
         updateData
       );
       trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
-        { where: "following" },
+        { where: "following", pokemonId: userPokemon.id },
         updateData
       );
 
       trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
-        { profileId: poster.id, where: "posts" },
+        { profileId: poster.id, where: "posts", userPokemonId: userPokemon.id },
         updateData
       );
       trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
-        { profileId: poster.id, where: "likes" },
+        { profileId: poster.id, where: "likes", userPokemonId: userPokemon.id },
         updateData
       );
 

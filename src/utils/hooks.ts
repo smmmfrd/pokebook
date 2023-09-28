@@ -108,7 +108,7 @@ async function getServerSideUserPokemon(
 
   const guestCookie = getCookie("guest-pokemon");
   if (guestCookie != null) {
-    const guestPokemon = await JSON.parse(guestCookie);
+    const guestPokemon = (await JSON.parse(guestCookie)) as UserPokemon;
 
     return guestPokemon;
   }

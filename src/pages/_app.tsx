@@ -8,6 +8,7 @@ import Layout from "~/components/Layout";
 import { useEffect } from "react";
 import { useGuestStore } from "~/store/GuestStore";
 import { getCookie } from "cookies-next";
+import { UserPokemon } from "~/utils/types";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -19,12 +20,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
     async function getGuest() {
       const guestCookie = getCookie("guest-pokemon");
       if (guestCookie != null) {
-        const guestData = await JSON.parse(guestCookie);
+        const guestData = (await JSON.parse(guestCookie)) as UserPokemon;
         setGuestPokemon(guestData);
       }
     }
 
-    getGuest();
+    void getGuest();
   }, []);
 
   return (

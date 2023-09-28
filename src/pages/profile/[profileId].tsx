@@ -15,7 +15,7 @@ import { useState } from "react";
 import { getServerSideUserPokemon } from "~/utils/hooks";
 
 export const getServerSideProps: GetServerSideProps<
-  ProfilePageProps | {}
+  ProfilePageProps | object
 > = async (ctx) => {
   const session = await getServerAuthSession(ctx);
   const userPokemon = await getServerSideUserPokemon(session);

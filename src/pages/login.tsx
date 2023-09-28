@@ -53,13 +53,13 @@ export default function LoginPage() {
       });
       setGuestPokemon(poke);
       if (router.query.returnURL) {
-        router.push(
+        void router.push(
           Array.isArray(router.query.returnURL)
             ? router.query.returnURL.join("")
             : router.query.returnURL
         );
       } else {
-        router.push("/");
+        void router.push("/");
       }
     }
   }, [data, isLoading]);
@@ -100,14 +100,14 @@ export default function LoginPage() {
           >
             Log In
           </button>
-          <button
+          {/* <button
             className="btn-secondary btn"
             onClick={async () => {
               void refetch();
             }}
           >
             Guest Log In
-          </button>
+          </button> */}
         </div>
       </main>
     </>

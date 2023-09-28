@@ -2,26 +2,36 @@ import { useRef } from "react";
 import { api } from "~/utils/api";
 import ProfileImage from "./ProfileImage";
 import Link from "next/link";
-import { IconMap } from "~/utils/IconsMap";
+import { useUserPokemon } from "~/utils/hooks";
 
 export default function ManageFriends() {
+  const userPokemon = useUserPokemon();
   const trpcUtils = api.useContext();
 
   const supportDialog = useRef<HTMLDialogElement>(null);
 
-  const useGetAllFriends = api.profile.getAllFriends.useQuery();
+  const useGetAllFriends = api.profile.getAllFriends.useQuery({
+    pokemonId: userPokemon.id,
+  });
 
   const useUnfriend = api.profile.unfriend.useMutation({
     onSuccess: ({ profileId }) => {
-      trpcUtils.profile.getAllFriends.setData(undefined, (oldData) => {
-        if (oldData == null || oldData?.friends == null) return undefined;
+      trpcUtils.profile.getAllFriends.setData(
+        {
+          pokemonId: userPokemon.id,
+        },
+        (oldData) => {
+          if (oldData == null || oldData?.friends == null) return undefined;
 
-        const newData = {
-          friends: oldData.friends.filter((friend) => friend.id !== profileId),
-        };
+          const newData = {
+            friends: oldData.friends.filter(
+              (friend) => friend.id !== profileId
+            ),
+          };
 
-        return newData;
-      });
+          return newData;
+        }
+      );
     },
   });
 

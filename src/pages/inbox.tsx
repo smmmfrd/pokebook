@@ -7,32 +7,13 @@ import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
 import ProfileImage from "~/components/ProfileImage";
 import { useState } from "react";
+import { useUserPokemon } from "~/utils/hooks";
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-
-  if (session) {
-    return {
-      props: {
-        session,
-        user: session.user,
-      },
-    };
-  }
-
-  return { props: {} };
-};
-
-type InboxPageProps = {
-  user: {
-    profileImage: string;
-    pokemonName: string;
-    pokemonId: number;
-  };
-};
-
-export default function InboxPage({ user }: InboxPageProps) {
-  const { data, isLoading } = api.profile.getAllFriendRequests.useQuery();
+export default function InboxPage() {
+  const userPokemon = useUserPokemon();
+  const { data, isLoading } = api.profile.getAllFriendRequests.useQuery({
+    pokemonId: userPokemon.id,
+  });
 
   const trpcUtils = api.useContext();
 
@@ -43,20 +24,26 @@ export default function InboxPage({ user }: InboxPageProps) {
     senderId: number;
     receiverId?: number;
   }) => {
-    trpcUtils.profile.getAllFriendRequests.setData(undefined, (oldData) => {
-      if (oldData?.received == null || oldData?.sent == null) return undefined;
+    trpcUtils.profile.getAllFriendRequests.setData(
+      {
+        pokemonId: userPokemon.id,
+      },
+      (oldData) => {
+        if (oldData?.received == null || oldData?.sent == null)
+          return undefined;
 
-      const newData = {
-        sent: oldData.sent.filter(
-          ({ receiverId }) => receiverId !== removeReceiverId
-        ),
-        received: oldData.received.filter(
-          ({ senderId }) => senderId !== removeSenderId
-        ),
-      };
+        const newData = {
+          sent: oldData.sent.filter(
+            ({ receiverId }) => receiverId !== removeReceiverId
+          ),
+          received: oldData.received.filter(
+            ({ senderId }) => senderId !== removeSenderId
+          ),
+        };
 
-      return newData;
-    });
+        return newData;
+      }
+    );
   };
 
   const useAcceptFriendRequest = api.profile.acceptFriendRequest.useMutation({
@@ -72,12 +59,16 @@ export default function InboxPage({ user }: InboxPageProps) {
   return (
     <>
       <Head>
-        <title>{`${user.pokemonName}'s Inbox | Pokebook`}</title>
+        <title>{`${userPokemon.name}'s Inbox | Pokebook`}</title>
       </Head>
       <BackHeader
-        title={`${user.pokemonName}'s Inbox`}
+        title={`${userPokemon.name}'s Inbox`}
         headExtensions={
-          <ProfileImage size="medium" src={user.profileImage} bot={false} />
+          <ProfileImage
+            size="medium"
+            src={userPokemon.profileImage}
+            bot={false}
+          />
         }
       >
         <ul className="tabs justify-between pt-2">
@@ -113,7 +104,7 @@ export default function InboxPage({ user }: InboxPageProps) {
         <FriendRequestsDisplay
           view={view}
           data={data}
-          user={user}
+          user={userPokemon}
           acceptFriendRequest={(senderId) => {
             useAcceptFriendRequest.mutate({
               senderId,
@@ -151,7 +142,7 @@ type FriendRequestsDisplayProps = {
       };
     }[];
   };
-  user: { pokemonId: number };
+  user: { id: number };
   acceptFriendRequest: (senderId: number) => void;
   deleteFriendRequest: (senderId: number, receiverId: number) => void;
 };
@@ -169,7 +160,7 @@ function FriendRequestsDisplay({
         {data.received.map(({ sender, senderId }) => (
           <article
             className="flex items-center justify-between gap-2 border-b p-2"
-            key={`${user.pokemonId}${senderId}`}
+            key={`${user.id}${senderId}`}
           >
             <section className="flex gap-2">
               <ProfileImage
@@ -189,7 +180,7 @@ function FriendRequestsDisplay({
               </button>
               <button
                 className="btn-error btn-sm btn"
-                onClick={() => deleteFriendRequest(senderId, user.pokemonId)}
+                onClick={() => deleteFriendRequest(senderId, user.id)}
               >
                 Decline
               </button>
@@ -204,7 +195,7 @@ function FriendRequestsDisplay({
         {data.sent.map(({ receiver, receiverId }) => (
           <article
             className="flex items-center justify-between gap-2 border-b p-2"
-            key={`${receiverId}${user.pokemonId}`}
+            key={`${receiverId}${user.id}`}
           >
             <section className="flex gap-2">
               <ProfileImage
@@ -217,7 +208,7 @@ function FriendRequestsDisplay({
             </section>
             <button
               className="btn-error btn-sm btn"
-              onClick={() => deleteFriendRequest(user.pokemonId, receiverId)}
+              onClick={() => deleteFriendRequest(user.id, receiverId)}
             >
               Cancel
             </button>
