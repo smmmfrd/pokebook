@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
   getStaticData: publicProcedure
@@ -35,11 +31,9 @@ export const postRouter = createTRPCRouter({
         poster: post.poster,
       };
     }),
-  getDynamicData: protectedProcedure
-    .input(z.object({ postId: z.string() }))
-    .query(async ({ input: { postId }, ctx }) => {
-      const currentUserId = ctx.session.user.pokemonId;
-
+  getDynamicData: publicProcedure
+    .input(z.object({ postId: z.string(), userPokemonId: z.number() }))
+    .query(async ({ input: { postId, userPokemonId }, ctx }) => {
       const post = await ctx.prisma.post.findFirst({
         where: { id: postId },
         select: {
@@ -62,7 +56,7 @@ export const postRouter = createTRPCRouter({
             },
           },
           _count: { select: { likes: true, comments: true } },
-          likes: { where: { creatorId: currentUserId } },
+          likes: { where: { creatorId: userPokemonId } },
         },
       });
 

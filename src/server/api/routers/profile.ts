@@ -1,9 +1,5 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const profileRouter = createTRPCRouter({
   getById: publicProcedure
@@ -42,13 +38,11 @@ export const profileRouter = createTRPCRouter({
         isFriend: profile.friends.some(({ id }) => id === userId),
       };
     }),
-  toggleFollow: protectedProcedure
-    .input(z.object({ profileId: z.number() }))
-    .mutation(async ({ input: { profileId }, ctx }) => {
-      const currentUserId = ctx.session.user.pokemonId;
-
+  toggleFollow: publicProcedure
+    .input(z.object({ profileId: z.number(), userPokemonId: z.number() }))
+    .mutation(async ({ input: { profileId, userPokemonId }, ctx }) => {
       const existingFollow = await ctx.prisma.pokemon.findFirst({
-        where: { id: profileId, followers: { some: { id: currentUserId } } },
+        where: { id: profileId, followers: { some: { id: userPokemonId } } },
       });
 
       let addedFollow = false;
@@ -56,19 +50,19 @@ export const profileRouter = createTRPCRouter({
         addedFollow = true;
         await ctx.prisma.pokemon.update({
           where: { id: profileId },
-          data: { followers: { connect: { id: currentUserId } } },
+          data: { followers: { connect: { id: userPokemonId } } },
         });
       } else {
         addedFollow = false;
         await ctx.prisma.pokemon.update({
           where: { id: profileId },
-          data: { followers: { disconnect: { id: currentUserId } } },
+          data: { followers: { disconnect: { id: userPokemonId } } },
         });
       }
 
       return { addedFollow };
     }),
-  getAllFriends: protectedProcedure
+  getAllFriends: publicProcedure
     .input(z.object({ pokemonId: z.number() }))
     .query(async ({ input: { pokemonId }, ctx }) => {
       return await ctx.prisma.pokemon.findFirst({
@@ -106,14 +100,12 @@ export const profileRouter = createTRPCRouter({
         received: !!receivedFriendReq,
       };
     }),
-  sendFriendRequest: protectedProcedure
-    .input(z.object({ profileId: z.number() }))
-    .mutation(async ({ input: { profileId }, ctx }) => {
-      const currentUserId = ctx.session.user.pokemonId;
-
+  sendFriendRequest: publicProcedure
+    .input(z.object({ profileId: z.number(), userPokemonId: z.number() }))
+    .mutation(async ({ input: { profileId, userPokemonId }, ctx }) => {
       await ctx.prisma.friendRequest.create({
         data: {
-          senderId: currentUserId,
+          senderId: userPokemonId,
           receiverId: profileId,
         },
       });
@@ -152,26 +144,24 @@ export const profileRouter = createTRPCRouter({
 
       return { received, sent };
     }),
-  acceptFriendRequest: protectedProcedure
-    .input(z.object({ senderId: z.number() }))
-    .mutation(async ({ input: { senderId }, ctx }) => {
-      const currentUserId = ctx.session.user.pokemonId;
-
+  acceptFriendRequest: publicProcedure
+    .input(z.object({ senderId: z.number(), userPokemonId: z.number() }))
+    .mutation(async ({ input: { senderId, userPokemonId }, ctx }) => {
       await ctx.prisma.friendRequest.delete({
-        where: { senderId_receiverId: { senderId, receiverId: currentUserId } },
+        where: { senderId_receiverId: { senderId, receiverId: userPokemonId } },
       });
 
       // Set Sender
       await ctx.prisma.pokemon.update({
         where: { id: senderId },
         data: {
-          friends: { connect: { id: currentUserId } },
+          friends: { connect: { id: userPokemonId } },
         },
       });
 
       // Set Receiver
       await ctx.prisma.pokemon.update({
-        where: { id: currentUserId },
+        where: { id: userPokemonId },
         data: {
           friends: { connect: { id: senderId } },
         },
@@ -179,7 +169,7 @@ export const profileRouter = createTRPCRouter({
 
       // return { removeId: senderId };
     }),
-  deleteFriendRequest: protectedProcedure
+  deleteFriendRequest: publicProcedure
     .input(z.object({ senderId: z.number(), receiverId: z.number() }))
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.friendRequest.delete({
@@ -191,18 +181,16 @@ export const profileRouter = createTRPCRouter({
       //     input.senderId === currentUserId ? input.receiverId : input.senderId,
       // };
     }),
-  unfriend: protectedProcedure
-    .input(z.object({ profileId: z.number() }))
-    .mutation(async ({ input: { profileId }, ctx }) => {
-      const currentUserId = ctx.session.user.pokemonId;
-
+  unfriend: publicProcedure
+    .input(z.object({ profileId: z.number(), userPokemonId: z.number() }))
+    .mutation(async ({ input: { profileId, userPokemonId }, ctx }) => {
       await ctx.prisma.pokemon.update({
         where: { id: profileId },
-        data: { friends: { disconnect: { id: currentUserId } } },
+        data: { friends: { disconnect: { id: userPokemonId } } },
       });
 
       await ctx.prisma.pokemon.update({
-        where: { id: currentUserId },
+        where: { id: userPokemonId },
         data: { friends: { disconnect: { id: profileId } } },
       });
 

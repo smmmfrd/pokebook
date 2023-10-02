@@ -1,15 +1,21 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const commentRouter = createTRPCRouter({
-  createNew: protectedProcedure
-    .input(z.object({ content: z.string(), postId: z.string() }))
-    .mutation(async ({ input: { content, postId }, ctx }) => {
+  createNew: publicProcedure
+    .input(
+      z.object({
+        content: z.string(),
+        postId: z.string(),
+        userPokemonId: z.number(),
+      })
+    )
+    .mutation(async ({ input: { content, postId, userPokemonId }, ctx }) => {
       const newComment = await ctx.prisma.comment.create({
         data: {
           content,
           postId,
-          posterId: ctx.session.user.pokemonId,
+          posterId: userPokemonId,
         },
       });
 
