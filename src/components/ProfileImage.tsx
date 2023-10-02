@@ -14,10 +14,6 @@ type ProfileImageProps = {
 export default function ProfileImage(props: ProfileImageProps) {
   const router = useRouter();
 
-  // const heightAndWidth = `${
-  //   size === "small" ? "h-8 w-8" : size === "medium" ? "h-12 w-12" : "h-24 w-24"
-  // }`;
-
   const iconSize = `${
     props.size === "small"
       ? "h-3 w-3"

@@ -170,11 +170,11 @@ function Comment({ comment }: CommentProps) {
   return (
     <section
       key={`${comment.createdAt.getTime()}${comment.poster.id}`}
-      className="flex gap-4 border-b px-6 pb-3.5 pt-2.5"
+      className="flex gap-4 border-b px-4 pb-3.5 pt-2.5"
     >
       <ProfileImage
         src={comment.poster.profileImage ?? ""}
-        styleExtensions="mt-1 -ml-2"
+        styleExtensions="mt-1"
         href={`/profile/${comment.poster.id}`}
         size="medium"
         bot={comment.poster.bot}
