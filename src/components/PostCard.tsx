@@ -9,8 +9,8 @@ export const dateTimeFormatter = (createdAt: Date | string) =>
   moment(createdAt).fromNow();
 
 type PostCardProps = {
-  post: InfinitePost;
   userPokemonId: number;
+  post: InfinitePost;
 };
 
 export default function PostCard({
@@ -68,14 +68,17 @@ export default function PostCard({
         updateData
       );
 
-      trpcUtils.post.getDynamicData.setData({ postId: id }, (oldData) => {
-        if (oldData?.likedByMe == null) return {};
-        return {
-          ...oldData,
-          likeCount: oldData.likeCount + countModifier,
-          likedByMe: addedLike,
-        };
-      });
+      trpcUtils.post.getDynamicData.setData(
+        { postId: id, userPokemonId: userPokemonId },
+        (oldData) => {
+          if (oldData?.likedByMe == null) return {};
+          return {
+            ...oldData,
+            likeCount: oldData.likeCount + countModifier,
+            likedByMe: addedLike,
+          };
+        }
+      );
     },
   });
 

@@ -39,7 +39,7 @@ export default function ManageFriends({ userPokemon }: ManageFriendsProps) {
   });
 
   function handleUnfriend(profileId: number) {
-    void useUnfriend.mutate({ profileId });
+    void useUnfriend.mutate({ profileId, userPokemonId: userPokemon.id });
   }
 
   return (

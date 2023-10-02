@@ -121,6 +121,7 @@ export default function InboxPage({ userPokemon }: InboxProps) {
           acceptFriendRequest={(senderId) => {
             useAcceptFriendRequest.mutate({
               senderId,
+              userPokemonId: userPokemon.id,
             });
           }}
           deleteFriendRequest={(senderId, receiverId) => {

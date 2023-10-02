@@ -23,19 +23,32 @@ export default function ProfileButtons({
   } else {
     return (
       <>
-        <FollowButton isFollowing={isFollowing} profileId={profileId} />
-        <FriendButton friendStatus={friendStatus} profileId={profileId} />
+        <FollowButton
+          userPokemonId={userPokemon.id}
+          isFollowing={isFollowing}
+          profileId={profileId}
+        />
+        <FriendButton
+          userPokemonId={userPokemon.id}
+          friendStatus={friendStatus}
+          profileId={profileId}
+        />
       </>
     );
   }
 }
 
 type FollowButtonProps = {
+  userPokemonId: number;
   isFollowing: boolean;
   profileId: number;
 };
 
-function FollowButton({ isFollowing, profileId }: FollowButtonProps) {
+function FollowButton({
+  userPokemonId,
+  isFollowing,
+  profileId,
+}: FollowButtonProps) {
   const [cacheFollow, setCacheFollow] = useState(isFollowing);
 
   const useFollow = api.profile.toggleFollow.useMutation({
@@ -45,7 +58,7 @@ function FollowButton({ isFollowing, profileId }: FollowButtonProps) {
   });
 
   function handleFollowClick() {
-    void useFollow.mutate({ profileId });
+    void useFollow.mutate({ profileId, userPokemonId });
   }
 
   if (cacheFollow) {
@@ -72,11 +85,16 @@ function FollowButton({ isFollowing, profileId }: FollowButtonProps) {
 }
 
 type FriendButtonProps = {
+  userPokemonId: number;
   friendStatus: FriendStatus;
   profileId: number;
 };
 
-function FriendButton({ friendStatus, profileId }: FriendButtonProps) {
+function FriendButton({
+  userPokemonId,
+  friendStatus,
+  profileId,
+}: FriendButtonProps) {
   const [cacheFriendStatus, setCacheFriendStatus] = useState(friendStatus);
 
   const useSendFriendReq = api.profile.sendFriendRequest.useMutation({
@@ -94,9 +112,9 @@ function FriendButton({ friendStatus, profileId }: FriendButtonProps) {
   function handleClick() {
     if (cacheFriendStatus === "none") {
       // Send a friend request
-      void useSendFriendReq.mutate({ profileId });
+      void useSendFriendReq.mutate({ profileId, userPokemonId });
     } else {
-      void useUnfriend.mutate({ profileId });
+      void useUnfriend.mutate({ profileId, userPokemonId });
     }
   }
 

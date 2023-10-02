@@ -9,9 +9,14 @@ import TextInput from "~/components/TextInput";
 import ProfileImage from "~/components/ProfileImage";
 import Link from "next/link";
 import BackHeader from "~/components/BackHeader";
-import { useLimit } from "~/utils/hooks";
+import { getServerSideUserPokemon, useLimit } from "~/utils/hooks";
+import { UserPokemon } from "~/utils/types";
+import { getServerAuthSession } from "~/server/auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  const userPokemon = await getServerSideUserPokemon(session, ctx);
+
   const postId = ctx.query.postId as string;
 
   const data = await caller.post.getPokemonByPost({ postId });
@@ -29,6 +34,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
+      userPokemon,
       postId,
       pokemonName: data.poster.name,
       staticPostData,
@@ -37,6 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 type PostPageProps = {
+  userPokemon: UserPokemon;
   postId: string;
   pokemonName: string;
   staticPostData: {
@@ -53,51 +60,72 @@ type PostPageProps = {
 };
 
 export default function PostPage({
+  userPokemon,
   postId,
   pokemonName,
   staticPostData,
 }: PostPageProps) {
-  const dynamicPost = api.post.getDynamicData.useQuery({ postId });
-  const { data } = useSession();
+  const dynamicPost = api.post.getDynamicData.useQuery({
+    postId,
+    userPokemonId: userPokemon.id,
+  });
   const trpcUtils = api.useContext();
 
   const useCreateComment = api.comment.createNew.useMutation({
     onSuccess: ({ newComment }) => {
-      trpcUtils.post.getDynamicData.setData({ postId }, (oldData) => {
-        if (oldData == null || oldData.commentCount == null || data == null)
-          return {};
+      trpcUtils.post.getDynamicData.setData(
+        { postId, userPokemonId: userPokemon.id },
+        (oldData) => {
+          if (oldData == null || oldData.commentCount == null) return {};
 
-        return {
-          ...oldData,
-          commentCount: oldData.commentCount + 1,
-          comments: [
-            {
-              id: newComment.id,
-              content: newComment.content,
-              createdAt: newComment.createdAt,
-              poster: {
-                id: data.user.pokemonId,
-                profileImage: data.user.profileImage,
-                name: data.user.pokemonName,
+          return {
+            ...oldData,
+            commentCount: oldData.commentCount + 1,
+            comments: [
+              {
+                id: newComment.id,
+                content: newComment.content,
+                createdAt: newComment.createdAt,
+                poster: {
+                  id: userPokemon.id,
+                  name: userPokemon.name,
+                  profileImage: userPokemon.profileImage,
+                },
               },
-            },
-            ...oldData.comments,
-          ],
-        };
-      });
+              ...oldData.comments,
+            ],
+          };
+        }
+      );
     },
   });
 
   const [canComment, tickComments] = useLimit(
-    `${data?.user.pokemonName || ""}`,
+    `${userPokemon.name}`,
     "comments",
     10
   );
 
   function handleSubmit(text: string) {
     tickComments();
-    useCreateComment.mutate({ postId, content: text });
+    useCreateComment.mutate({
+      postId,
+      content: text,
+      userPokemonId: userPokemon.id,
+    });
   }
+
+  const post = {
+    id: staticPostData.id,
+    content: staticPostData.content,
+    createdAt: new Date(staticPostData.createdAt),
+    poster: staticPostData.poster,
+    commentCount: dynamicPost.data?.commentCount
+      ? dynamicPost.data.commentCount
+      : 0,
+    likeCount: dynamicPost.data?.likeCount ? dynamicPost.data.likeCount : 0,
+    likedByMe: dynamicPost.data?.likedByMe ? dynamicPost.data.likedByMe : false,
+  };
 
   return (
     <>
@@ -105,21 +133,9 @@ export default function PostPage({
         <title>{`${pokemonName}'s Post | Pokebook`}</title>
       </Head>
       <BackHeader title={`${pokemonName}'s Post`}></BackHeader>
-      <PostCard
-        id={staticPostData.id}
-        content={staticPostData.content}
-        createdAt={new Date(staticPostData.createdAt)}
-        poster={staticPostData.poster}
-        commentCount={
-          dynamicPost.data?.commentCount ? dynamicPost.data.commentCount : 0
-        }
-        likeCount={dynamicPost.data?.likeCount ? dynamicPost.data.likeCount : 0}
-        likedByMe={
-          dynamicPost.data?.likedByMe ? dynamicPost.data.likedByMe : false
-        }
-      />
+      <PostCard userPokemonId={userPokemon.id} post={post} />
       <TextInput
-        pokemonName={data?.user.pokemonName ?? ""}
+        pokemonName={userPokemon.name}
         enabled={canComment}
         placeholderText="Leave a Comment..."
         handleSubmit={handleSubmit}
