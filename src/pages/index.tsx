@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   ctx
 ) => {
   const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session);
+  const userPokemon = await getServerSideUserPokemon(session, ctx);
 
   return { props: { userPokemon } };
 };
@@ -133,6 +133,7 @@ export default function Home({ userPokemon }: HomeProps) {
         </section>
       )}
       <InfiniteFeed
+        userPokemonId={userPokemon.id}
         posts={infiniteQuery.data?.pages.flatMap((page) => page.posts)}
         isError={infiniteQuery.isError}
         isLoading={infiniteQuery.isLoading}

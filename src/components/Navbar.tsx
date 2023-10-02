@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
-import { useGuestStore } from "~/store/GuestStore";
+import { deleteCookie } from "cookies-next";
 
 type NavbarProps = {
   profileImage: string;
@@ -18,11 +18,9 @@ export default function Navbar({
   toggleTheme,
   requestNotif,
 }: NavbarProps) {
-  const { removeGuestPokemon } = useGuestStore();
-
   function handleSignOut() {
     void signOut();
-    removeGuestPokemon();
+    deleteCookie("guest-pokemon");
   }
 
   return (

@@ -17,6 +17,7 @@ export type InfinitePost = {
 };
 
 type InfiniteFeedProps = {
+  userPokemonId: number;
   posts?: InfinitePost[];
   isLoading: boolean;
   isError: boolean;
@@ -25,6 +26,7 @@ type InfiniteFeedProps = {
 };
 
 export default function InfiniteFeed({
+  userPokemonId,
   posts,
   isError,
   isLoading,
@@ -52,7 +54,7 @@ export default function InfiniteFeed({
       loader={<Loading />}
     >
       {posts.map((post) => (
-        <PostCard {...post} key={post.id} />
+        <PostCard post={post} userPokemonId={userPokemonId} key={post.id} />
       ))}
     </InfiniteScroll>
   );

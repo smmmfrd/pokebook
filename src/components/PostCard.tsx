@@ -1,25 +1,22 @@
 import moment from "moment";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { type InfinitePost } from "./InfiniteFeed";
 import NavbarIcon from "./NavbarIcon";
 import ProfileImage from "./ProfileImage";
-import { useUserPokemon } from "~/utils/hooks";
 
 export const dateTimeFormatter = (createdAt: Date | string) =>
   moment(createdAt).fromNow();
 
+type PostCardProps = {
+  post: InfinitePost;
+  userPokemonId: number;
+};
+
 export default function PostCard({
-  id,
-  content,
-  createdAt,
-  poster,
-  commentCount,
-  likeCount,
-  likedByMe,
-}: InfinitePost) {
-  const userPokemon = useUserPokemon();
+  userPokemonId,
+  post: { id, content, createdAt, poster, commentCount, likeCount, likedByMe },
+}: PostCardProps) {
   const trpcUtils = api.useContext();
 
   const toggleLike = api.post.toggleLike.useMutation({
@@ -54,20 +51,20 @@ export default function PostCard({
       };
 
       trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
-        { where: "none", pokemonId: userPokemon.id },
+        { where: "none", pokemonId: userPokemonId },
         updateData
       );
       trpcUtils.infinite.infiniteHomeFeed.setInfiniteData(
-        { where: "following", pokemonId: userPokemon.id },
+        { where: "following", pokemonId: userPokemonId },
         updateData
       );
 
       trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
-        { profileId: poster.id, where: "posts", userPokemonId: userPokemon.id },
+        { profileId: poster.id, where: "posts", userPokemonId },
         updateData
       );
       trpcUtils.infinite.infiniteProfileFeed.setInfiniteData(
-        { profileId: poster.id, where: "likes", userPokemonId: userPokemon.id },
+        { profileId: poster.id, where: "likes", userPokemonId },
         updateData
       );
 
@@ -84,7 +81,7 @@ export default function PostCard({
 
   function handleLike() {
     if (toggleLike.isLoading) return;
-    toggleLike.mutate({ postId: id });
+    toggleLike.mutate({ postId: id, userPokemonId });
   }
 
   return (

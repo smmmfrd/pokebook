@@ -2,10 +2,13 @@ import { useRef } from "react";
 import { api } from "~/utils/api";
 import ProfileImage from "./ProfileImage";
 import Link from "next/link";
-import { useUserPokemon } from "~/utils/hooks";
+import type { UserPokemon } from "~/utils/types";
 
-export default function ManageFriends() {
-  const userPokemon = useUserPokemon();
+type ManageFriendsProps = {
+  userPokemon: UserPokemon;
+};
+
+export default function ManageFriends({ userPokemon }: ManageFriendsProps) {
   const trpcUtils = api.useContext();
 
   const supportDialog = useRef<HTMLDialogElement>(null);

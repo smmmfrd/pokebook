@@ -98,10 +98,10 @@ export const postRouter = createTRPCRouter({
 
       return post;
     }),
-  toggleLike: protectedProcedure
-    .input(z.object({ postId: z.string() }))
-    .mutation(async ({ input: { postId }, ctx }) => {
-      const data = { postId, creatorId: ctx.session.user.pokemonId };
+  toggleLike: publicProcedure
+    .input(z.object({ postId: z.string(), userPokemonId: z.number() }))
+    .mutation(async ({ input: { postId, userPokemonId }, ctx }) => {
+      const data = { postId, creatorId: userPokemonId };
 
       const existingLike = await ctx.prisma.like.findUnique({
         where: { creatorId_postId: data },

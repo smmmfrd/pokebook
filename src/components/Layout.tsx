@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import { api } from "~/utils/api";
 import Footer from "./Footer";
-import { useUserPokemon } from "~/utils/hooks";
 import { useSession } from "next-auth/react";
+import { getCookie } from "cookies-next";
+import { UserPokemon } from "~/utils/types";
+import { useRouter } from "next/router";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -34,22 +36,35 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [theme, loaded]);
 
+  const toggleTheme = () => {
+    setTheme(theme === THEMES.light ? THEMES.dark : THEMES.light);
+  };
+
   const session = useSession();
-  const [userPokemon, setUserPokemon] = useState({
+  const guestCookie = getCookie("guest-pokemon");
+  const [userPokemon, setUserPokemon] = useState<UserPokemon>({
     id: 0,
     name: "",
     profileImage: "",
   });
 
   useEffect(() => {
+    if (guestCookie != null) {
+      console.log("new guest!");
+      const guestPokemon = JSON.parse(guestCookie) as UserPokemon;
+      setUserPokemon(guestPokemon);
+    }
+
     if (session.data) {
+      console.log("signed in user.");
+
       setUserPokemon({
         id: session.data.user.pokemonId,
         name: session.data.user.pokemonName,
         profileImage: session.data.user.profileImage,
       });
     }
-  }, [session.data]);
+  }, [session, guestCookie]);
 
   const { data } = api.profile.getAllFriendRequests.useQuery(
     { pokemonId: userPokemon.id },
@@ -58,11 +73,7 @@ export default function Layout({ children }: LayoutProps) {
     }
   );
 
-  if (session.data == null) return <>{children}</>;
-
-  const toggleTheme = () => {
-    setTheme(theme === THEMES.light ? THEMES.dark : THEMES.light);
-  };
+  if (userPokemon.id == 0) return <>{children}</>;
 
   return (
     <div className="flex min-w-full">

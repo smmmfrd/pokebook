@@ -1,4 +1,4 @@
-import type { Session, Pokemon } from "@prisma/client";
+import type { Pokemon } from "@prisma/client";
 import { type GetServerSideProps } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import { caller } from "~/server/api/root";
@@ -18,7 +18,7 @@ export const getServerSideProps: GetServerSideProps<
   ProfilePageProps | object
 > = async (ctx) => {
   const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session);
+  const userPokemon = await getServerSideUserPokemon(session, ctx);
 
   const cleanQuery = ctx.query.profileId as string;
 
@@ -108,6 +108,7 @@ export default function ProfilePage({
         <div className="flex flex-wrap justify-between gap-8 p-8 pb-6">
           <div className="flex flex-col justify-between">
             <ProfileButtons
+              userPokemon={userPokemon}
               profileId={profileId}
               isFollowing={isFollowing}
               friendStatus={friendStatus}
@@ -144,6 +145,7 @@ export default function ProfilePage({
         </ul>
       </BackHeader>
       <InfiniteFeed
+        userPokemonId={userPokemon.id}
         posts={infiniteQuery.data?.pages.flatMap((page) => page.posts)}
         isError={infiniteQuery.isError}
         isLoading={infiniteQuery.isLoading}

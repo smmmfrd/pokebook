@@ -5,15 +5,15 @@ import { signIn } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
-import { useEffect } from "react";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { useGuestStore } from "~/store/GuestStore";
+import { getServerSideUserPokemon } from "~/utils/hooks";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getServerAuthSession(ctx);
+  const userPokemon = await getServerSideUserPokemon(session, ctx);
 
-  if (session) {
+  if (userPokemon.id > 0) {
     return {
       redirect: {
         destination: ctx.query.returnURL
@@ -29,40 +29,38 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: { session },
+    props: {},
   };
 };
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const { data, refetch, isLoading } = api.pokemon.getRandomBotPokemon.useQuery(
     undefined,
     {
       enabled: false,
+      onSuccess: ({ random }) => {
+        console.log(random);
+
+        // Create a cookie that lasts only a day
+        setCookie("guest-pokemon", random, {
+          maxAge: 3600,
+        });
+
+        // Send the user back to where they want to go
+        if (router.query.returnURL) {
+          void router.push(
+            Array.isArray(router.query.returnURL)
+              ? router.query.returnURL.join("")
+              : router.query.returnURL
+          );
+        } else {
+          void router.push("/");
+        }
+      },
     }
   );
-
-  const { setGuestPokemon } = useGuestStore();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (data?.random != null) {
-      const poke = data.random;
-      setCookie("guest-pokemon", poke, {
-        maxAge: 3600,
-      });
-      setGuestPokemon(poke);
-      if (router.query.returnURL) {
-        void router.push(
-          Array.isArray(router.query.returnURL)
-            ? router.query.returnURL.join("")
-            : router.query.returnURL
-        );
-      } else {
-        void router.push("/");
-      }
-    }
-  }, [router, setGuestPokemon, data, isLoading]);
 
   return (
     <>
@@ -100,14 +98,14 @@ export default function LoginPage() {
           >
             Log In
           </button>
-          {/* <button
+          <button
             className="btn-secondary btn"
             onClick={() => {
               void refetch();
             }}
           >
             Guest Log In
-          </button> */}
+          </button>
         </div>
       </main>
     </>

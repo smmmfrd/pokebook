@@ -1,28 +1,25 @@
-import type { FriendStatus } from "~/utils/types";
+import type { FriendStatus, UserPokemon } from "~/utils/types";
 
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
-import Link from "next/link";
+
 import ManageFriends from "./ManageFriends";
 
 type ProfileButtonsProps = {
+  userPokemon: UserPokemon;
   profileId: number;
   isFollowing: boolean;
   friendStatus: FriendStatus;
 };
 
 export default function ProfileButtons({
+  userPokemon,
   profileId,
   isFollowing,
   friendStatus,
 }: ProfileButtonsProps) {
-  const session = useSession();
-
-  if (session.status !== "authenticated") return <></>;
-
-  if (session.data?.user.pokemonId === profileId) {
-    return <ManageFriends />;
+  if (userPokemon.id === profileId) {
+    return <ManageFriends userPokemon={userPokemon} />;
   } else {
     return (
       <>

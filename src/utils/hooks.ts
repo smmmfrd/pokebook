@@ -1,10 +1,9 @@
-import { getCookie } from "cookies-next";
-import { type Session } from "next-auth";
 import { useEffect, useState } from "react";
 import type { UserPokemon } from "./types";
-import { useGuestStore } from "~/store/GuestStore";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { getServerAuthSession } from "~/server/auth";
+import { PreviewData, type GetServerSidePropsContext } from "next";
+import { Session } from "next-auth";
+import { ParsedUrlQuery } from "querystring";
 
 type StorageData = {
   time: string;
@@ -71,59 +70,28 @@ const useLimit = (
   return [valid, ticked];
 };
 
-const defaultUserPokemon = { id: 0, name: "", profileImage: "" };
+async function getServerSideUserPokemon(
+  session: Session | null,
+  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+): Promise<UserPokemon> {
+  if (ctx != null) {
+    const guestCookie = ctx.req.cookies["guest-pokemon"];
+    if (guestCookie != null) {
+      const guestPokemon = (await JSON.parse(guestCookie)) as UserPokemon;
 
-const useUserPokemon = (): UserPokemon => {
-  const session = useSession();
-  const [userPokemon, setUserPokemon] =
-    useState<UserPokemon>(defaultUserPokemon);
-  const { guestPokemon } = useGuestStore();
-
-  const router = useRouter();
-
-  if (guestPokemon != null && userPokemon.id != guestPokemon.id) {
-    setUserPokemon(guestPokemon);
-  }
-
-  if (session.data != null && userPokemon.id != session.data.user.pokemonId) {
-    setUserPokemon({
-      id: session.data.user.pokemonId,
-      name: session.data.user.pokemonName,
-      profileImage: session.data.user.profileImage,
-    });
-  }
-
-  if (guestPokemon == null && session.data == null) {
-    if (!router.pathname.startsWith("login")) {
-      void router.push({
-        pathname: "login",
-        query: { returnURL: router.pathname },
-      });
+      return guestPokemon;
     }
   }
 
-  return userPokemon;
-};
-
-async function getServerSideUserPokemon(
-  sessionData: Session | null
-): Promise<UserPokemon> {
-  if (sessionData != null) {
+  if (session != null && session.user != null) {
     return {
-      id: sessionData.user.pokemonId,
-      name: sessionData.user.pokemonName,
-      profileImage: sessionData.user.profileImage,
+      id: session.user.pokemonId,
+      name: session.user.pokemonName,
+      profileImage: session.user.profileImage,
     };
-  }
-
-  const guestCookie = getCookie("guest-pokemon");
-  if (guestCookie != null) {
-    const guestPokemon = (await JSON.parse(guestCookie)) as UserPokemon;
-
-    return guestPokemon;
   }
 
   return { id: 0, name: "", profileImage: "" };
 }
 
-export { useLimit, useUserPokemon, getServerSideUserPokemon };
+export { useLimit, getServerSideUserPokemon };

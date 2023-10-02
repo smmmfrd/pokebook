@@ -4,7 +4,6 @@ import { z } from "zod";
 import {
   createTRPCRouter,
   publicProcedure,
-  protectedProcedure,
   type createTRPCContext,
 } from "~/server/api/trpc";
 

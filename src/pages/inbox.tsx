@@ -7,10 +7,23 @@ import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
 import ProfileImage from "~/components/ProfileImage";
 import { useState } from "react";
-import { useUserPokemon } from "~/utils/hooks";
+import { getServerSideUserPokemon } from "~/utils/hooks";
+import type { UserPokemon } from "~/utils/types";
 
-export default function InboxPage() {
-  const userPokemon = useUserPokemon();
+export const getServerSideProps: GetServerSideProps<InboxProps> = async (
+  ctx
+) => {
+  const session = await getServerAuthSession(ctx);
+  const userPokemon = await getServerSideUserPokemon(session, ctx);
+
+  return { props: { userPokemon } };
+};
+
+type InboxProps = {
+  userPokemon: UserPokemon;
+};
+
+export default function InboxPage({ userPokemon }: InboxProps) {
   const { data, isLoading } = api.profile.getAllFriendRequests.useQuery({
     pokemonId: userPokemon.id,
   });

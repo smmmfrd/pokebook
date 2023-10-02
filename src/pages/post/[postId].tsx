@@ -1,7 +1,6 @@
 import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import { caller } from "~/server/api/root";
-import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 
