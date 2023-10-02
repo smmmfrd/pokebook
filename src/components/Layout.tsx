@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import { api } from "~/utils/api";
 import Footer from "./Footer";
 import { useUserPokemon } from "~/utils/hooks";
+import { useSession } from "next-auth/react";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -15,8 +16,6 @@ const THEMES = {
 };
 
 export default function Layout({ children }: LayoutProps) {
-  const userPokemon = useUserPokemon();
-
   const [loaded, setLoaded] = useState<boolean>(false);
   const [theme, setTheme] = useState<string>(THEMES.light);
 
@@ -35,6 +34,23 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [theme, loaded]);
 
+  const session = useSession();
+  const [userPokemon, setUserPokemon] = useState({
+    id: 0,
+    name: "",
+    profileImage: "",
+  });
+
+  useEffect(() => {
+    if (session.data) {
+      setUserPokemon({
+        id: session.data.user.pokemonId,
+        name: session.data.user.pokemonName,
+        profileImage: session.data.user.profileImage,
+      });
+    }
+  }, [session.data]);
+
   const { data } = api.profile.getAllFriendRequests.useQuery(
     { pokemonId: userPokemon.id },
     {
@@ -42,7 +58,7 @@ export default function Layout({ children }: LayoutProps) {
     }
   );
 
-  if (userPokemon.name.length === 0) return <>{children}</>;
+  if (session.data == null) return <>{children}</>;
 
   const toggleTheme = () => {
     setTheme(theme === THEMES.light ? THEMES.dark : THEMES.light);

@@ -100,14 +100,14 @@ export default function LoginPage() {
           >
             Log In
           </button>
-          {/* <button
+          <button
             className="btn-secondary btn"
             onClick={async () => {
               void refetch();
             }}
           >
             Guest Log In
-          </button> */}
+          </button>
         </div>
       </main>
     </>

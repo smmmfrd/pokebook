@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { UserPokemon } from "./types";
 import { useGuestStore } from "~/store/GuestStore";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 type StorageData = {
   time: string;
@@ -78,9 +79,9 @@ const useUserPokemon = (): UserPokemon => {
     useState<UserPokemon>(defaultUserPokemon);
   const { guestPokemon } = useGuestStore();
 
-  if (guestPokemon != null && userPokemon.id != guestPokemon.id) {
-    console.log("fucking fuck");
+  const router = useRouter();
 
+  if (guestPokemon != null && userPokemon.id != guestPokemon.id) {
     setUserPokemon(guestPokemon);
   }
 
@@ -90,6 +91,17 @@ const useUserPokemon = (): UserPokemon => {
       name: session.data.user.pokemonName,
       profileImage: session.data.user.profileImage,
     });
+  }
+
+  if (guestPokemon == null && session.data == null) {
+    if (!router.pathname.startsWith("login")) {
+      console.log("tee hee");
+
+      router.push({
+        pathname: "login",
+        query: { returnURL: router.pathname },
+      });
+    }
   }
 
   return userPokemon;
