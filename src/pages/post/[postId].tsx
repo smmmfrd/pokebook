@@ -146,6 +146,11 @@ export default function PostPage({
           <div className="loading loading-dots h-20"></div>
         </div>
       )}
+      {dynamicPost.isLoading && (
+        <div className="w-full pt-4 text-center">
+          <div className="loading loading-infinity loading-lg"></div>
+        </div>
+      )}
       {dynamicPost.data?.comments?.map((comment) => (
         <Comment comment={comment} key={comment.id} />
       ))}
