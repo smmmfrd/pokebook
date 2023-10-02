@@ -58,7 +58,7 @@ const useLimit = (
     } else {
       void checkValid();
     }
-  }, []);
+  }, [checkValid, itemName]);
 
   const ticked = () => {
     const data = checkValid();
@@ -95,9 +95,7 @@ const useUserPokemon = (): UserPokemon => {
 
   if (guestPokemon == null && session.data == null) {
     if (!router.pathname.startsWith("login")) {
-      console.log("tee hee");
-
-      router.push({
+      void router.push({
         pathname: "login",
         query: { returnURL: router.pathname },
       });

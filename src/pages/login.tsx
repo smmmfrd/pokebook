@@ -62,7 +62,7 @@ export default function LoginPage() {
         void router.push("/");
       }
     }
-  }, [data, isLoading]);
+  }, [router, setGuestPokemon, data, isLoading]);
 
   return (
     <>
@@ -100,14 +100,14 @@ export default function LoginPage() {
           >
             Log In
           </button>
-          <button
+          {/* <button
             className="btn-secondary btn"
-            onClick={async () => {
+            onClick={() => {
               void refetch();
             }}
           >
             Guest Log In
-          </button>
+          </button> */}
         </div>
       </main>
     </>
