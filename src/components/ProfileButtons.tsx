@@ -4,6 +4,7 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 
 import ManageFriends from "./ManageFriends";
+import { useRouter } from "next/router";
 
 type ProfileButtonsProps = {
   userPokemon: UserPokemon;
@@ -95,6 +96,7 @@ function FriendButton({
   friendStatus,
   profileId,
 }: FriendButtonProps) {
+  const router = useRouter();
   const [cacheFriendStatus, setCacheFriendStatus] = useState(friendStatus);
 
   const useSendFriendReq = api.profile.sendFriendRequest.useMutation({
@@ -113,6 +115,8 @@ function FriendButton({
     if (cacheFriendStatus === "none") {
       // Send a friend request
       void useSendFriendReq.mutate({ profileId, userPokemonId });
+    } else if (cacheFriendStatus === "received") {
+      void router.push("/inbox");
     } else {
       void useUnfriend.mutate({ profileId, userPokemonId });
     }
@@ -124,11 +128,7 @@ function FriendButton({
         cacheFriendStatus === "none" ? "btn-success" : "btn-error"
       } btn-sm btn`}
       onClick={handleClick}
-      disabled={
-        useSendFriendReq.isLoading ||
-        cacheFriendStatus === "received" ||
-        cacheFriendStatus === "sent"
-      }
+      disabled={useSendFriendReq.isLoading || cacheFriendStatus === "sent"}
     >
       {useSendFriendReq.isLoading || useUnfriend.isLoading
         ? "..."

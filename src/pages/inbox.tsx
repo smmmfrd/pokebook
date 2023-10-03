@@ -182,6 +182,7 @@ function FriendRequestsDisplay({
                 size="medium"
                 styleExtensions="shrink-0"
                 bot={sender.bot}
+                href={`/profile/${senderId}`}
               />
               <p>{`${sender.name}`} sent you a friend request!</p>
             </section>
@@ -217,6 +218,7 @@ function FriendRequestsDisplay({
                 size="medium"
                 styleExtensions="shrink-0"
                 bot={receiver.bot}
+                href={`/profile/${receiverId}`}
               />
               <p>You sent a friend request to {`${receiver.name}`}!</p>
             </section>
