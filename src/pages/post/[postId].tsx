@@ -8,13 +8,12 @@ import TextInput from "~/components/TextInput";
 import ProfileImage from "~/components/ProfileImage";
 import Link from "next/link";
 import BackHeader from "~/components/BackHeader";
-import { getServerSideUserPokemon, useLimit } from "~/utils/hooks";
+import { useLimit } from "~/utils/hooks";
 import type { UserPokemon } from "~/utils/types";
-import { getServerAuthSession } from "~/server/auth";
+import { getServerSideUserPokemon } from "~/utils/utils";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session, ctx);
+  const userPokemon = await getServerSideUserPokemon(ctx);
 
   const postId = ctx.query.postId as string;
 

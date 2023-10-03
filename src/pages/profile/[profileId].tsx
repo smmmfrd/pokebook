@@ -1,6 +1,5 @@
 import type { Pokemon } from "@prisma/client";
 import { type GetServerSideProps } from "next";
-import { getServerAuthSession } from "~/server/auth";
 import { caller } from "~/server/api/root";
 
 import { api } from "~/utils/api";
@@ -12,13 +11,12 @@ import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
 import type { FriendStatus, ProfileFeedEnum, UserPokemon } from "~/utils/types";
 import { useState } from "react";
-import { getServerSideUserPokemon } from "~/utils/hooks";
+import { getServerSideUserPokemon } from "~/utils/utils";
 
 export const getServerSideProps: GetServerSideProps<
   ProfilePageProps | object
 > = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session, ctx);
+  const userPokemon = await getServerSideUserPokemon(ctx);
 
   const cleanQuery = ctx.query.profileId as string;
 

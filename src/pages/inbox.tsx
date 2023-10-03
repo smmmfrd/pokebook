@@ -1,20 +1,18 @@
 import { type GetServerSideProps } from "next";
 
-import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 
 import Head from "next/head";
 import BackHeader from "~/components/BackHeader";
 import ProfileImage from "~/components/ProfileImage";
 import { useState } from "react";
-import { getServerSideUserPokemon } from "~/utils/hooks";
+import { getServerSideUserPokemon } from "~/utils/utils";
 import type { UserPokemon } from "~/utils/types";
 
 export const getServerSideProps: GetServerSideProps<InboxProps> = async (
   ctx
 ) => {
-  const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session, ctx);
+  const userPokemon = await getServerSideUserPokemon(ctx);
 
   return { props: { userPokemon } };
 };

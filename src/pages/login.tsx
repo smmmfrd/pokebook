@@ -1,5 +1,4 @@
 import { type GetServerSideProps } from "next";
-import { getServerAuthSession } from "~/server/auth";
 
 import { signIn } from "next-auth/react";
 import Head from "next/head";
@@ -7,11 +6,10 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { getServerSideUserPokemon } from "~/utils/hooks";
+import { getServerSideUserPokemon } from "~/utils/utils";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session, ctx);
+  const userPokemon = await getServerSideUserPokemon(ctx);
 
   if (userPokemon.id > 0) {
     return {

@@ -1,21 +1,19 @@
 import { type GetServerSideProps } from "next";
 
-import { getServerAuthSession } from "~/server/auth";
-
 import { api } from "~/utils/api";
 
 import TextInput from "~/components/TextInput";
 import InfiniteFeed from "~/components/InfiniteFeed";
 import { useState } from "react";
 import Head from "next/head";
-import { getServerSideUserPokemon, useLimit } from "~/utils/hooks";
+import { useLimit } from "~/utils/hooks";
 import type { HomeFeedEnum, UserPokemon } from "~/utils/types";
+import { getServerSideUserPokemon } from "~/utils/utils";
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   ctx
 ) => {
-  const session = await getServerAuthSession(ctx);
-  const userPokemon = await getServerSideUserPokemon(session, ctx);
+  const userPokemon = await getServerSideUserPokemon(ctx);
 
   return { props: { userPokemon } };
 };
