@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 export default function LoginPage() {
   const router = useRouter();
 
-  const { data, refetch, isLoading } = api.pokemon.getRandomBotPokemon.useQuery(
+  const { refetch, isLoading } = api.pokemon.getRandomBotPokemon.useQuery(
     undefined,
     {
       enabled: false,
@@ -95,6 +95,7 @@ export default function LoginPage() {
           <button
             className="btn-primary btn sm:mr-auto"
             onClick={() => void signIn()}
+            disabled={!isLoading}
           >
             Log In
           </button>
@@ -103,8 +104,16 @@ export default function LoginPage() {
             onClick={() => {
               void refetch();
             }}
+            disabled={!isLoading}
           >
-            Guest Log In
+            {!isLoading ? (
+              <>
+                <span className="loading loading-spinner"></span>
+                Loading...
+              </>
+            ) : (
+              "Guest Log In"
+            )}
           </button>
         </div>
       </main>

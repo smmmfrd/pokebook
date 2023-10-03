@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { UserPokemon } from "./types";
-import { getServerAuthSession } from "~/server/auth";
-import { PreviewData, type GetServerSidePropsContext } from "next";
-import { Session } from "next-auth";
-import { ParsedUrlQuery } from "querystring";
+import type { PreviewData, GetServerSidePropsContext } from "next";
+import type { Session } from "next-auth";
+import type { ParsedUrlQuery } from "querystring";
 
 type StorageData = {
   time: string;
@@ -26,7 +25,7 @@ const useLimit = (
     return localStorage.getItem(key);
   };
 
-  const checkValid = () => {
+  const checkValid = useCallback(() => {
     const data = JSON.parse(
       getFromLocalStorage(itemName) || "{}"
     ) as StorageData;
@@ -43,7 +42,7 @@ const useLimit = (
     }
 
     return data;
-  };
+  }, [itemName, limit]);
 
   useEffect(() => {
     if (getFromLocalStorage(itemName) == null) {

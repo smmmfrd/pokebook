@@ -2,7 +2,6 @@ import { type GetServerSideProps } from "next";
 import Head from "next/head";
 import { caller } from "~/server/api/root";
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
 
 import PostCard, { dateTimeFormatter } from "~/components/PostCard";
 import TextInput from "~/components/TextInput";
@@ -10,7 +9,7 @@ import ProfileImage from "~/components/ProfileImage";
 import Link from "next/link";
 import BackHeader from "~/components/BackHeader";
 import { getServerSideUserPokemon, useLimit } from "~/utils/hooks";
-import { UserPokemon } from "~/utils/types";
+import type { UserPokemon } from "~/utils/types";
 import { getServerAuthSession } from "~/server/auth";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {

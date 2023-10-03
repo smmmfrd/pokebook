@@ -1,6 +1,5 @@
-import { Item } from "@prisma/client";
+import type { Item } from "@prisma/client";
 import Head from "next/head";
-import Image from "next/image";
 import { caller } from "~/server/api/root";
 
 export async function getStaticProps() {

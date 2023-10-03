@@ -46,7 +46,6 @@ function ImageComponent({
   src,
   styleExtensions = "",
   size = "large",
-  bot,
   href,
 }: ProfileImageProps) {
   const heightAndWidth = `${

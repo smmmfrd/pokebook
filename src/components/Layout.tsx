@@ -5,8 +5,7 @@ import { api } from "~/utils/api";
 import Footer from "./Footer";
 import { useSession } from "next-auth/react";
 import { getCookie } from "cookies-next";
-import { UserPokemon } from "~/utils/types";
-import { useRouter } from "next/router";
+import type { UserPokemon } from "~/utils/types";
 
 type LayoutProps = {
   children: React.ReactNode;
