@@ -45,6 +45,7 @@ export default function Layout({ children }: LayoutProps) {
     id: 0,
     name: "",
     profileImage: "",
+    bot: false,
   });
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function Layout({ children }: LayoutProps) {
         id: session.data.user.pokemonId,
         name: session.data.user.pokemonName,
         profileImage: session.data.user.profileImage,
+        bot: false,
       });
     }
   }, [session, guestCookie]);

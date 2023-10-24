@@ -82,13 +82,13 @@ export default function LoginPage() {
             </Link>{" "}
           </p>
           <p>
-            When you sign in for the first time, you'll be assigned a random
-            Pokémon. If you don't post for 3 days, you'll lose it (but you'll
-            get another if you return).
+            When you sign in for the first time, you&apos;ll be assigned a
+            random Pokémon. If you don&apos;t post for 3 days, you&apos;ll lose
+            it (but you&apos;ll get another if you return).
           </p>
           <p>
             Alternatively, you can log in as a guest and receive a Pokémon that
-            is used for generating content. You'll have all normal site
+            is used for generating content. You&apos;ll have all normal site
             functions for an hour during your guest session.
           </p>
         </header>
