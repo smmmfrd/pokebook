@@ -69,9 +69,9 @@ export default function LoginPage() {
       <main className="flex min-h-screen flex-col items-center px-12 py-40 sm:flex-row">
         <header className="max-w-xs basis-1/2 [&>*]:mb-4">
           <h1 className="text-4xl">Pokébook</h1>
-          <p>You must sign in by connecting a Discord account to this site.</p>
           <p>
-            This connection is handled by the open source authentication service{" "}
+            Sign in by connecting your Discord account. This process is handled
+            by the open-source service{" "}
             <Link
               href={"https://next-auth.js.org/getting-started/introduction"}
               rel="noopener noreferrer"
@@ -82,9 +82,14 @@ export default function LoginPage() {
             </Link>{" "}
           </p>
           <p>
-            On signing in for the first time, you will be assigned a random
-            pokèmon, and if you do not post for 3 days, you will lose it (if you
-            come back you will get another).
+            When you sign in for the first time, you'll be assigned a random
+            Pokémon. If you don't post for 3 days, you'll lose it (but you'll
+            get another if you return).
+          </p>
+          <p>
+            Alternatively, you can log in as a guest and receive a Pokémon that
+            is used for generating content. You'll have all normal site
+            functions for an hour during your guest session.
           </p>
         </header>
         <div className="divider divider-vertical max-h-96 sm:divider-horizontal"></div>
