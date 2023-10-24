@@ -14,7 +14,7 @@ async function getServerSideUserPokemon(
     if (guestCookie != null) {
       const guestPokemon = (await JSON.parse(guestCookie)) as UserPokemon;
 
-      return guestPokemon;
+      return { ...guestPokemon };
     }
   }
 
@@ -23,10 +23,11 @@ async function getServerSideUserPokemon(
       id: session.user.pokemonId,
       name: session.user.pokemonName,
       profileImage: session.user.profileImage,
+      bot: false,
     };
   }
 
-  return { id: 0, name: "", profileImage: "" };
+  return { id: 0, name: "", profileImage: "", bot: false };
 }
 
 export { getServerSideUserPokemon };

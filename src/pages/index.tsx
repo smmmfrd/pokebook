@@ -76,7 +76,11 @@ export default function Home({ userPokemon }: HomeProps) {
     }
   );
 
-  const [canPost, tickPosts] = useLimit(`${userPokemon.name}`, "posts", 5);
+  const [canPost, tickPosts] = useLimit(
+    `${userPokemon.bot ? "bot" : userPokemon.name}`,
+    "posts",
+    5
+  );
 
   function handleSubmit(text: string) {
     tickPosts();

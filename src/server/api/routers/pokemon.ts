@@ -66,6 +66,7 @@ export const pokemonRouter = createTRPCRouter({
         id: true,
         profileImage: true,
         name: true,
+        bot: true,
         _count: {
           select: {
             sentFriendRequests: true,
@@ -75,9 +76,9 @@ export const pokemonRouter = createTRPCRouter({
       },
     });
 
-    const random = bots[Math.floor(Math.random() * bots.length)];
+    const randomPokemon = bots[Math.floor(Math.random() * bots.length)];
 
-    return { random };
+    return { random: { ...randomPokemon } };
   }),
   getPokemon: publicProcedure
     .input(z.object({ userId: z.string() }))

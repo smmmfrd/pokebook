@@ -8,4 +8,5 @@ export type UserPokemon = {
   id: number;
   name: string;
   profileImage: string;
+  bot: boolean;
 };
